@@ -6,6 +6,8 @@ import java.util.List;
 
 import com.jfinal.aop.Before;
 import com.jfinal.core.Controller;
+import com.jfinal.plugin.activerecord.Db;
+import com.jfinal.plugin.activerecord.Record;
 import com.wxcampus.items.Items;
 import com.wxcampus.items.Items_on_sale;
 import com.wxcampus.items.Managers;
@@ -83,18 +85,23 @@ public class IndexController extends Controller {
 	public void getItems()  //ajax请求商品信息
 	{
 		int aid=getSessionAttr("areaID");
+		String category=getPara("category");
 		List<Items_on_sale> iosList=Items_on_sale.dao.find("select * from items_on_sale where location="+aid);
 		List<Items> itemList=new ArrayList<Items>();
 		for(int i=0;i<iosList.size();i++)
 		{
-			Items item=Items.dao.findFirst("select * from items where iid="+iosList.get(i).getStr("iid"));
+			Items item;
+			if(category!=null)
+			    item=Items.dao.findFirst("select * from items where iid="+iosList.get(i).getStr("iid")+" and category="+category);
+			else
+				 item=Items.dao.findFirst("select * from items where iid="+iosList.get(i).getStr("iid"));
 			item.set("restNum", iosList.get(i).getInt("restNum"));
 			itemList.add(item);
 		}
 		setAttr("itemList", itemList); //商品信息
 		renderJson();
 	}
-	
+
 	public void searchArea()
 	{
 		String college=getPara("q");
@@ -102,9 +109,13 @@ public class IndexController extends Controller {
 		if(areas!=null)
 			redirect("area.html?city="+areas.getStr("city")+"&college="+areas.getStr("college"));
 	}
-	public void searchItems()
+	public void searchItems() //ajax
 	{
 		String itemName=getPara("q");
+		int areaID=getSessionAttr("areaID");
+		List<Record> itemList=Db.find("select a.iid,a.iname,a.icon,a.originPrice,a.realPrice,b.restNum from items as a,items_on_sale as b where b.location="+areaID+" and a.iid=b.iid and a.iname regexp '.*"+itemName+".*'");
+		setAttr("itemList", itemList);
+		renderJson();
 	}
 }
 

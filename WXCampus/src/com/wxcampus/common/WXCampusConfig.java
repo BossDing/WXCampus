@@ -20,6 +20,7 @@ import com.wxcampus.items.Items;
 import com.wxcampus.items.Items_on_sale;
 import com.wxcampus.items.Managers;
 import com.wxcampus.items.Trades;
+import com.wxcampus.shop.ShopController;
 import com.wxcampus.user.Advices;
 import com.wxcampus.user.User;
 import com.wxcampus.user.UserController;
@@ -43,6 +44,7 @@ public class WXCampusConfig extends JFinalConfig{
 	public void configRoute(Routes me) {
 		me.add("/", IndexController.class, "/index");	// 第三个参数为该Controller的视图存放路径
 		me.add("/usr", UserController.class);			// 第三个参数省略时默认与第一个参数值相同，在此即为 "/blog"
+	    me.add("/shop",ShopController.class);
 	}
 	
 	/**
