@@ -51,6 +51,7 @@ public class UserController extends Controller{
         user=User.me.findById(user.get("uid"));
         removeSessionAttr("sessionUser");
         setSessionAttr("sessionUser", user);  //待测试是否需要更新session
+        renderHtml("OK");
 	}
 	
 	public void itemstar() //我的收藏

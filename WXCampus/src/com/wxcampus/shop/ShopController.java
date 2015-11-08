@@ -24,27 +24,21 @@ public class ShopController extends Controller{
 	public void index()
 	{
 		String items[]=getPara().split("-");
-		Map<String, String> varieties=new HashMap<String, String>();
 		int areaID=getSessionAttr("areaID");
 		List<Record> itemList=new ArrayList<Record>();
 		for(int i=0;i<items.length;i++)
 		{
+			String temp[]=items[i].split(":");
+			if(temp.length==2)
+			{
+			String iid=temp[0];
 			Record item;
-			if(varieties.get(items[i])==null)
-				{varieties.put(items[i], 1+"");
-			    item=Db.findFirst("select a.iid,a.iname,a.icon,a.originPrice,a.realPrice,b.restNum from items as a,items_on_sale as b where b.location="+areaID+" and a.iid="+items[i]+" and a.iid=b.iid");
-			    item.set("orderNum", 1);
-			    itemList.add(item);}
-			else {
-				for(int k=0;k<itemList.size();k++)
-				{
-					if(itemList.get(k).getStr("iid").equals(items[i]))
-					{
-						itemList.get(k).set("orderNum", itemList.get(k).getInt("orderNum")+1);
-						break;
-					}
-				}
-			}
+			item=Db.findFirst("select a.iid,a.iname,a.icon,a.originPrice,a.realPrice,b.restNum from items as a,items_on_sale as b where b.location="+areaID+" and a.iid="+iid+" and a.iid=b.iid");
+		    item.set("orderNum", temp[1]);
+			itemList.add(item);
+			}else
+				redirect("error.html");
+			
 		}
 		setAttr("itemList", itemList);
 		render("index.html");
@@ -59,6 +53,8 @@ public class ShopController extends Controller{
 		{
 			Record record=new Record();
 			String temp[]=items[i].split(":");
+			if(temp.length==2)
+			{
 			String iid=temp[0];
 			int num=Integer.parseInt(temp[1]);
 			Items_on_sale ios=Items_on_sale.dao.findFirst("select * from items_on_sale where location="+areaID+" and iid="+iid);
@@ -72,6 +68,8 @@ public class ShopController extends Controller{
 			record.set("price", item.getDouble("realPrice")*num);
 			totalMoney+=(item.getDouble("realPrice")*num);
 			itemList.add(record);
+			}else
+				redirect("error.html");
 		}
 		setAttr("itemList", itemList);
 		setSessionAttr("itemList", itemList);
@@ -96,7 +94,7 @@ public class ShopController extends Controller{
 		User user=getSessionAttr("sessionUser");
 		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
 		String date=sdf.format(new Date().toString());
-		List<Coupons_user> cpList=Coupons_user.dao.find("select * from coupons_user where owner="+user.getStr("uid")+" and used=0 and endDate>="+date);
+		List<Record> cpList=Db.find("select a.money,b.cuid,b.endDate from coupons as a,coupons_user as b where b.owner="+user.getStr("uid")+" and b.used=0 and a.cid=b.cid and b.endDate>="+date);
 		setAttr("cpList", cpList);
 		renderJson();
 	}
@@ -149,7 +147,9 @@ public class ShopController extends Controller{
 		  trades.set("state", 0);  //0:正在派送  1:交易完成
 		  trades.save();
 		}
-		render("paysuccess.html");
+		removeSessionAttr("itemList");
+		removeAttr("totalMoney");
+		render("pay-success.html");
 	}
 
 }

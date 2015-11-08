@@ -1,6 +1,17 @@
 create database wxcampus;
 use wxcampus;
 
+DROP TABLE IF EXISTS `areas`;
+CREATE TABLE `areas` (
+  `aid` int(10) NOT NULL AUTO_INCREMENT,
+  `city` varchar(255) NOT NULL,
+  `college` varchar(255) NOT NULL,
+  `building` varchar(255) not null,
+  `addedDate` date NOT NULL,
+  `addedTime` time NOT NULL,
+  PRIMARY KEY (`aid`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
 DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
   `uid` int(10) NOT NULL AUTO_INCREMENT,
@@ -49,16 +60,7 @@ CREATE TABLE `items_on_sale` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 
-DROP TABLE IF EXISTS `areas`;
-CREATE TABLE `areas` (
-  `aid` int(10) NOT NULL AUTO_INCREMENT,
-  `city` varchar(255) NOT NULL,
-  `college` varchar(255) NOT NULL,
-  `building` varchar(255) not null,
-  `addedDate` date NOT NULL,
-  `addedTime` time NOT NULL,
-  PRIMARY KEY (`aid`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
 
 DROP TABLE IF EXISTS `advertisement`;
 CREATE TABLE `advertisement` (
@@ -77,7 +79,7 @@ CREATE TABLE `managers` (
   `name` varchar(255) not null,
   `password` varchar(255) not null,
   `location` int(10) not null,
-  `say` varchar(255) default ,
+  `say` varchar(255) default "",
   `startTime` time default "21:00:00",
   `endTime` time default "23:00:00",
   `addedDate` date NOT NULL,

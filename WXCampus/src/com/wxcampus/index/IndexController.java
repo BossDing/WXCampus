@@ -63,7 +63,7 @@ public class IndexController extends Controller {
 		render("index.html");
 	}
 	
-	public void location()
+	public void location()   //ajax
 	{
 		String city=getPara("city");
 		if(city!=null)

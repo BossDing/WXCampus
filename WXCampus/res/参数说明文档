@@ -1,0 +1,119 @@
+
+主页：  domain.com/    视图存放路径  /index
+
+主页html   /index/index.html
+                           属性：                                     主要可用元素：
+     广告图片                  AdList           img 			路径
+     店长信息                  Manager          tel  			电话
+      							 name			姓名
+      							 say			店长说
+      							 startTime		开业时间
+      							 endTime		打烊时间
+      							 
+   /index/location   （ajax请求）     //确定位置（城市，学校，楼栋）
+    可带参数： city  college  building   
+    请求city可只带city参数  请求college必须同时带city,college参数，building同理
+    返回：   json数组        
+    名字分别为cities colleges buildings  单个字段名： city college building
+    
+   /index/getItems   （ajax请求）   //获取商品信息   可带参数category用于分类，不带就是全部
+   返回： json数组
+   数组名： itemList 
+  单个元素字段名：
+  +-------------+---------------+------+-----+---------+----------------+
+| Field       | Type          | Null | Key | Default | Extra          |
++-------------+---------------+------+-----+---------+----------------+
+| iid         | int(10)       | NO   | PRI | NULL    | auto_increment |
+| iname       | varchar(255)  | NO   |     | NULL    |                |
+| icon        | varchar(255)  | NO   |     | NULL    |                |
+| originPrice | decimal(10,2) | NO   |     | NULL    |                |
+| realPrice   | decimal(10,2) | NO   |     | NULL    |                |
+| category    | varchar(20)   | NO   |     | NULL    |                |
+| restNum     | int(5)        | YES  |     | 0       |                |
+| addedDate   | date          | NO   |     | NULL    |                |
+| addedTime   | time          | NO   |     | NULL    |                |
++-------------+---------------+------+-----+---------+----------------+
+
+/index/searchArea    (非ajax请求)  //搜索学校
+参数： q
+后台会重定向到 area.html?city=XX&college=XX   需处理一下
+
+/index/searchItems    （ajax请求）  //搜索商品
+参数：q
+返回json格式同getItems
+
+
+用户信息页    domain.com/usr     视图存放路径/usr
+
+/usr/index.html    主html
+
+/usr/trades    查看订单       trades.html 
+属性：tradeList    字段如下：
++--------------+---------------+------+-----+---------+----------------+
+| Field        | Type          | Null | Key | Default | Extra          |
++--------------+---------------+------+-----+---------+----------------+
+| tid          | int(10)       | NO   | PRI | NULL    | auto_increment |
+| rid          | int(10)       | NO   |     | NULL    |                |
+| customer     | int(10)       | NO   |     | NULL    |                |
+| seller       | int(10)       | NO   |     | NULL    |                |
+| location     | int(10)       | NO   |     | NULL    |                |
+| item         | int(10)       | NO   |     | NULL    |                |
+| price        | decimal(10,2) | NO   |     | NULL    |                |
+| orderNum     | int(5)        | NO   |     | NULL    |                |
+| state        | int(1)        | NO   |     | NULL    |                |
+| finishedDate | date          | NO   |     | NULL    |                |
+| finishedTime | time          | NO   |     | NULL    |                |
++--------------+---------------+------+-----+---------+----------------+
+注：   state=0表示正在派送     =1 表示已完成的订单
+
+/usr/coupons   查看优惠券  coupons.html
+属性： cuList    字段：  money    金额
+                      endDate  到期日期
+                    
+/usr/addItemStar     ajax添加收藏      用于主页
+参数：iid   商品的iid
+返回：  OK
+
+/usr/itemstar    查看收藏     itemStar.html
+属性：  itemList   字段值同getItems
+
+/usr/advice      advice.html   //提交投诉页面
+表单域名：     advice.content
+/usr/submitAdvie   提交表单action地址     后台重定向到submit-success.html（提交成功）
+
+/usr/registion     registion.html
+/usr/register      注册提交表单action
+                   表单域的名         user.tel   user.password
+       提交后后台自动重定向到主页
+       
+
+购物页     domain.com/shop
+        /shop/index.html   购物车主页
+        主页转向购物车需要带参数：    Ex:   /shop?22:3;54:1;28:1   
+                                   iid为22的3个 iid为54的1个 iid为28的1个
+   属性：  itemList
+   字段：iid,iname,icon,originPrice,realPrice,restNum,orderNum
+   
+   /shop/confirm          confirm.html
+   参数同上
+  属性：itemList   字段： iid icon iname orderNum  price(此处为该种商品总价格)
+      totalMoney  总价格
+      userTel     客户电话
+      userName    客户姓名
+      userRoom    客户房间号
+      
+  /shop/coupons    ajax请求客户可使用的优惠券
+  返回json 
+  数组名 cpList  键值：  money cuid(须保存，如客户使用优惠券要作为参数传给后台) endDate
+
+
+/shop/pay               pay-success.html
+参数：   userTel
+       userName
+       userRoom
+       cuid(可选)       
+支付相关后续商榷            
+
+   
+   
+  
