@@ -8,19 +8,22 @@ import com.jfinal.aop.Before;
 import com.jfinal.core.Controller;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Record;
+import com.wxcampus.common.GlobalVar;
 import com.wxcampus.items.Items;
 import com.wxcampus.items.Items_on_sale;
-import com.wxcampus.items.Managers;
+import com.wxcampus.manage.Managers;
 import com.wxcampus.user.User;
 
 /**
- * IndexController
+ * 微信端主页控制器类
  */
 public class IndexController extends Controller {
 	
+	IndexService isService=new IndexService();
+	
 	@Before({LoginInterceptor.class,LocationInterceptor.class})
 	public void index() {
-		User user=getSessionAttr("sessionUser");
+		User user=getSessionAttr(GlobalVar.WXUSER);
 		Areas areas;
 		if(user==null)
 		{
@@ -40,6 +43,8 @@ public class IndexController extends Controller {
 		}
 		if(areas!=null)
 		{
+			isService.updateShopState(areas);
+			
 			setAttr("Area", areas);  //定位学校楼栋
 			removeSessionAttr("areaID");
 			setSessionAttr("areaID", areas.getInt("aid"));
@@ -71,7 +76,17 @@ public class IndexController extends Controller {
 			String college=getPara("college");
 			if(college!=null)
 			{
-				setAttr("buildings", Areas.dao.find("select building from areas where city="+city+" and college="+college));
+				List<Areas> areaList=Areas.dao.find("select * from areas where city="+city+" and college="+college);
+				List<Record> recordList=new ArrayList<Record>();
+				for(int i=0;i<areaList.size();i++)
+				{
+					isService.updateShopState(areaList.get(i));
+					Record record=new Record();
+					record.set("building", areaList.get(i).getStr("building"));
+					record.set("state", areaList.get(i).getInt("state"));
+					recordList.add(record);
+				}
+				setAttr("buildings", recordList);
 				renderJson();
 			}else {
 				setAttr("colleges", Areas.dao.find("select distinct college from areas where city="+city));
