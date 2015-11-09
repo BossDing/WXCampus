@@ -19,7 +19,7 @@ import org.apache.http.util.EntityUtils;
 @Use   通用Get方法
 @author  Popez
 @time    2015年9月24日 00:02:55
-
+ddddddddddddddddddddddddddddddddddddddddddddd
 */
 public class GeneralGet
 {
