@@ -3,6 +3,7 @@ package com.wxcampus.index;
 import com.jfinal.aop.Interceptor;
 import com.jfinal.aop.Invocation;
 import com.jfinal.core.Controller;
+import com.wxcampus.common.GlobalVar;
 import com.wxcampus.user.User;
 
 public class LocationInterceptor implements Interceptor{
@@ -18,7 +19,7 @@ public class LocationInterceptor implements Interceptor{
 		Areas areas=Areas.dao.findFirst("select * from areas where city="+city+" and college="+college+" and building="+building);
 		if(areas!=null)
 		{
-			User user=c.getSessionAttr("sessionUser");
+			User user=c.getSessionAttr(GlobalVar.WXUSER);
 			if(user!=null)
 				user.set("location", areas.get("aid")).update();
 		}

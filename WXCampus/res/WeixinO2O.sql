@@ -7,6 +7,9 @@ CREATE TABLE `areas` (
   `city` varchar(255) NOT NULL,
   `college` varchar(255) NOT NULL,
   `building` varchar(255) not null,
+  `state` tinyint(1) default 0,  
+  `startTime` time default "21:00:00",
+  `endTime` time default "23:00:00",
   `addedDate` date NOT NULL,
   `addedTime` time NOT NULL,
   PRIMARY KEY (`aid`)
@@ -80,8 +83,6 @@ CREATE TABLE `managers` (
   `password` varchar(255) not null,
   `location` int(10) not null,
   `say` varchar(255) default "",
-  `startTime` time default "21:00:00",
-  `endTime` time default "23:00:00",
   `addedDate` date NOT NULL,
   `addedTime` time NOT NULL,
   PRIMARY KEY (`mid`),

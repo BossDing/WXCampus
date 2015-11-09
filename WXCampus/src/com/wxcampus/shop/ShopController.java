@@ -10,15 +10,21 @@ import java.util.Map;
 import com.jfinal.core.Controller;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Record;
+import com.wxcampus.common.GlobalVar;
 import com.wxcampus.items.Coupons;
 import com.wxcampus.items.Coupons_use;
 import com.wxcampus.items.Coupons_user;
 import com.wxcampus.items.Items;
 import com.wxcampus.items.Items_on_sale;
-import com.wxcampus.items.Managers;
 import com.wxcampus.items.Trades;
+import com.wxcampus.manage.Managers;
 import com.wxcampus.user.User;
 
+/**
+ * 微信端购物方面控制器类
+ * @author Potato
+ *
+ */
 public class ShopController extends Controller{
 	
 	public void index()
@@ -91,7 +97,7 @@ public class ShopController extends Controller{
 	
 	public void coupons() //ajax
 	{
-		User user=getSessionAttr("sessionUser");
+		User user=getSessionAttr(GlobalVar.WXUSER);
 		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
 		String date=sdf.format(new Date().toString());
 		List<Record> cpList=Db.find("select a.money,b.cuid,b.endDate from coupons as a,coupons_user as b where b.owner="+user.getStr("uid")+" and b.used=0 and a.cid=b.cid and b.endDate>="+date);

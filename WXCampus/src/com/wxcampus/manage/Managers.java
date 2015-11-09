@@ -1,4 +1,4 @@
-package com.wxcampus.items;
+package com.wxcampus.manage;
 
 import com.jfinal.plugin.activerecord.Model;
 
@@ -14,6 +14,7 @@ import com.jfinal.plugin.activerecord.Model;
 | password  | varchar(255) | NO   |     | NULL     |                |
 | location  | int(10)      | NO   | MUL | NULL     |                |
 | say       | varchar(255) | YES  |     |          |                |
+| state     | tinyint(1)   | NO   |     | 0        | 0:¹Ø±Õ  1£ºÓªÒµ     |
 | startTime | time         | YES  |     | 21:00:00 |                |
 | endTime   | time         | YES  |     | 23:00:00 |                |
 | addedDate | date         | NO   |     | NULL     |                |
