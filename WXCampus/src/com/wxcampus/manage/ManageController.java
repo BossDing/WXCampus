@@ -2,6 +2,8 @@ package com.wxcampus.manage;
 
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import com.jfinal.aop.Before;
 import com.jfinal.aop.Clear;
 import com.jfinal.core.Controller;
@@ -11,6 +13,7 @@ import com.wxcampus.common.GlobalVar;
 import com.wxcampus.index.Areas;
 import com.wxcampus.index.IndexService;
 import com.wxcampus.items.Trades;
+import com.wxcampus.util.Util;
 
 /**
  * 后台管理控制器类
@@ -20,6 +23,7 @@ import com.wxcampus.items.Trades;
 @Before(ManageInterceptor.class)
 public class ManageController extends Controller{
 
+	 public static Logger logger = Util.getLogger();
 	 public void index()
 	 {
 		 
@@ -45,6 +49,7 @@ public class ManageController extends Controller{
 		 if(form.getStr("password").equals(manager.getStr("password")))
 		 {
 			 setSessionAttr(GlobalVar.BEUSER, manager);
+			 logger.info(manager.get("name")+"---登录后台");
 			 redirect("/admin");
 		 }else {
 			setAttr("errorMsg", "用户名或密码错误！");
@@ -64,6 +69,7 @@ public class ManageController extends Controller{
 		 if(oldPass.equals(manager.getStr("password")))
 		 {
 			 manager.set("password", newPass).update();
+			 logger.info(manager.get("name")+"---修改密码");
 			 renderHtml("OK");
 		 }else {
 			renderHtml("原始密码输入错误");
@@ -75,7 +81,9 @@ public class ManageController extends Controller{
 	  */
 	 public void trades()  //ajax
 	 {
+		 
 		 Managers manager=getSessionAttr(GlobalVar.BEUSER);
+		// logger.info(manager.getStr("name")+"---查看订单");
 		 switch (manager.getInt("ring")) {
 		case 0:     Ring0Service ring0Service=new Ring0Service(this, manager);
 			     
@@ -110,15 +118,12 @@ public class ManageController extends Controller{
 	 /**
 	  *    添加地区
 	  */
+	 @Before(RingInterceptor.class)
 	 public void addArea()    //ajax
 	 {
 		 Managers manager=getSessionAttr(GlobalVar.BEUSER);
-		 if(manager.getInt("ring")==0)
-		 {
 		 Ring0Service ring0Service=new Ring0Service(this, manager);
 		 ring0Service.addArea();
-		 }else
-			 redirect("error.html");   //无权操作
 	 }
 	 
 	 /**
