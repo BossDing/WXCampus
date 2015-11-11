@@ -15,7 +15,7 @@ public class ShopInterceptor implements Interceptor{
 	public void intercept(Invocation arg0) {
 		int areaID=arg0.getController().getSessionAttr("areaID");
 		Areas areas=Areas.dao.findById(areaID);
-		if(areas.getInt("state")==1)
+		if(areas.getBoolean("state")==true)
 			arg0.invoke();
 		else
 			arg0.getController().redirect("error.html");

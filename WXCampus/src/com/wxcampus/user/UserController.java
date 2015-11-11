@@ -16,6 +16,7 @@ import com.wxcampus.items.Coupons_user;
 import com.wxcampus.items.Items;
 import com.wxcampus.items.Items_on_sale;
 import com.wxcampus.items.Trades;
+import com.wxcampus.util.Util;
 
 /**
  * 微信端用户方面控制器类
@@ -44,7 +45,7 @@ public class UserController extends Controller{
 	public void coupons()   //查看优惠券
 	{
 		User user=getSessionAttr(GlobalVar.WXUSER);
-		List<Record> cuList=Db.find("select a.money,b.endDate from coupons as a,coupons_user as b where b.owner="+user.getStr("uid")+" and a.cid=b.cid");
+		List<Record> cuList=Db.find("select a.money,b.endDate from coupons as a,coupons_user as b where b.owner="+user.getInt("uid")+" and a.cid=b.cid");
 		setAttr("cuList", cuList);
 		render("coupons.html");
 	}
@@ -55,7 +56,7 @@ public class UserController extends Controller{
 		String itemStar=user.getStr("itemsStar");
 		itemStar+=(iid+";");
 		user.set("itemsStar", itemStar).update();
-        user=User.me.findById(user.get("uid"));
+        user=User.me.findById(user.getInt("uid"));
         removeSessionAttr(GlobalVar.WXUSER);
         setSessionAttr(GlobalVar.WXUSER, user);  //待测试是否需要更新session
         renderHtml("OK");
@@ -70,8 +71,8 @@ public class UserController extends Controller{
 		for(int i=0;i<items.length;i++)
 		{
 			if(items[i].equals("")) continue;
-			Items item=Items.dao.findFirst("select * from items where iid="+items[i]);
-			Items_on_sale items_on_sale=Items_on_sale.dao.findFirst("select * from items_on_sale where location="+areaID+" and iid="+items[i]);
+			Items item=Items.dao.findFirst("select * from items where iid="+Integer.parseInt(items[i]));
+			Items_on_sale items_on_sale=Items_on_sale.dao.findFirst("select * from items_on_sale where location="+areaID+" and iid="+Integer.parseInt(items[i]));
 			item.set("restNum", items_on_sale.getInt("restNum"));
 			itemList.add(item);		
 		}
@@ -85,9 +86,7 @@ public class UserController extends Controller{
 	public void submitAdvice()  //提交投诉
 	{
 		User user=getSessionAttr(GlobalVar.WXUSER);
-		SimpleDateFormat sdf1=new SimpleDateFormat("yyyy-MM-dd");
-		SimpleDateFormat sdf2=new SimpleDateFormat("HH:mm:ss");
-		getModel(Advices.class).set("uid", user.getInt("uid")).set("addedDate", sdf1.format(new Date().toString())).set("addedTime", sdf2.format(new Date().toString())).save();
+		getModel(Advices.class).set("uid", user.getInt("uid")).set("addedDate", Util.getDate()).set("addedTime", Util.getTime()).save();
 		redirect("submit-success.html");
 	}
 	
@@ -100,14 +99,17 @@ public class UserController extends Controller{
 	@Before(UserValidator.class)
 	public void register()
 	{
-		SimpleDateFormat sdf1=new SimpleDateFormat("yyyy-MM-dd");
-		SimpleDateFormat sdf2=new SimpleDateFormat("HH:mm:ss");
 		User form=getModel(User.class);
 		//form.set("openid", openid);  //openid未加
-		form.set("registerDate", sdf1.format(new Date().toString()));
-		form.set("registerTime", sdf2.format(new Date().toString()));
+		if(form==null || form.getInt("tel")==null)
+		{
+			redirect("error.html");
+			return;
+		}
+		form.set("registerDate", Util.getDate());
+		form.set("registerTime", Util.getTime());
 		form.save();
-		form=User.me.findFirst("select * from user where tel="+form.getStr("tel"));
+		form=User.me.findFirst("select * from user where tel="+form.getInt("tel"));
 	    setSessionAttr(GlobalVar.WXUSER, form);
 		redirect("/index");	
 	}

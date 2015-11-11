@@ -3,6 +3,9 @@ package com.wxcampus.index;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import com.wxcampus.util.Util;
+
+
 public class IndexService {
 
 	
@@ -12,16 +15,16 @@ public class IndexService {
 	 */
 	public void updateShopState(Areas areas)
 	{
-		String startTime=areas.getStr("startTime");
-		String endTime=areas.getStr("endTime");
-		String currentTime=new SimpleDateFormat("HH:mm:ss").format(new Date().toString());
-		if(areas.getInt("state")==0)
+		String startTime=areas.get("startTime").toString();
+		String endTime=areas.get("endTime").toString();
+		String currentTime=Util.getTime();
+		if(areas.getBoolean("state")==false)
 		{
 		    if(startTime.compareTo(currentTime)<0 && endTime.compareTo(currentTime)>0)
-			     areas.set("state", 1).update();
+			     areas.set("state", true).update();
 		}else {
 			if(startTime.compareTo(currentTime)>0 || endTime.compareTo(currentTime)<0)
-			     areas.set("state", 0).update();
+			     areas.set("state", false).update();
 		}
 	}
 }

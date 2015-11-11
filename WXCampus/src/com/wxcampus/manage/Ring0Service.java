@@ -28,7 +28,7 @@ public class Ring0Service {
 				area.set("city", city).set("college", college).set("building", building);
 				area.set("addedDate", Util.getDate()).set("addedTime", Util.getTime());
 				area.save();		
-				ManageController.logger.info(manager.get("name")+"---添加了地区-"+city+"-"+college+"-"+building);
+				ManageController.logger.info(manager.getStr("name")+"---添加了地区-"+city+"-"+college+"-"+building);
 			}else {
 				c.renderHtml("当前添加地区已存在！");
 			}

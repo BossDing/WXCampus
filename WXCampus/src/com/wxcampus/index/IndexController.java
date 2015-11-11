@@ -39,7 +39,7 @@ public class IndexController extends Controller {
 			}
 		}else {
 			//user=User.me.findById(user.get("uid"));
-			areas=Areas.dao.findFirst("select * from areas where aid="+user.getStr("location"));
+			areas=Areas.dao.findFirst("select * from areas where aid="+user.getInt("location"));
 		}
 		if(areas!=null)
 		{
@@ -52,7 +52,7 @@ public class IndexController extends Controller {
 			//List<Advertisement> adList=Advertisement.dao.find("select * from advertisement order by aid desc limit 0,4");
 			//setAttr("AdList", adList);   //广告图片
 			
-			Managers manager=Managers.dao.findFirst("select * from managers where location="+areas.getStr("aid"));
+			Managers manager=Managers.dao.findFirst("select * from managers where location="+areas.getInt("aid"));
 			setAttr("Manager", manager); // 店长信息
 			
 //			List<Items_on_sale> iosList=Items_on_sale.dao.find("select * from items_on_sale where location="+areas.getStr("aid"));
@@ -83,7 +83,7 @@ public class IndexController extends Controller {
 					isService.updateShopState(areaList.get(i));
 					Record record=new Record();
 					record.set("building", areaList.get(i).getStr("building"));
-					record.set("state", areaList.get(i).getInt("state"));
+					record.set("state", areaList.get(i).getBoolean("state"));
 					recordList.add(record);
 				}
 				setAttr("buildings", recordList);
@@ -107,9 +107,9 @@ public class IndexController extends Controller {
 		{
 			Items item;
 			if(category!=null)
-			    item=Items.dao.findFirst("select * from items where iid="+iosList.get(i).getStr("iid")+" and category="+category);
+			    item=Items.dao.findFirst("select * from items where iid="+iosList.get(i).getInt("iid")+" and category="+category);
 			else
-				 item=Items.dao.findFirst("select * from items where iid="+iosList.get(i).getStr("iid"));
+				 item=Items.dao.findFirst("select * from items where iid="+iosList.get(i).getInt("iid"));
 			item.set("restNum", iosList.get(i).getInt("restNum"));
 			itemList.add(item);
 		}

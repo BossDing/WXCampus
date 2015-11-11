@@ -22,6 +22,7 @@ import com.wxcampus.items.Trades;
 import com.wxcampus.manage.Managers;
 import com.wxcampus.user.User;
 import com.wxcampus.user.UserInterceptor;
+import com.wxcampus.util.Util;
 
 /**
  * 微信端购物方面控制器类
@@ -43,10 +44,10 @@ public class ShopController extends Controller{
 			String temp[]=items[i].split(":");
 			if(temp.length==2)
 			{
-			String iid=temp[0];
+			int iid=Integer.parseInt(temp[0]);
 			Record item;
 			item=Db.findFirst("select a.iid,a.iname,a.icon,a.originPrice,a.realPrice,b.restNum from items as a,items_on_sale as b where b.location="+areaID+" and a.iid="+iid+" and a.iid=b.iid");
-		    item.set("orderNum", temp[1]);
+		    item.set("orderNum", Integer.parseInt(temp[1]));
 			itemList.add(item);
 			}else
 				redirect("error.html");
@@ -66,13 +67,13 @@ public class ShopController extends Controller{
 			String temp[]=items[i].split(":");
 			if(temp.length==2)
 			{
-			String iid=temp[0];
+			int iid=Integer.parseInt(temp[0]);
 			int num=Integer.parseInt(temp[1]);
 			Items_on_sale ios=Items_on_sale.dao.findFirst("select * from items_on_sale where location="+areaID+" and iid="+iid);
 			if(ios.getInt("restNum")<num)
 				{redirect("error.html"); break;}
 			Items item=Items.dao.findFirst("select * from items where iid="+iid);
-			record.set("iid", item.getStr("iid"));
+			record.set("iid", item.getInt("iid"));
 			record.set("iname", item.getStr("iname"));
 			record.set("icon", item.getStr("icon")+"-small");
 			record.set("orderNum", num);
@@ -88,7 +89,7 @@ public class ShopController extends Controller{
 		setSessionAttr("totalMoney", totalMoney);
 		
 		User user=getSessionAttr("sessionUser");
-		setAttr("userTel", user.get("tel"));
+		setAttr("userTel", user.getInt("tel"));
 		if(user.getStr("name")!=null)
 			setAttr("userName", user.getStr("name"));
 		else
@@ -103,19 +104,16 @@ public class ShopController extends Controller{
 	public void coupons() //ajax
 	{
 		User user=getSessionAttr(GlobalVar.WXUSER);
-		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
-		String date=sdf.format(new Date().toString());
-		List<Record> cpList=Db.find("select a.money,b.cuid,b.endDate from coupons as a,coupons_user as b where b.owner="+user.getStr("uid")+" and b.used=0 and a.cid=b.cid and b.endDate>="+date);
+		String date=Util.getDate();
+		List<Record> cpList=Db.find("select a.money,b.cuid,b.endDate from coupons as a,coupons_user as b where b.owner="+user.getInt("uid")+" and b.used=0 and a.cid=b.cid and b.endDate>="+date);
 		setAttr("cpList", cpList);
 		renderJson();
 	}
 	
 	public void pay()
 	{
-		SimpleDateFormat sdf1=new SimpleDateFormat("yyyy-MM-dd");
-		String date=sdf1.format(new Date().toString());
-		SimpleDateFormat sdf2=new SimpleDateFormat("HH:mm:ss");
-		String time=sdf2.format(new Date().toString());
+		String date=Util.getDate();
+		String time=Util.getTime();
 		String tel=getPara("userTel");
 		String name=getPara("userName");
 		String room=getPara("userRoom");
@@ -136,7 +134,7 @@ public class ShopController extends Controller{
 			  Coupons_user.dao.findById(cuid).set("used", 1).update();
 			  Coupons_use cu=new Coupons_use();
 			  cu.set("rid", rid);
-			  cu.set("cid",coupons.get("cid"));
+			  cu.set("cid",coupons.getInt("cid"));
 			  cu.set("realpay", totalMoney);
 			  cu.set("addedDate", date);
 			  cu.set("addedTime", time);
@@ -147,14 +145,14 @@ public class ShopController extends Controller{
 		{
 		  Trades trades=new Trades();
 		  trades.set("rid", rid);
-		  trades.set("customer", user.get("uid"));
-		  trades.set("seller", manager.get("mid"));
+		  trades.set("customer", user.getInt("uid"));
+		  trades.set("seller", manager.getInt("mid"));
 		  trades.set("location", areaID);
 		  trades.set("addedDate", date);
 		  trades.set("addedTime", time);
-		  trades.set("item", itemList.get(i).get("iid"));
-		  trades.set("price", itemList.get(i).get("price"));
-		  trades.set("orderNum", itemList.get(i).get("orderNum"));
+		  trades.set("item", itemList.get(i).getInt("iid"));
+		  trades.set("price", itemList.get(i).getDouble("price"));
+		  trades.set("orderNum", itemList.get(i).getInt("orderNum"));
 		  trades.set("state", 0);  //0:正在派送  1:交易完成
 		  trades.save();
 		}

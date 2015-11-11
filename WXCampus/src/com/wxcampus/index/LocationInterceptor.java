@@ -21,7 +21,7 @@ public class LocationInterceptor implements Interceptor{
 		{
 			User user=c.getSessionAttr(GlobalVar.WXUSER);
 			if(user!=null)
-				user.set("location", areas.get("aid")).update();
+				user.set("location", areas.getInt("aid")).update();
 		}
 		}
 		arg0.invoke();

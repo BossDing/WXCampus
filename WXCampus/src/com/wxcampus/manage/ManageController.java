@@ -45,11 +45,11 @@ public class ManageController extends Controller{
 			 redirect("/admin");
 		 
 		 Managers form=getModel(Managers.class);
-		 Managers manager=Managers.dao.findFirst("select * from managers where tel="+form.getStr("tel"));
+		 Managers manager=Managers.dao.findFirst("select * from managers where tel="+form.getInt("tel"));
 		 if(form.getStr("password").equals(manager.getStr("password")))
 		 {
 			 setSessionAttr(GlobalVar.BEUSER, manager);
-			 logger.info(manager.get("name")+"---登录后台");
+			 logger.info(manager.getStr("name")+"---登录后台");
 			 redirect("/admin");
 		 }else {
 			setAttr("errorMsg", "用户名或密码错误！");
@@ -69,7 +69,7 @@ public class ManageController extends Controller{
 		 if(oldPass.equals(manager.getStr("password")))
 		 {
 			 manager.set("password", newPass).update();
-			 logger.info(manager.get("name")+"---修改密码");
+			 logger.info(manager.getStr("name")+"---修改密码");
 			 renderHtml("OK");
 		 }else {
 			renderHtml("原始密码输入错误");
