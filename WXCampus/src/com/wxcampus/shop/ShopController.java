@@ -7,10 +7,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.jfinal.aop.Before;
 import com.jfinal.core.Controller;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Record;
 import com.wxcampus.common.GlobalVar;
+import com.wxcampus.index.Areas;
 import com.wxcampus.items.Coupons;
 import com.wxcampus.items.Coupons_use;
 import com.wxcampus.items.Coupons_user;
@@ -19,18 +21,22 @@ import com.wxcampus.items.Items_on_sale;
 import com.wxcampus.items.Trades;
 import com.wxcampus.manage.Managers;
 import com.wxcampus.user.User;
+import com.wxcampus.user.UserInterceptor;
 
 /**
  * 微信端购物方面控制器类
  * @author Potato
  *
  */
+@Before(UserInterceptor.class)
 public class ShopController extends Controller{
 	
+	@Before(ShopInterceptor.class)
 	public void index()
 	{
 		String items[]=getPara().split("-");
 		int areaID=getSessionAttr("areaID");
+
 		List<Record> itemList=new ArrayList<Record>();
 		for(int i=0;i<items.length;i++)
 		{
@@ -44,7 +50,6 @@ public class ShopController extends Controller{
 			itemList.add(item);
 			}else
 				redirect("error.html");
-			
 		}
 		setAttr("itemList", itemList);
 		render("index.html");
@@ -145,8 +150,8 @@ public class ShopController extends Controller{
 		  trades.set("customer", user.get("uid"));
 		  trades.set("seller", manager.get("mid"));
 		  trades.set("location", areaID);
-		  trades.set("finishedDate", date);
-		  trades.set("finishedTime", time);
+		  trades.set("addedDate", date);
+		  trades.set("addedTime", time);
 		  trades.set("item", itemList.get(i).get("iid"));
 		  trades.set("price", itemList.get(i).get("price"));
 		  trades.set("orderNum", itemList.get(i).get("orderNum"));

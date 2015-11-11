@@ -11,6 +11,9 @@ import com.jfinal.plugin.activerecord.Model;
 | city      | varchar(255) | NO   |     | NULL    |                |
 | college   | varchar(255) | NO   |     | NULL    |                |
 | building  | varchar(255) | NO   |     | NULL    |                |
+| state     | tinyint(1)            default 0,  
+| startTime | time                  default "21:00:00",
+| endTime   | time                  default "23:00:00",
 | addedDate | date         | NO   |     | NULL    |                |
 | addedTime | time         | NO   |     | NULL    |                |
 +-----------+--------------+------+-----+---------+----------------+

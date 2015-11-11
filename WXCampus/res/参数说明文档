@@ -4,11 +4,24 @@
 主页html   /index/index.html
                            属性：                                     主要可用元素：
      广告图片                  AdList           img 			路径
+    地址                            Area            
+    +-----------+--------------+------+-----+---------+----------------+
+| Field     | Type         | Null | Key | Default | Extra          |
++-----------+--------------+------+-----+---------+----------------+
+| aid       | int(10)      | NO   | PRI | NULL    | auto_increment |
+| city      | varchar(255) | NO   |     | NULL    |                |
+| college   | varchar(255) | NO   |     | NULL    |                |
+| building  | varchar(255) | NO   |     | NULL    |                |
+| state     | tinyint(1)            default 0,  //0打烊 1营业
+| startTime | time                  default "21:00:00",
+| endTime   | time                  default "23:00:00",
+      						startTime		开业时间
+      						endTime		        打烊时间
+      						
      店长信息                  Manager          tel  			电话
-      							 name			姓名
-      							 say			店长说
-      							 startTime		开业时间
-      							 endTime		打烊时间
+      						name			姓名
+      						say			店长说
+
       							 
    /index/location   （ajax请求）     //确定位置（城市，学校，楼栋）
     可带参数： city  college  building   
