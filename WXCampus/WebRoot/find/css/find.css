@@ -148,3 +148,13 @@
     height:auto ;
     float: left;
 }
+#kuankuan{
+    width: 4em;
+    height: 2.5em;
+    margin-right: 1em ;
+    display:block;
+    float:right;
+    background: url('../image_find/kuan.png') no-repeat;
+    background-size: 4em 2.5em;
+    text-align: center;
+}
