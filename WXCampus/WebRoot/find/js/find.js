@@ -46,6 +46,3 @@ function backFoodList(data){
 /**
  * Created by ASUS on 2015/11/8.
  */
-/**
- * Created by ASUS on 2015/11/8.
- */
