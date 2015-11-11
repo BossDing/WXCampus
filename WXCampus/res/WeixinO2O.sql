@@ -24,7 +24,7 @@ CREATE TABLE `user` (
   `name` varchar(255) default null,
   `room` varchar(255) default null,
   `location` int(10) DEFAULT 1,
-  `itemsStar` text DEFAULT "",
+  `itemsStar` varchar(255) DEFAULT "",
   `registerDate` date NOT NULL,
   `registerTime` time NOT NULL,
   PRIMARY KEY (`uid`),

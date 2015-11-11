@@ -49,8 +49,8 @@ public class IndexController extends Controller {
 			removeSessionAttr("areaID");
 			setSessionAttr("areaID", areas.getInt("aid"));
 			
-			List<Advertisement> adList=Advertisement.dao.find("select * from advertisement order by aid desc limit 0,4");
-			setAttr("AdList", adList);   //广告图片
+			//List<Advertisement> adList=Advertisement.dao.find("select * from advertisement order by aid desc limit 0,4");
+			//setAttr("AdList", adList);   //广告图片
 			
 			Managers manager=Managers.dao.findFirst("select * from managers where location="+areas.getStr("aid"));
 			setAttr("Manager", manager); // 店长信息
