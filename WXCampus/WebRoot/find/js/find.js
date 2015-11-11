@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 /**
  * Created by ASUS on 2015/11/8.
  */
@@ -44,8 +43,9 @@ function backFoodList(data){
     }
     $("#bottom_center").append(foodList);
 }
-=======
 /**
  * Created by ASUS on 2015/11/8.
  */
->>>>>>> 75c1c71bc1a94e3fbcb46e1c9edc073c848be3ac
+/**
+ * Created by ASUS on 2015/11/8.
+ */
