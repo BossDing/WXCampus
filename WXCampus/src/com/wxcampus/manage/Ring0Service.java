@@ -29,7 +29,7 @@ public class Ring0Service {
 				area.set("addedDate", Util.getDate()).set("addedTime", Util.getTime());
 				area.save();			
 			}else {
-				c.renderHtml("当前添加地区已存在");
+				c.renderHtml("当前添加地区已存在！");
 			}
 		}else 
 			c.redirect("error.html");   //参数错误
