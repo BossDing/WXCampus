@@ -43,6 +43,3 @@ function backFoodList(data){
     }
     $("#bottom_center").append(foodList);
 }
-/**
- * Created by ASUS on 2015/11/8.
- */
