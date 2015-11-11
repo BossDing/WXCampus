@@ -101,8 +101,10 @@ CREATE TABLE `trades` (
   `price` decimal(10,2) not null,
   `orderNum` int(5) not null,
   `state` int(1) not null,
-  `finishedDate` date NOT NULL,
-  `finishedTime` time NOT NULL,
+  `addedDate` date not null,
+  `addedTime` time not null,
+  `finishedDate` date default NULL,
+  `finishedTime` time default NULL,
   PRIMARY KEY (`tid`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 

@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.jfinal.aop.Before;
+import com.jfinal.aop.Clear;
 import com.jfinal.core.Controller;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Record;
@@ -32,7 +33,7 @@ public class UserController extends Controller{
 //	{
 //		
 //	}
-	public void trades()    //查看订单
+	public void trades()    //查看订单                *****可能需要分页查询*****
 	{
 		User user=getSessionAttr(GlobalVar.WXUSER);
 		List<Trades> tradeList=Trades.dao.find("select * from trades where customer="+user.getInt("uid"));
@@ -90,10 +91,12 @@ public class UserController extends Controller{
 		redirect("submit-success.html");
 	}
 	
+	@Clear(UserInterceptor.class)
 	public void registion()  //registion.html
 	{		
 	}
 	
+	@Clear(UserInterceptor.class)
 	@Before(UserValidator.class)
 	public void register()
 	{

@@ -16,8 +16,10 @@ import com.jfinal.plugin.activerecord.Model;
 | price        | decimal(10,2) | NO   |     | NULL    |                |
 | orderNum     | int(5)        | NO   |     | NULL    |                |
 | state        | int(1)        | NO   |     | NULL    |                |
-| finishedDate | date          | NO   |     | NULL    |                |
-| finishedTime | time          | NO   |     | NULL    |                |
+| addedDate    | date          | NO   |     | NULL    |                |
+| addedTime    | time          | NO   |     | NULL    |                |
+| finishedDate | date          | YES  |     | NULL    |                |
+| finishedTime | time          | YES  |     | NULL    |                |
 +--------------+---------------+------+-----+---------+----------------+
  * @author Potato
  *
