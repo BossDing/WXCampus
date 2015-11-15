@@ -5,10 +5,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.jfinal.aop.Before;
+import com.jfinal.aop.Clear;
 import com.jfinal.core.Controller;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Record;
 import com.wxcampus.common.GlobalVar;
+import com.wxcampus.common.OpenidInterceptor;
 import com.wxcampus.items.Items;
 import com.wxcampus.items.Items_on_sale;
 import com.wxcampus.manage.Managers;
@@ -21,7 +23,8 @@ public class IndexController extends Controller {
 	
 	IndexService isService=new IndexService();
 	
-	@Before({LoginInterceptor.class,LocationInterceptor.class})
+	@Clear(OpenidInterceptor.class)
+	@Before({GetOpenidInterceptor.class,LoginInterceptor.class,LocationInterceptor.class})
 	public void index() {
 		User user=getSessionAttr(GlobalVar.WXUSER);
 		Areas areas;
@@ -38,7 +41,7 @@ public class IndexController extends Controller {
 			areas=Areas.dao.findById(1);
 			}
 		}else {
-			//user=User.me.findById(user.get("uid"));
+			//user=User.me.findById(user.get("uid"))
 			areas=Areas.dao.findFirst("select * from areas where aid="+user.getInt("location"));
 		}
 		if(areas!=null)
@@ -131,6 +134,26 @@ public class IndexController extends Controller {
 		List<Record> itemList=Db.find("select a.iid,a.iname,a.icon,a.originPrice,a.realPrice,b.restNum from items as a,items_on_sale as b where b.location="+areaID+" and a.iid=b.iid and a.iname regexp '.*"+itemName+".*'");
 		setAttr("itemList", itemList);
 		renderJson();
+	}
+	
+	@Clear
+	public void error()
+	{
+		//error.html
+	}
+	
+	@Clear
+	public void authorize()
+	{
+		String code=getPara("CODE");
+		String state=getPara("state");
+		if(code==null || state==null || !state.equals("6666"))
+			{redirect("/index/error.html");
+			return;}
+		
+		//向微信请求openid        //写法待测试
+		
+		
 	}
 }
 

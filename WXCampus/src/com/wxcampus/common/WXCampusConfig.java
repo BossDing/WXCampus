@@ -46,7 +46,7 @@ public class WXCampusConfig extends JFinalConfig{
 		me.add("/", IndexController.class, "/index");	// 第三个参数为该Controller的视图存放路径
 		me.add("/usr", UserController.class);			// 第三个参数省略时默认与第一个参数值相同，在此即为 "/blog"
 	    me.add("/shop",ShopController.class);
-	    me.add("/admin",ManageController.class);
+	    me.add("/mgradmin",ManageController.class);
 	}
 	
 	/**
@@ -79,6 +79,7 @@ public class WXCampusConfig extends JFinalConfig{
 	 */
 	public void configInterceptor(Interceptors me) {
 		//me.add(new OpenidInterceptor());    // openid拦截校验
+		me.add(new SQLXSSPREInterceptor());  //过滤防SQL,XSS
 	}
 	
 	/**

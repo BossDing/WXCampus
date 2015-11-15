@@ -4,7 +4,7 @@ import com.jfinal.aop.Interceptor;
 import com.jfinal.aop.Invocation;
 import com.wxcampus.common.GlobalVar;
 
-public class RingInterceptor implements Interceptor{
+public class Ring0Interceptor implements Interceptor{
 
 	@Override
 	public void intercept(Invocation arg0) {

@@ -33,7 +33,16 @@ public class Ring0Service {
 				c.renderHtml("当前添加地区已存在！");
 			}
 		}else 
-			c.redirect("error.html");   //参数错误
+			c.redirect("/index/error.html");   //参数错误
+	}
+	
+	public void setManager()
+	{
+		Managers manager=c.getModel(Managers.class);  //ring tel name password location
+		manager.set("addedDate", Util.getDate()).set("addedTime", Util.getTime());
+		manager.save();
+		c.redirect("/mgradmin/areas?"+manager.getInt("location"));
+		
 	}
 	
 }

@@ -23,6 +23,12 @@ public class LocationInterceptor implements Interceptor{
 			if(user!=null)
 				user.set("location", areas.getInt("aid")).update();
 		}
+		}else {
+			User user=c.getSessionAttr(GlobalVar.WXUSER);
+			if(user==null)
+				{arg0.getController().redirect("/index/area.html");
+				return;
+				}
 		}
 		arg0.invoke();
 		

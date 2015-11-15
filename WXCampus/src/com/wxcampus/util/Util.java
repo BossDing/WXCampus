@@ -25,7 +25,10 @@ public class Util {
 		SimpleDateFormat sdf=new SimpleDateFormat("HH:mm:ss");
 		return sdf.format(new Date());
 	}
-	
+	public static String getImgPath()
+	{
+		return System.getProperty("user.dir")+"/imgs/";
+	}
 	public static Logger getLogger()
 	{
 		String day=new SimpleDateFormat("yyyy-MM-dd").format(new Date().toString());
