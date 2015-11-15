@@ -24,7 +24,8 @@ public class IndexController extends Controller {
 	IndexService isService=new IndexService();
 	
 	@Clear(OpenidInterceptor.class)
-	@Before({GetOpenidInterceptor.class,LoginInterceptor.class,LocationInterceptor.class})
+	//GetOpenidInterceptor.class,
+	@Before({LoginInterceptor.class,LocationInterceptor.class})
 	public void index() {
 		User user=getSessionAttr(GlobalVar.WXUSER);
 		Areas areas;
