@@ -17,7 +17,7 @@ import com.wxcampus.manage.Managers;
 import com.wxcampus.user.User;
 
 /**
- * Î¢ÐÅ¶ËÖ÷Ò³¿ØÖÆÆ÷Àà
+ * Î¢ï¿½Å¶ï¿½ï¿½ï¿½Ò³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
  */
 public class IndexController extends Controller {
 	
@@ -49,15 +49,15 @@ public class IndexController extends Controller {
 		{
 			isService.updateShopState(areas);
 			
-			setAttr("Area", areas);  //¶¨Î»Ñ§Ð£Â¥¶°
+			setAttr("Area", areas);  //ï¿½ï¿½Î»Ñ§Ð£Â¥ï¿½ï¿½
 			removeSessionAttr("areaID");
 			setSessionAttr("areaID", areas.getInt("aid"));
 			
 			//List<Advertisement> adList=Advertisement.dao.find("select * from advertisement order by aid desc limit 0,4");
-			//setAttr("AdList", adList);   //¹ã¸æÍ¼Æ¬
+			//setAttr("AdList", adList);   //ï¿½ï¿½ï¿½Í¼Æ¬
 			
 			Managers manager=Managers.dao.findFirst("select * from managers where location="+areas.getInt("aid"));
-			setAttr("Manager", manager); // µê³¤ÐÅÏ¢
+			setAttr("Manager", manager); // ï¿½ê³¤ï¿½ï¿½Ï¢
 			
 //			List<Items_on_sale> iosList=Items_on_sale.dao.find("select * from items_on_sale where location="+areas.getStr("aid"));
 //			List<Items> itemList=new ArrayList<Items>();
@@ -67,7 +67,7 @@ public class IndexController extends Controller {
 //				item.set("restNum", iosList.get(i).getInt("restNum"));
 //				itemList.add(item);
 //			}
-			//setAttr("itemList", itemList); //ÉÌÆ·ÐÅÏ¢
+			//setAttr("itemList", itemList); //ï¿½ï¿½Æ·ï¿½ï¿½Ï¢
 		}
 		render("index.html");
 	}
@@ -80,7 +80,7 @@ public class IndexController extends Controller {
 			String college=getPara("college");
 			if(college!=null)
 			{
-				List<Areas> areaList=Areas.dao.find("select * from areas where city="+city+" and college="+college);
+				List<Areas> areaList=Areas.dao.find("select * from areas where city='"+city+"' and college='"+college+"'");
 				List<Record> recordList=new ArrayList<Record>();
 				for(int i=0;i<areaList.size();i++)
 				{
@@ -93,7 +93,7 @@ public class IndexController extends Controller {
 				setAttr("buildings", recordList);
 				renderJson();
 			}else {
-				setAttr("colleges", Areas.dao.find("select distinct college from areas where city="+city));
+				setAttr("colleges", Areas.dao.find("select distinct college from areas where city='"+city+"'"));
 				renderJson();;
 			}
 		}else {
@@ -101,7 +101,7 @@ public class IndexController extends Controller {
 			renderJson();
 		}
 	}
-	public void getItems()  //ajaxÇëÇóÉÌÆ·ÐÅÏ¢
+	public void getItems()  //ajaxï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ·ï¿½ï¿½Ï¢
 	{
 		int aid=getSessionAttr("areaID");
 		String category=getPara("category");
@@ -117,7 +117,7 @@ public class IndexController extends Controller {
 			item.set("restNum", iosList.get(i).getInt("restNum"));
 			itemList.add(item);
 		}
-		setAttr("itemList", itemList); //ÉÌÆ·ÐÅÏ¢
+		setAttr("itemList", itemList); //ï¿½ï¿½Æ·ï¿½ï¿½Ï¢
 		renderJson();
 	}
 
@@ -152,7 +152,7 @@ public class IndexController extends Controller {
 			{redirect("/index/error.html");
 			return;}
 		
-		//ÏòÎ¢ÐÅÇëÇóopenid        //Ð´·¨´ý²âÊÔ
+		//ï¿½ï¿½Î¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½openid        //Ð´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		
 		
 	}

@@ -1,0 +1,39 @@
+.main{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    background-color: #cccccc;
+}
+.top{
+    width: 100%;
+    height: 80px;
+    float: left;
+    background: url("../image_gouWuCar/top.png") no-repeat;
+    background-size: 100% 80px;
+}
+.center{
+    width: 100%;
+    height: auto;
+    float: left;
+    background-color: #ffffff;
+}
+.top p{
+    width: 100%;
+    height: 80px;
+    margin-top: 0px;
+    text-align: center;
+}
+.span_image{
+    float: left;
+    margin-left: 20px;
+}
+.span_image img{
+    width: 60px;
+    height: 60px;
+}
+.span_person{
+    display: block;
+    margin-top: 10px;
+    font-size: 40px;
+    color: #ffffff;
+}

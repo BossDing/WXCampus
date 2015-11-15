@@ -1,0 +1,94 @@
+.main{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    background-color: #ffffff;
+}
+.top{
+    width: 100%;
+    height: 80px;
+    float: left;
+    background: url("../image_KTstore/top.png") no-repeat;
+    background-size: 100% 80px;
+}
+.center{
+    width: 100%;
+    height: 240px;
+    float: left;
+    background: url("../image_KTstore/bottom.png") no-repeat;
+    background-size: 100% 240px;
+}
+.floor{
+    width: 100%;
+    height: auto;
+    float: left;
+    overflow-y: auto;
+    background-color: #ffffff;
+}
+
+.bottom{
+    width: 100%;
+    height: 120px;
+    float: left;
+    position: fixed;
+    bottom: 0px;
+    text-align: center;
+    background: url("../image_KTstore/bottom.png") no-repeat;
+    background-size: 100% 120px;
+}
+
+.top p{
+    width: 100%;
+    height: 80px;
+    margin-top: 0px;
+    text-align: center;
+}
+.span_image{
+    float: left;
+    margin-left: 20px;
+}
+.span_image img{
+    width: 60px;
+    height: 60px;
+}
+.span_person{
+    display: block;
+    margin-top: 10px;
+    font-size: 40px;
+    color: #ffffff;
+}
+.bottom img{
+    width: 120px;
+    height: 50px;
+    margin-top: 35px;
+}
+.center_left{
+    width: 33.33%;
+    height: 240px;
+    float: left;
+    text-align: center;
+}
+.center_left p img{
+    width: 70px;
+    height: 70px;
+}
+.center_center{
+    width: 33.33%;
+    height: 240px;
+    float: left;
+    text-align: center;
+}
+.center_center p img{
+    width: 70px;
+    height: 70px;
+}
+.center_right{
+    width: 33.33%;
+    height: 240px;
+    float: left;
+    text-align: center;
+}
+.center_right p img{
+    width: 70px;
+    height: 70px;
+}

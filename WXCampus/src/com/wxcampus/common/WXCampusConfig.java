@@ -26,41 +26,41 @@ import com.wxcampus.user.Advices;
 import com.wxcampus.user.User;
 import com.wxcampus.user.UserController;
 /**
- * APIÒıµ¼Ê½ÅäÖÃ
+ * APIï¿½ï¿½Ê½ï¿½ï¿½ï¿½ï¿½
  */
 public class WXCampusConfig extends JFinalConfig{
 	
 	/**
-	 * ÅäÖÃ³£Á¿
+	 * ï¿½ï¿½ï¿½Ã³ï¿½ï¿½ï¿½
 	 */
 	public void configConstant(Constants me) {
-		// ¼ÓÔØÉÙÁ¿±ØÒªÅäÖÃ£¬Ëæºó¿ÉÓÃPropKit.get(...)»ñÈ¡Öµ
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½Ã£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½PropKit.get(...)ï¿½ï¿½È¡Öµ
 		PropKit.use("a_little_config.txt");
 		me.setDevMode(PropKit.getBoolean("devMode", false));
 	}
 	
 	/**
-	 * ÅäÖÃÂ·ÓÉ
+	 * ï¿½ï¿½ï¿½ï¿½Â·ï¿½ï¿½
 	 */
 	public void configRoute(Routes me) {
-		me.add("/", IndexController.class, "/index");	// µÚÈı¸ö²ÎÊıÎª¸ÃControllerµÄÊÓÍ¼´æ·ÅÂ·¾¶
-		me.add("/usr", UserController.class);			// µÚÈı¸ö²ÎÊıÊ¡ÂÔÊ±Ä¬ÈÏÓëµÚÒ»¸ö²ÎÊıÖµÏàÍ¬£¬ÔÚ´Ë¼´Îª "/blog"
+		me.add("/index", IndexController.class, "/index");	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½Controllerï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½ï¿½Â·ï¿½ï¿½
+		me.add("/usr", UserController.class);			// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¡ï¿½ï¿½Ê±Ä¬ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½Í¬ï¿½ï¿½ï¿½Ú´Ë¼ï¿½Îª "/blog"
 	    me.add("/shop",ShopController.class);
 	    me.add("/mgradmin",ManageController.class);
 	}
 	
 	/**
-	 * ÅäÖÃ²å¼ş
+	 * ï¿½ï¿½ï¿½Ã²ï¿½ï¿½
 	 */
 	public void configPlugin(Plugins me) {
-		// ÅäÖÃC3p0Êı¾İ¿âÁ¬½Ó³Ø²å¼ş
+		// ï¿½ï¿½ï¿½ï¿½C3p0ï¿½ï¿½İ¿ï¿½ï¿½ï¿½ï¿½Ó³Ø²ï¿½ï¿½
 		C3p0Plugin c3p0Plugin = new C3p0Plugin(PropKit.get("jdbcUrl"), PropKit.get("user"), PropKit.get("password").trim());
 		me.add(c3p0Plugin);
 		
-		// ÅäÖÃActiveRecord²å¼ş
+		// ï¿½ï¿½ï¿½ï¿½ActiveRecordï¿½ï¿½ï¿½
 		ActiveRecordPlugin arp = new ActiveRecordPlugin(c3p0Plugin);
 		me.add(arp);
-		arp.addMapping("user", "uid",User.class);	// Ó³Éäuser ±íµ½ UserÄ£ĞÍ
+		arp.addMapping("user", "uid",User.class);	// Ó³ï¿½ï¿½user ï¿½? UserÄ£ï¿½ï¿½
 		arp.addMapping("areas","aid", Areas.class);
 		arp.addMapping("items","iid", Items.class);
 		arp.addMapping("items_on_sale","iosid", Items_on_sale.class);
@@ -75,23 +75,23 @@ public class WXCampusConfig extends JFinalConfig{
 
 	
 	/**
-	 * ÅäÖÃÈ«¾ÖÀ¹½ØÆ÷
+	 * ï¿½ï¿½ï¿½ï¿½È«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	 */
 	public void configInterceptor(Interceptors me) {
-		//me.add(new OpenidInterceptor());    // openidÀ¹½ØĞ£Ñé
-		me.add(new SQLXSSPREInterceptor());  //¹ıÂË·ÀSQL,XSS
+		//me.add(new OpenidInterceptor());    // openidï¿½ï¿½ï¿½ï¿½Ğ£ï¿½ï¿½
+		me.add(new SQLXSSPREInterceptor());  //ï¿½ï¿½ï¿½Ë·ï¿½SQL,XSS
 	}
 	
 	/**
-	 * ÅäÖÃ´¦ÀíÆ÷
+	 * ï¿½ï¿½ï¿½Ã´ï¿½ï¿½ï¿½ï¿½ï¿½
 	 */
 	public void configHandler(Handlers me) {
 		
 	}
 	
 	/**
-	 * ½¨ÒéÊ¹ÓÃ JFinal ÊÖ²áÍÆ¼öµÄ·½Ê½Æô¶¯ÏîÄ¿
-	 * ÔËĞĞ´Ë main ·½·¨¿ÉÒÔÆô¶¯ÏîÄ¿£¬´Ëmain·½·¨¿ÉÒÔ·ÅÖÃÔÚÈÎÒâµÄClassÀà¶¨ÒåÖĞ£¬²»Ò»¶¨Òª·ÅÓÚ´Ë
+	 * ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½ï¿½ JFinal ï¿½Ö²ï¿½ï¿½Æ¼ï¿½ï¿½Ä·ï¿½Ê½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¿
+	 * ï¿½ï¿½ï¿½Ğ´ï¿½ main ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½ï¿½ï¿½mainï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Classï¿½à¶¨ï¿½ï¿½ï¿½Ğ£ï¿½ï¿½ï¿½Ò»ï¿½ï¿½Òªï¿½ï¿½ï¿½Ú´ï¿½
 	 */
 	public static void main(String[] args) {
 		JFinal.start("Webroot", 8080, "/", 5);

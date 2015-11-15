@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta id="viewport" name="viewport" content="width=device-width; initial-scale=1.0; minimum-scale=0.5; maximum-scale=2.0;" />
+    <link rel=stylesheet href="/bootstrap/css/bootstrap.css">
+    <link rel=stylesheet href="css/select_college.css">
+    <script src="/jquery/jquery-2.1.4.min.js"></script>
+    <script src="/bootstrap/js/bootstrap.js"></script>
+    <script src="js/select_college.js"></script>
+    <title>选择学校</title>
+</head>
+<body>
+<div class="main">
+    <div class="top">
+        <div class="top_left">
+            <span class="span_image"><img src="image_find/back.png"></span>
+        </div>
+        <div class="top_center">
+            <p style="margin-top: 15px">选择学校</p>
+        </div>
+        <div class="top_right">
+            <p><img src="image_college/refresh.png" ></p>
+        </div>
+    </div>
+    <div class="center">
+        <div class="input-group input_info">
+            <input type="text" class="form-control input_shuru" id="collegeInfo" placeholder="请输入校区名">
+            <span class="input-group-addon input_button" onclick="findFood()"><img src="image_find/find.png"></span>
+        </div>
+    </div>
+    <div class="floor">
+        <div class="floor_left" id="floor_left">
+            <div class="floor_left_content">
+                <p>中心校区</p>
+            </div>
+            <div class="floor_left_content">
+                <p>中心校区</p>
+            </div>
+            <div class="floor_left_content">
+                <p>中心校区</p>
+            </div>
+        </div>
+        <div class="floor_right" id="floor_right">
+            <div class="floor_right_content">
+                <p>1号楼</p>
+            </div>
+            <div class="floor_right_content">
+                <p>2号楼</p>
+            </div>
+            <div class="floor_right_content">
+                <p>3号楼</p>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+window.onload=inialCollege();
+</script>
+</body>
+</html>

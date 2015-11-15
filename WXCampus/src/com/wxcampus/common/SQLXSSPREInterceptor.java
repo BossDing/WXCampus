@@ -16,8 +16,8 @@ public class SQLXSSPREInterceptor implements Interceptor{
 				return;
 			}
 		}
-		para=para.replaceAll("<", "&lt;").replaceAll(">", "&gt;"); //Ë«ÒýºÅ´ý²â
-		arg0.getController().setUrlPara(para);
+//		para=para.replaceAll("<", "&lt;").replaceAll(">", "&gt;"); //Ë«ï¿½ï¿½Å´ï¿½ï¿½
+//		arg0.getController().setUrlPara(para);
 		arg0.invoke();	
 	}
 
