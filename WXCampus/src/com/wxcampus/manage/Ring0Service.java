@@ -21,24 +21,25 @@ public class Ring0Service {
 		String building=c.getPara("building");
 		if(city!=null && college!=null && building!=null)
 		{
-			Areas areas=Areas.dao.findFirst("select * from areas where city="+city+" and college="+college+" and building="+building);
+			Areas areas=Areas.dao.findFirst("select * from areas where city=? and college=? and building=?",city,college,building);
 			if(areas==null)
 			{
 				Areas area=new Areas();
-				area.set("city", city).set("college", college).set("building", building);
+				area.set("city", Util.filterUserInputContent(city)).set("college", Util.filterUserInputContent(college)).set("building", Util.filterUserInputContent(building));
 				area.set("addedDate", Util.getDate()).set("addedTime", Util.getTime());
 				area.save();		
-				ManageController.logger.info(manager.getStr("name")+"---Ìí¼ÓÁËµØÇø-"+city+"-"+college+"-"+building);
+				ManageController.logger.info(manager.getStr("name")+"---æ·»åŠ äº†åœ°åŒº-"+city+"-"+college+"-"+building);
 			}else {
-				c.renderHtml("µ±Ç°Ìí¼ÓµØÇøÒÑ´æÔÚ£¡");
+				c.renderHtml("å½“å‰æ·»åŠ åœ°åŒºå·²å­˜åœ¨ï¼");
 			}
 		}else 
-			c.redirect("/index/error.html");   //²ÎÊı´íÎó
+			c.redirect("/index/error.html");   //å‚æ•°é”™è¯¯
 	}
 	
 	public void setManager()
 	{
 		Managers manager=c.getModel(Managers.class);  //ring tel name password location
+		manager.set("name",Util.filterUserInputContent(manager.getStr("name")));
 		manager.set("addedDate", Util.getDate()).set("addedTime", Util.getTime());
 		manager.save();
 		c.redirect("/mgradmin/areas?"+manager.getInt("location"));

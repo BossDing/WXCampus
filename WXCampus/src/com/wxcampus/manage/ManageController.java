@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+
 import com.jfinal.aop.Before;
 import com.jfinal.aop.Clear;
 import com.jfinal.core.Controller;
@@ -11,6 +12,7 @@ import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Record;
 import com.jfinal.upload.UploadFile;
 import com.wxcampus.common.GlobalVar;
+import com.wxcampus.common.NoUrlPara;
 import com.wxcampus.index.Areas;
 import com.wxcampus.index.IndexService;
 import com.wxcampus.items.Items;
@@ -19,7 +21,7 @@ import com.wxcampus.items.Trades;
 import com.wxcampus.util.Util;
 
 /**
- * ºóÌ¨¹ÜÀí¿ØÖÆÆ÷Àà
+ * åå°ç®¡ç†æ§åˆ¶å™¨ç±»
  * @author Potato
  *
  */
@@ -27,9 +29,11 @@ import com.wxcampus.util.Util;
 public class ManageController extends Controller{
 
 	 public static Logger logger = Util.getLogger();
+	 
+	 @Before(NoUrlPara.class)
 	 public void index()
 	 {
-		 
+		 render("index.html");
 	 }
 	 
 	 @Clear(ManageInterceptor.class)
@@ -45,19 +49,19 @@ public class ManageController extends Controller{
 	 public void loginCheck()
 	 {
 		 if(getSessionAttr(GlobalVar.BEUSER)!=null)
-			 redirect("/mgradmin");   //ÒÑµÇÂ¼¾ÍÌø×ª
+			 redirect("/mgradmin");   //å·²ç™»å½•å°±è·³è½¬
 		 
-		 //·À±©Á¦¼ì²â
-		 if(ManageLoginSafe.isExist(getPara("Managers.tel")))
+		 //é˜²æš´åŠ›æ£€æµ‹
+		 if(ManageLoginSafe.isExist(""+getParaToInt("Managers.tel")))
 	        {
-			   redirect("/mgradmin/error?Msg=ÃÜÂëÊäÈë´íÎó´ÎÊı¹ı¶à£¬ÇëÊ®·ÖÖÓºóÔÙÊÔ£¡");
+			   redirect("/mgradmin/error?Msg=å¯†ç è¾“å…¥é”™è¯¯æ¬¡æ•°è¿‡å¤šï¼Œè¯·ååˆ†é’Ÿåå†è¯•ï¼");
 	        }else{      
 		 Managers form=getModel(Managers.class);
-		 Managers manager=Managers.dao.findFirst("select * from managers where tel="+form.getInt("tel"));
+		 Managers manager=Managers.dao.findFirst("select * from managers where tel=?",form.getInt("tel"));
 		 if(form.getStr("password").equals(manager.getStr("password")))
 		 {
 			 setSessionAttr(GlobalVar.BEUSER, manager);
-			 logger.info(manager.getStr("name")+"---µÇÂ¼ºóÌ¨");
+			 logger.info(manager.getStr("name")+"---ç™»å½•åå°");
 			 redirect("/mgradmin");
 		 }else {
 				if(getSessionAttr(manager.getInt("tel")+"")!=null)
@@ -74,7 +78,7 @@ public class ManageController extends Controller{
 				}
 				else
 				setSessionAttr(manager.getInt("tel")+"",5);
-			setAttr("errorMsg", "ÓÃ»§Ãû»òÃÜÂë´íÎó£¡");
+			setAttr("errorMsg", "ç”¨æˆ·åæˆ–å¯†ç é”™è¯¯ï¼");
 			keepModel(Managers.class);
 			render("login.html");
 		}
@@ -83,7 +87,7 @@ public class ManageController extends Controller{
 	 }
 	 
 	 /**
-	  *          ĞŞ¸ÄÃÜÂë
+	  *          ä¿®æ”¹å¯†ç 
 	  */
 	 public void modifyPw()  //ajax
 	 {
@@ -92,22 +96,22 @@ public class ManageController extends Controller{
 		 Managers manager=getSessionAttr(GlobalVar.BEUSER);
 		 if(oldPass.equals(manager.getStr("password")))
 		 {
-			 manager.set("password", newPass).update();
-			 logger.info(manager.getStr("name")+"---ĞŞ¸ÄÃÜÂë");
+			 manager.set("password", Util.filterUserInputContent(newPass)).update();
+			 logger.info(manager.getStr("name")+"---ä¿®æ”¹å¯†ç ");
 			 renderHtml("OK");
 		 }else {
-			renderHtml("Ô­Ê¼ÃÜÂëÊäÈë´íÎó");
+			renderHtml("åŸå§‹å¯†ç è¾“å…¥é”™è¯¯");
 		}
 	 }
 	 
 	 /**
-	  *  ²éÑ¯¶©µ¥
+	  *  æŸ¥è¯¢è®¢å•
 	  */
 	 public void trades()  //ajax
 	 {
 		 
 		 Managers manager=getSessionAttr(GlobalVar.BEUSER);
-		// logger.info(manager.getStr("name")+"---²é¿´¶©µ¥");
+		// logger.info(manager.getStr("name")+"---æŸ¥çœ‹è®¢å•");
 		 switch (manager.getInt("ring")) {
 		case 0:     Ring0Service ring0Service=new Ring0Service(this, manager);
 			     
@@ -121,7 +125,7 @@ public class ManageController extends Controller{
 	 }
 	 
 	 /**
-	  *   Éè¶¨ÓªÒµÊ±¼ä
+	  *   è®¾å®šè¥ä¸šæ—¶é—´
 	  */
 	 public void setSellingTime()  //ajax
 	 {
@@ -138,18 +142,18 @@ public class ManageController extends Controller{
 		}	
 	 }
 	 /**
-	  *  µê³¤²é¿´ÉÌÆ·´æÁ¿
+	  *  åº—é•¿æŸ¥çœ‹å•†å“å­˜é‡
 	  */
 	 public void itemnum()
 	 {
 		 Managers manager=getSessionAttr(GlobalVar.BEUSER);
-		 List<Record> iosList=Db.find("select a.iname,a.icon,a.realPrice,a.category,b.iosid,b.restNum from items as a,items_on_sale as b where a.iid=b.iid and b.location="+manager.getInt("location"));
+		 List<Record> iosList=Db.find("select a.iname,a.icon,a.realPrice,a.category,b.iosid,b.restNum from items as a,items_on_sale as b where a.iid=b.iid and b.location=?",manager.getInt("location"));
 		 setAttr("iosList", iosList);
 		 render("itemnum.html");
 	 }
 	 
 	 /**
-	  *    Ìí¼ÓµØÇø
+	  *    æ·»åŠ åœ°åŒº
 	  */
 	 @Before(Ring0Interceptor.class)
 	 public void addArea()    //ajax
@@ -160,7 +164,7 @@ public class ManageController extends Controller{
 	 }
 	 
 	 /**
-	  *  ²é¿´µØÇø
+	  *  æŸ¥çœ‹åœ°åŒº
 	  */
 	 @Before(Ring0Interceptor.class)
 	 public void areas()
@@ -174,17 +178,17 @@ public class ManageController extends Controller{
 		 }else
 		 {
 			 int areaID=Integer.parseInt(area); 
-			 //ÏÔÊ¾Ä³¸öµØÇøµÄ¾ßÌåÒ³Ãæ¡£ÄÚÈİ´ı¶¨
-			 Managers manager=Managers.dao.findFirst("select * from managers where location="+areaID);
+			 //æ˜¾ç¤ºæŸä¸ªåœ°åŒºçš„å…·ä½“é¡µé¢ã€‚å†…å®¹å¾…å®š
+			 Managers manager=Managers.dao.findFirst("select * from managers where location=?",areaID);
 			 setAttr("Manager", manager);
 			 
-			 List<Record> iosList=Db.find("select a.iname,a.icon,a.realPrice,a.category,b.iosid,b.restNum from items as a,items_on_sale as b where a.iid=b.iid and b.location="+areaID);
+			 List<Record> iosList=Db.find("select a.iname,a.icon,a.realPrice,a.category,b.iosid,b.restNum from items as a,items_on_sale as b where a.iid=b.iid and b.location=?",areaID);
 			 setAttr("iosList", iosList);
 			 render("spearea.html");
 		 }
 	 }
 	 
-	 //¿É²»¿ÉÒÔĞŞ¸ÄÄ³µØÇøÉÌÆ·´æ»õÊıÁ¿µÄÎÊÌâ¡£
+	 //å¯ä¸å¯ä»¥ä¿®æ”¹æŸåœ°åŒºå•†å“å­˜è´§æ•°é‡çš„é—®é¢˜ã€‚
 	 
 	 
 	 
@@ -192,15 +196,15 @@ public class ManageController extends Controller{
 	 public void addmgr()    //addmgr.html
 	 {
 		 String areaID=getPara("aid");
-		 setAttr("location", areaID);  //Òş²Ø±íµ¥Óòmanagers.location
+		 setAttr("location", areaID);  //éšè—è¡¨å•åŸŸmanagers.location
 		 render("addmgr.html");
 	 }
 	 
 	 /**
-	  *    ÉèÖÃµê³¤
+	  *    è®¾ç½®åº—é•¿
 	  */
 	 @Before(Ring0Interceptor.class)
-	 public void setManager()    //±íµ¥
+	 public void setManager()    //è¡¨å•
 	 {
 		 Managers manager=getSessionAttr(GlobalVar.BEUSER);
 		 Ring0Service ring0Service=new Ring0Service(this, manager);
@@ -208,24 +212,24 @@ public class ManageController extends Controller{
 	 }
 	 
 	 /**
-	  *  ÉÌÆ·Ò³
+	  *  å•†å“é¡µ
 	  */
 	 @Before(Ring0Interceptor.class)
 	 public void items()   //items?666     //items?del=666    //items
 	 {
 		 String para=getPara();
 		 if(para==null)
-		 {//ËùÓĞÉÌÆ·
+		 {//æ‰€æœ‰å•†å“
 			 List<Items> itemList=Items.dao.find("select * from items");
 			 setAttr("itemList", itemList);
 			 render("items.html");
 		 }else if(para.startsWith("del=")){ 
-			//É¾³ıÉÌÆ·     ajax
+			//åˆ é™¤å•†å“     ajax
 			 int iid=getParaToInt("del");
 			 Items.dao.deleteById(iid);
 			 renderHtml("OK");
 		}else {
-			//Ä³¸öÉÌÆ·ÏêÇéÒ³
+			//æŸä¸ªå•†å“è¯¦æƒ…é¡µ
 			 int iid=getParaToInt();
 			 Items item=Items.dao.findById(iid);
 			 setAttr("Item", item);			 
@@ -233,20 +237,22 @@ public class ManageController extends Controller{
 		}
 	 }	 
 	 /**
-	  *    ±à¼­ÉÌÆ·      °üÀ¨Ìí¼Ó£¬ĞŞ¸Ä
+	  *    ç¼–è¾‘å•†å“      åŒ…æ‹¬æ·»åŠ ï¼Œä¿®æ”¹
 	  */
 	 @Before(Ring0Interceptor.class)
-	 public void modifyItem()     //±íµ¥Ìá½»
+	 public void modifyItem()     //è¡¨å•æäº¤
 	 {
 		 Items item=getModel(Items.class);
+		 item.set("iname", Util.filterUserInputContent(item.getStr("iname")));
+		 item.set("category", Util.filterUserInputContent(item.getStr("category")));
 		 String type=getPara("submit");
-		 if(type.equals("Ìí¼Ó"))
+		 if(type.equals("æ·»åŠ "))
 		 {
 			UploadFile file=getFile("icon", Util.getImgPath(), 2*1024*1024);
 			item.set("icon", file.getFileName()).set("addedDate", Util.getDate()).set("addedTime", Util.getTime());
 			item.save();
 			redirect("/mgradmin/items");
-		 }else if(type.equals("ĞŞ¸Ä"))  //ĞëÉèÒş²Ø±íµ¥Óòiid
+		 }else if(type.equals("ä¿®æ”¹"))  //é¡»è®¾éšè—è¡¨å•åŸŸiid
 		 {
 			 UploadFile file=getFile("icon", Util.getImgPath(), 2*1024*1024);
 			 if(file!=null)
@@ -265,7 +271,7 @@ public class ManageController extends Controller{
 	 }
 	 
 	 /**
-	  *     ½ø»õ¹ÜÀí  ´ı¶¨
+	  *     è¿›è´§ç®¡ç†  å¾…å®š
 	  */
 	 public void addItemNum()
 	 {

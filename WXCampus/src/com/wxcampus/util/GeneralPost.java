@@ -15,18 +15,18 @@ import org.apache.http.message.BasicHeader;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 /**
-@Use   Í¨ÓÃPost·½·¨
+@Use   é€šç”¨Postæ–¹æ³•
 @author  Popez
-@time    2015Äê9ÔÂ24ÈÕ 00:04:51
+@time    2015å¹´9æœˆ24æ—¥ 00:04:51
 
 */
 public class GeneralPost
 {
 	/**
 	 * 
-	 * @param json   json×Ö·û´®
-	 * @param url    urlµØÖ·
-	 * @return       ÏìÓ¦·µ»ØµÄÄÚÈİ
+	 * @param json   jsonå­—ç¬¦ä¸²
+	 * @param url    urlåœ°å€
+	 * @return       å“åº”è¿”å›çš„å†…å®¹
 	 */
 	 public static String getPostResponse(String json,String url)
 	   {
@@ -63,7 +63,7 @@ public class GeneralPost
 	     reqEntity.addPart("media", bin); 
 	     
 	     httppost.setEntity(reqEntity);  
-	  //   System.out.println("Ö´ĞĞ: " + httppost.getRequestLine());  
+	  //   System.out.println("æ‰§è¡Œ: " + httppost.getRequestLine());  
 	       
 	     try
 		{
@@ -79,3 +79,4 @@ public class GeneralPost
 	     
 	 }
 }
+

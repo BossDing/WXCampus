@@ -14,7 +14,7 @@ public class Ring0Interceptor implements Interceptor{
 		 {
 		   arg0.invoke();
 		 }else
-			 arg0.getController().redirect("error.html");   //ÎŞÈ¨²Ù×÷
+			 arg0.getController().redirect("error.html");   //æ— æƒè®¿é—®
 		
 	}
 

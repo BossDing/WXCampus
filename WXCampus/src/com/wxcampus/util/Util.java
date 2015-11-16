@@ -9,9 +9,20 @@ import org.apache.log4j.FileAppender;
 import org.apache.log4j.Layout;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Whitelist;
+
+import com.mysql.jdbc.StringUtils;
 
 public class Util {
-	
+	private final static Whitelist user_content_filter = Whitelist.relaxed();  
+	static {  
+	    user_content_filter.addTags("embed","object","param","span","div");  
+	    user_content_filter.addAttributes(":all", "style", "class", "id", "name");  
+	    user_content_filter.addAttributes("object", "width", "height","classid","codebase");      
+	    user_content_filter.addAttributes("param", "name", "value");  
+	    user_content_filter.addAttributes("embed", "src","quality","width","height","allowFullScreen","allowScriptAccess","flashvars","name","type","pluginspage");  
+	}
 	public static Logger logger=null;
 	public static String currentDay="2015-11-11";
 	public static String getDate()
@@ -28,6 +39,16 @@ public class Util {
 	public static String getImgPath()
 	{
 		return System.getProperty("user.dir")+"/imgs/";
+	}
+	/**
+	 * XSS过滤
+	 * @param html
+	 * @return
+	 */
+	public static String filterUserInputContent(String html) {  
+	    if(StringUtils.isNullOrEmpty(html)) return "";  
+	    return Jsoup.clean(html, user_content_filter);  
+	    //return filterScriptAndStyle(html);  
 	}
 	public static Logger getLogger()
 	{

@@ -6,7 +6,7 @@ import com.wxcampus.common.GlobalVar;
 import com.wxcampus.user.User;
 
 /**
- * ÓÃÓÚ¿ìËÙµÇÂ¼
+ * ç”¨äºŽå¿«é€Ÿç™»å½•
  * @author Potato
  *
  */
@@ -18,7 +18,7 @@ public class LoginInterceptor implements Interceptor{
 		{
 	    arg0.getController().setSessionAttr(GlobalVar.OPENID, "666666");
 		String openid=arg0.getController().getSessionAttr(GlobalVar.OPENID);
-		User user=User.me.findFirst("select * from user where openid="+openid);
+		User user=User.me.findFirst("select * from user where openid=?",openid);
 		if(user!=null)
 		  arg0.getController().setSessionAttr(GlobalVar.WXUSER, user);	  
 		}

@@ -1252,3 +1252,6 @@ Caused by: com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException: Unknown co
 
 2015-11-15 22:51:13
 [WARN]-[Thread: qtp1595335682-18]-[com.jfinal.core.ActionHandler.handle()]: 404 Action Not Found: /
+
+2015-11-16 00:01:25
+[WARN]-[Thread: qtp216113-22]-[com.jfinal.core.ActionHandler.handle()]: 404 Action Not Found: /

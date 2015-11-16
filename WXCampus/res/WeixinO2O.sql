@@ -156,8 +156,8 @@ select * from areas;
 
 select * from managers;
 
-INSERT INTO `wxcampus`.`managers` (`mid`, `ring`, `tel`, `name`, `password`, `location`, `say`, `addedDate`, `addedTime`) VALUES ('1', '1', '123', '≤‚ ‘', '123456', '1', 'µÍ≥§Àµ', '2015-11-11', '00:00:00');
+INSERT INTO `wxcampus`.`managers` (`mid`, `ring`, `tel`, `name`, `password`, `location`, `say`, `addedDate`, `addedTime`) VALUES ('1', '1', '123', 'ÊµãËØï', '123456', '1', 'Â∫óÈïøËØ¥', '2015-11-11', '00:00:00');
 
-INSERT INTO `wxcampus`.`areas` (`aid`, `city`, `college`, `building`, `state`, `startTime`, `endTime`, `addedDate`, `addedTime`) VALUES ('1', 'º√ƒœ', '…Ω∂´¥Û—ß', '2∫≈¬•', '0', '21:00:00', '23:00:00', '2015-11-11', '00:00:00');
+INSERT INTO `wxcampus`.`areas` (`aid`, `city`, `college`, `building`, `state`, `startTime`, `endTime`, `addedDate`, `addedTime`) VALUES ('1', 'ÊµéÂçó', 'Â±±‰∏úÂ§ßÂ≠¶', '2Âè∑Ê•º', '0', '21:00:00', '23:00:00', '2015-11-11', '00:00:00');
 
-INSERT INTO `wxcampus`.`user` (`uid`, `tel`, `password`, `openid`, `name`, `room`, `location`, `itemsStar`, `registerDate`, `registerTime`) VALUES ('1', '123', '123456', '1111', '≤‚ ‘', '528', '1', '°∞°±', '2015-11-11', '00:00:00');
+INSERT INTO `wxcampus`.`user` (`uid`, `tel`, `password`, `openid`, `name`, `room`, `location`, `itemsStar`, `registerDate`, `registerTime`) VALUES ('1', '123', '123456', '1111', 'ÊµãËØï', '528', '1', '‚Äú‚Äù', '2015-11-11', '00:00:00');

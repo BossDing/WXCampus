@@ -14,7 +14,9 @@ import com.jfinal.aop.Clear;
 import com.jfinal.core.Controller;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Record;
+import com.mchange.v2.c3p0.impl.NewPooledConnection;
 import com.wxcampus.common.GlobalVar;
+import com.wxcampus.common.NoUrlPara;
 import com.wxcampus.items.Coupons_user;
 import com.wxcampus.items.Items;
 import com.wxcampus.items.Items_on_sale;
@@ -29,6 +31,7 @@ import com.wxcampus.util.Util;
 @Before(UserInterceptor.class)
 public class UserController extends Controller{
 	
+	@Before(NoUrlPara.class)
 	public void index() {
 		render("index.html");
 	}
@@ -40,15 +43,37 @@ public class UserController extends Controller{
 	public void trades()    //查看订单                *****可能需要分页查询*****
 	{
 		User user=getSessionAttr(GlobalVar.WXUSER);
-		List<Trades> tradeList=Trades.dao.find("select * from trades where customer="+user.getInt("uid"));
+		List<Trades> ridList=Trades.dao.find("select distinct rid,state,addedDate,addedTime from trades where customer=? order by addedDate,addedTime",user.getInt("uid"));
+		List<Record> records=new ArrayList<Record>();
+		for(int i=0;i<ridList.size();i++)
+		{
+			int rid=ridList.get(i).getInt("rid");
+			List<Record> itemsRecords=Db.find("select b.iname,b.icon,price,orderNum from trades as a,items as b where rid=?",rid);
+			Record [] items=itemsRecords.toArray(new Record[itemsRecords.size()]);
+			Record temp=new Record();
+			temp.set("rid", rid);
+			temp.set("state", ridList.get(i).getBoolean("state"));
+			temp.set("addedDate", ridList.get(i).get("addedDate"));
+			temp.set("addedTime", ridList.get(i).get("addedTime"));
+		}
+		List<Trades> tradeList=Trades.dao.find("select * from trades where customer=?",user.getInt("uid"));
 		setAttr("tradeList", tradeList);
 		render("trades.html");
+	}
+	
+	public void spetrade()  //订单详情页
+	{
+		int tid=getParaToInt("tid");
+		Trades trade=Trades.dao.findById(tid);
+		Record record=new Record();
+		String temp[]={"aaa","bbb"};
+		record.set("items", temp);
 	}
 	
 	public void coupons()   //查看优惠券
 	{
 		User user=getSessionAttr(GlobalVar.WXUSER);
-		List<Record> cuList=Db.find("select a.money,b.endDate from coupons as a,coupons_user as b where b.owner="+user.getInt("uid")+" and a.cid=b.cid");
+		List<Record> cuList=Db.find("select a.money,b.endDate from coupons as a,coupons_user as b where b.owner=? and a.cid=b.cid",user.getInt("uid"));
 		setAttr("cuList", cuList);
 		render("coupons.html");
 	}
@@ -74,8 +99,8 @@ public class UserController extends Controller{
 		for(int i=0;i<items.length;i++)
 		{
 			if(items[i].equals("")) continue;
-			Items item=Items.dao.findFirst("select * from items where iid="+Integer.parseInt(items[i]));
-			Items_on_sale items_on_sale=Items_on_sale.dao.findFirst("select * from items_on_sale where location="+areaID+" and iid="+Integer.parseInt(items[i]));
+			Items item=Items.dao.findFirst("select * from items where iid=?",Integer.parseInt(items[i]));
+			Items_on_sale items_on_sale=Items_on_sale.dao.findFirst("select * from items_on_sale where location=? and iid=?",areaID,Integer.parseInt(items[i]));
 			item.set("restNum", items_on_sale.getInt("restNum"));
 			itemList.add(item);		
 		}
@@ -89,7 +114,9 @@ public class UserController extends Controller{
 	public void submitAdvice()  //提交投诉
 	{
 		User user=getSessionAttr(GlobalVar.WXUSER);
-		getModel(Advices.class).set("uid", user.getInt("uid")).set("addedDate", Util.getDate()).set("addedTime", Util.getTime()).save();
+		Advices advice=getModel(Advices.class);
+		advice.set("content", Util.filterUserInputContent(advice.getStr("content")));
+		advice.set("uid", user.getInt("uid")).set("addedDate", Util.getDate()).set("addedTime", Util.getTime()).save();
 		redirect("submit-success.html");
 	}
 	
@@ -124,11 +151,12 @@ public class UserController extends Controller{
 			return;
 		}
 		//form.set("openid", openid);  //openid未加
+		form.set("password", Util.filterUserInputContent(form.getStr("password")));
 		form.set("registerDate", Util.getDate());
 		form.set("registerTime", Util.getTime());
 		form.set("location", getSessionAttr("areaID"));
 		form.save();
-		form=User.me.findFirst("select * from user where tel="+form.getInt("tel"));
+		form=User.me.findFirst("select * from user where tel=?",form.getInt("tel"));
 	    setSessionAttr(GlobalVar.WXUSER, form);
 		redirect("/index");	
 	}

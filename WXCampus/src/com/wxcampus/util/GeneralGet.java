@@ -16,9 +16,9 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 
 /**
-@Use   Í¨ÓÃGet·½·¨
+@Use   é€šç”¨Getæ–¹æ³•
 @author  Popez
-@time    2015Äê9ÔÂ24ÈÕ 00:02:55
+@time    2015å¹´9æœˆ24æ—¥ 00:02:55
 */
 public class GeneralGet
 {
@@ -42,9 +42,9 @@ public class GeneralGet
    }
    
    /**
-    * ÏÂÔØ¶şÎ¬ÂëÍ¼Æ¬µ½±¾µØ
+    * ä¸‹è½½äºŒç»´ç å›¾ç‰‡åˆ°æœ¬åœ°
     * @param url   
-    * @return   Í¼Æ¬Â·¾¶
+    * @return   å›¾ç‰‡è·¯å¾„
     */
    public static String downloadImage(String url)
    {

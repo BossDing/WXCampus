@@ -7,6 +7,7 @@ import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Record;
 import com.wxcampus.index.Areas;
 import com.wxcampus.index.IndexService;
+import com.wxcampus.util.Util;
 
 public class Ring1Service {
 	
@@ -25,12 +26,12 @@ public class Ring1Service {
 		 List<Record> tradeList;
 		 String state=c.getPara("state");
 		 if(state==null)
-		 tradeList=Db.find("select a.rid,a.item,a.price,a.orderNum,a.state,a.addedTime,b.tel,b.room,b.name from trades as a,user as b where a.customer=b.uid and a.seller="+manager.getInt("mid")+" and a.addedDate="+date+" order by a.addedTime desc");
+		 tradeList=Db.find("select a.rid,a.item,a.price,a.orderNum,a.state,a.addedTime,b.tel,b.room,b.name from trades as a,user as b where a.customer=b.uid and a.seller=?  and a.addedDate=? order by a.addedTime desc",manager.getInt("mid"),date);
 		 else {
 			if(state.equals("0"))
-				tradeList=Db.find("select a.rid,a.item,a.price,a.orderNum,a.state,a.addedTime,b.tel,b.room,b.name from trades as a,user as b where a.customer=b.uid and a.state=0 and a.seller="+manager.getInt("mid")+" and a.addedDate="+date+" order by a.addedTime desc");
+				tradeList=Db.find("select a.rid,a.item,a.price,a.orderNum,a.state,a.addedTime,b.tel,b.room,b.name from trades as a,user as b where a.customer=b.uid and a.state=0 and a.seller=? and a.addedDate=? order by a.addedTime desc",manager.getInt("mid"),date);
 			else if(state.equals("1"))
-				tradeList=Db.find("select a.rid,a.item,a.price,a.orderNum,a.state,a.addedTime,b.tel,b.room,b.name from trades as a,user as b where a.customer=b.uid and a.state=1 and a.seller="+manager.getInt("mid")+" and a.addedDate="+date+" order by a.addedTime desc");
+				tradeList=Db.find("select a.rid,a.item,a.price,a.orderNum,a.state,a.addedTime,b.tel,b.room,b.name from trades as a,user as b where a.customer=b.uid and a.state=1 and a.seller=? and a.addedDate=? order by a.addedTime desc",manager.getInt("mid"),date);
 			else {
 				c.redirect("error.html");
 				return;
@@ -44,11 +45,11 @@ public class Ring1Service {
 	{
 		 String startTime=c.getPara("stime")+":00";
 		 String endTime=c.getPara("etime")+":00";	 
-		 Areas areas=Areas.dao.findFirst("select * from areas where aid="+manager.getInt("location"));
-		 areas.set("startTime", startTime).set("endTime", endTime).update();
+		 Areas areas=Areas.dao.findFirst("select * from areas where aid=?",manager.getInt("location"));
+		 areas.set("startTime", Util.filterUserInputContent(startTime)).set("endTime", Util.filterUserInputContent(endTime)).update();
 		 IndexService iService=new IndexService();
 		 iService.updateShopState(areas);
-		 areas=Areas.dao.findById(areas.getInt("aid"));//需不需要更新对象待测试
+		 areas=Areas.dao.findById(areas.getInt("aid"));//闇�涓嶉渶瑕佹洿鏂板璞″緟娴嬭瘯
 		 c.renderHtml(areas.getStr("state"));
 	}
 

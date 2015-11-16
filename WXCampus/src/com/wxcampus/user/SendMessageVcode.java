@@ -11,7 +11,7 @@ public class SendMessageVcode {
 	public static boolean send(String tel,String vcode)
 	{
 		String url="http://apis.baidu.com/kingtto_media/106sms/106sms?";
-		String para="mobile="+tel+"&content=¡¾ÑéÖ¤Âë¡¿£ºÄúµÄÑéÖ¤ÂëÊÇ"+vcode+"£¬5·ÖÖÓÄÚÓĞĞ§¡£";
+		String para="mobile="+tel+"&content=ã€éªŒè¯ç ã€‘ï¼šæ‚¨çš„éªŒè¯ç æ˜¯"+vcode+"ï¼Œ5åˆ†é’Ÿå†…æœ‰æ•ˆã€‚";
         String result=getResponse(url+para);
         if(result.contains("Success"))
         	return true;

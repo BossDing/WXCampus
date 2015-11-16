@@ -26,41 +26,43 @@ import com.wxcampus.user.Advices;
 import com.wxcampus.user.User;
 import com.wxcampus.user.UserController;
 /**
- * API��ʽ����
+ * API引导设置
  */
 public class WXCampusConfig extends JFinalConfig{
 	
 	/**
-	 * ���ó���
+	 * 配置常量
 	 */
 	public void configConstant(Constants me) {
-		// ����������Ҫ���ã�������PropKit.get(...)��ȡֵ
+		//PropKit获取属性ֵ
 		PropKit.use("a_little_config.txt");
 		me.setDevMode(PropKit.getBoolean("devMode", false));
+		me.setError404View("/404/index.html");
 	}
 	
 	/**
-	 * ����·��
+	 * 路由映射
 	 */
 	public void configRoute(Routes me) {
 		me.add("/index", IndexController.class, "/index");	// ���������Ϊ��Controller����ͼ���·��
 		me.add("/usr", UserController.class);			// ���������ʡ��ʱĬ�����һ������ֵ��ͬ���ڴ˼�Ϊ "/blog"
 	    me.add("/shop",ShopController.class);
 	    me.add("/mgradmin",ManageController.class);
+	    me.add("/404",Handle404Controller.class);
 	}
 	
 	/**
-	 * ���ò��
+	 * 配置数据库
 	 */
 	public void configPlugin(Plugins me) {
-		// ����C3p0��ݿ����ӳز��
+		// c3p0连接池
 		C3p0Plugin c3p0Plugin = new C3p0Plugin(PropKit.get("jdbcUrl"), PropKit.get("user"), PropKit.get("password").trim());
 		me.add(c3p0Plugin);
 		
-		// ����ActiveRecord���
+		// 映射数据模型
 		ActiveRecordPlugin arp = new ActiveRecordPlugin(c3p0Plugin);
 		me.add(arp);
-		arp.addMapping("user", "uid",User.class);	// ӳ��user �? Userģ��
+		arp.addMapping("user", "uid",User.class);	
 		arp.addMapping("areas","aid", Areas.class);
 		arp.addMapping("items","iid", Items.class);
 		arp.addMapping("items_on_sale","iosid", Items_on_sale.class);
@@ -75,24 +77,19 @@ public class WXCampusConfig extends JFinalConfig{
 
 	
 	/**
-	 * ����ȫ��������
+	 * 配置全局拦截器
 	 */
 	public void configInterceptor(Interceptors me) {
-		//me.add(new OpenidInterceptor());    // openid����У��
-		me.add(new SQLXSSPREInterceptor());  //���˷�SQL,XSS
+		//me.add(new OpenidInterceptor());    // openid拦截
 	}
 	
 	/**
-	 * ���ô�����
+	 * 配置处理器
 	 */
 	public void configHandler(Handlers me) {
-		
+		me.add(new HtmlSkipHandler());
 	}
 	
-	/**
-	 * ����ʹ�� JFinal �ֲ��Ƽ��ķ�ʽ������Ŀ
-	 * ���д� main ��������������Ŀ����main�������Է����������Class�ඨ���У���һ��Ҫ���ڴ�
-	 */
 	public static void main(String[] args) {
 		JFinal.start("Webroot", 8080, "/", 5);
 	}

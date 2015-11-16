@@ -1,10 +1,10 @@
 
-Ö÷Ò³£º  domain.com/    ÊÓÍ¼´æ·ÅÂ·¾¶  /index
+ä¸»é¡µï¼š  domain.com/    è§†å›¾å­˜æ”¾è·¯å¾„  /index
 
-Ö÷Ò³html   /index/index.html
-                           ÊôĞÔ£º                                     Ö÷Òª¿ÉÓÃÔªËØ£º
-     ¹ã¸æÍ¼Æ¬                  AdList           img 			Â·¾¶
-    µØÖ·                            Area            
+ä¸»é¡µhtml   /index/index.html
+                           å±æ€§ï¼š                                     ä¸»è¦å¯ç”¨å…ƒç´ ï¼š
+     å¹¿å‘Šå›¾ç‰‡                  AdList           img 			è·¯å¾„
+    åœ°å€                            Area            
     +-----------+--------------+------+-----+---------+----------------+
 | Field     | Type         | Null | Key | Default | Extra          |
 +-----------+--------------+------+-----+---------+----------------+
@@ -12,27 +12,27 @@
 | city      | varchar(255) | NO   |     | NULL    |                |
 | college   | varchar(255) | NO   |     | NULL    |                |
 | building  | varchar(255) | NO   |     | NULL    |                |
-| state     | tinyint(1)            default 0,  //0´òìÈ 1ÓªÒµ
+| state     | tinyint(1)            default 0,  //0æ‰“çƒŠ 1è¥ä¸š
 | startTime | time                  default "21:00:00",
 | endTime   | time                  default "23:00:00",
-      						startTime		¿ªÒµÊ±¼ä
-      						endTime		        ´òìÈÊ±¼ä
+      						startTime		å¼€ä¸šæ—¶é—´
+      						endTime		        æ‰“çƒŠæ—¶é—´
       						
-     µê³¤ĞÅÏ¢                  Manager          tel  			µç»°
-      						name			ĞÕÃû
-      						say			µê³¤Ëµ
+     åº—é•¿ä¿¡æ¯                  Manager          tel  			ç”µè¯
+      						name			å§“å
+      						say			åº—é•¿è¯´
 
       							 
-   /index/location   £¨ajaxÇëÇó£©     //È·¶¨Î»ÖÃ£¨³ÇÊĞ£¬Ñ§Ğ££¬Â¥¶°£©
-    ¿É´ø²ÎÊı£º city  college  building   
-    ÇëÇócity¿ÉÖ»´øcity²ÎÊı  ÇëÇócollege±ØĞëÍ¬Ê±´øcity,college²ÎÊı£¬buildingÍ¬Àí
-    ·µ»Ø£º   jsonÊı×é        
-    Ãû×Ö·Ö±ğÎªcities colleges buildings  µ¥¸ö×Ö¶ÎÃû£º city college building
+   /index/location   ï¼ˆajaxè¯·æ±‚ï¼‰     //ç¡®å®šä½ç½®ï¼ˆåŸå¸‚ï¼Œå­¦æ ¡ï¼Œæ¥¼æ ‹ï¼‰
+    å¯å¸¦å‚æ•°ï¼š city  college  building   
+    è¯·æ±‚cityå¯åªå¸¦cityå‚æ•°  è¯·æ±‚collegeå¿…é¡»åŒæ—¶å¸¦city,collegeå‚æ•°ï¼ŒbuildingåŒç†
+    è¿”å›ï¼š   jsonæ•°ç»„        
+    åå­—åˆ†åˆ«ä¸ºcities colleges buildings  å•ä¸ªå­—æ®µåï¼š city college building
     
-   /index/getItems   £¨ajaxÇëÇó£©   //»ñÈ¡ÉÌÆ·ĞÅÏ¢   ¿É´ø²ÎÊıcategoryÓÃÓÚ·ÖÀà£¬²»´ø¾ÍÊÇÈ«²¿
-   ·µ»Ø£º jsonÊı×é
-   Êı×éÃû£º itemList 
-  µ¥¸öÔªËØ×Ö¶ÎÃû£º
+   /index/getItems   ï¼ˆajaxè¯·æ±‚ï¼‰   //è·å–å•†å“ä¿¡æ¯   å¯å¸¦å‚æ•°categoryç”¨äºåˆ†ç±»ï¼Œä¸å¸¦å°±æ˜¯å…¨éƒ¨
+   è¿”å›ï¼š jsonæ•°ç»„
+   æ•°ç»„åï¼š itemList 
+  å•ä¸ªå…ƒç´ å­—æ®µåï¼š
   +-------------+---------------+------+-----+---------+----------------+
 | Field       | Type          | Null | Key | Default | Extra          |
 +-------------+---------------+------+-----+---------+----------------+
@@ -47,13 +47,13 @@
 | addedTime   | time          | NO   |     | NULL    |                |
 +-------------+---------------+------+-----+---------+----------------+
 
-/index/searchArea    (·ÇajaxÇëÇó)  //ËÑË÷Ñ§Ğ£
-²ÎÊı£º q
-ºóÌ¨»áÖØ¶¨Ïòµ½ area.html?city=XX&college=XX   Ğè´¦ÀíÒ»ÏÂ
+/index/searchArea    (éajaxè¯·æ±‚)  //æœç´¢å­¦æ ¡
+å‚æ•°ï¼š q
+åå°ä¼šé‡å®šå‘åˆ° area.html?city=XX&college=XX   éœ€å¤„ç†ä¸€ä¸‹
 
-/index/searchItems    £¨ajaxÇëÇó£©  //ËÑË÷ÉÌÆ·
-²ÎÊı£ºq
-·µ»Øjson¸ñÊ½Í¬getItems
+/index/searchItems    ï¼ˆajaxè¯·æ±‚ï¼‰  //æœç´¢å•†å“
+å‚æ•°ï¼šq
+è¿”å›jsonæ ¼å¼åŒgetItems
 
 <------------------------------------------------------------------------>
 <------------------------------------------------------------------------>
@@ -61,12 +61,12 @@
 
 
 
-ÓÃ»§ĞÅÏ¢Ò³    domain.com/usr     ÊÓÍ¼´æ·ÅÂ·¾¶/usr
+ç”¨æˆ·ä¿¡æ¯é¡µ    domain.com/usr     è§†å›¾å­˜æ”¾è·¯å¾„/usr
 
-/usr/index.html    Ö÷html
+/usr/index.html    ä¸»html
 
-/usr/trades    ²é¿´¶©µ¥       trades.html 
-ÊôĞÔ£ºtradeList    ×Ö¶ÎÈçÏÂ£º
+/usr/trades    æŸ¥çœ‹è®¢å•       trades.html 
+å±æ€§ï¼štradeList    å­—æ®µå¦‚ä¸‹ï¼š
 +--------------+---------------+------+-----+---------+----------------+
 | Field        | Type          | Null | Key | Default | Extra          |
 +--------------+---------------+------+-----+---------+----------------+
@@ -82,60 +82,57 @@
 | finishedDate | date          | NO   |     | NULL    |                |
 | finishedTime | time          | NO   |     | NULL    |                |
 +--------------+---------------+------+-----+---------+----------------+
-×¢£º   state=0±íÊ¾ÕıÔÚÅÉËÍ     =1 ±íÊ¾ÒÑÍê³ÉµÄ¶©µ¥
+æ³¨ï¼š   state=0è¡¨ç¤ºæ­£åœ¨æ´¾é€     =1 è¡¨ç¤ºå·²å®Œæˆçš„è®¢å•
 
-/usr/coupons   ²é¿´ÓÅ»İÈ¯  coupons.html
-ÊôĞÔ£º cuList    ×Ö¶Î£º  money    ½ğ¶î
-                      endDate  µ½ÆÚÈÕÆÚ
+/usr/coupons   æŸ¥çœ‹ä¼˜æƒ åˆ¸  coupons.html
+å±æ€§ï¼š cuList    å­—æ®µï¼š  money    é‡‘é¢
+                      endDate  åˆ°æœŸæ—¥æœŸ
                     
-/usr/addItemStar     ajaxÌí¼ÓÊÕ²Ø      ÓÃÓÚÖ÷Ò³
-²ÎÊı£ºiid   ÉÌÆ·µÄiid
-·µ»Ø£º  OK
+/usr/addItemStar     ajaxæ·»åŠ æ”¶è—      ç”¨äºä¸»é¡µ
+å‚æ•°ï¼šiid   å•†å“çš„iid
+è¿”å›ï¼š  OK
 
-/usr/itemstar    ²é¿´ÊÕ²Ø     itemStar.html
-ÊôĞÔ£º  itemList   ×Ö¶ÎÖµÍ¬getItems
+/usr/itemstar    æŸ¥çœ‹æ”¶è—     itemStar.html
+å±æ€§ï¼š  itemList   å­—æ®µå€¼åŒgetItems
 
-/usr/advice      advice.html   //Ìá½»Í¶ËßÒ³Ãæ
-±íµ¥ÓòÃû£º     advice.content
-/usr/submitAdvie   Ìá½»±íµ¥actionµØÖ·     ºóÌ¨ÖØ¶¨Ïòµ½submit-success.html£¨Ìá½»³É¹¦£©
+/usr/advice      advice.html   //æäº¤æŠ•è¯‰é¡µé¢
+è¡¨å•åŸŸåï¼š     advice.content
+/usr/submitAdvie   æäº¤è¡¨å•actionåœ°å€     åå°é‡å®šå‘åˆ°submit-success.htmlï¼ˆæäº¤æˆåŠŸï¼‰
 
 /usr/registion     registion.html
-/usr/register      ×¢²áÌá½»±íµ¥action
-                   ±íµ¥ÓòµÄÃû         user.tel   user.password
-       Ìá½»ºóºóÌ¨×Ô¶¯ÖØ¶¨Ïòµ½Ö÷Ò³
+/usr/register      æ³¨å†Œæäº¤è¡¨å•action
+                   è¡¨å•åŸŸçš„å         user.tel   user.password
+       æäº¤ååå°è‡ªåŠ¨é‡å®šå‘åˆ°ä¸»é¡µ
        
 <------------------------------------------------------------------------>
 <------------------------------------------------------------------------>
 <------------------------------------------------------------------------>
 
 
-¹ºÎïÒ³     domain.com/shop
-        /shop/index.html   ¹ºÎï³µÖ÷Ò³
-        Ö÷Ò³×ªÏò¹ºÎï³µĞèÒª´ø²ÎÊı£º    Ex:   /shop?22:3;54:1;28:1   
-                                   iidÎª22µÄ3¸ö iidÎª54µÄ1¸ö iidÎª28µÄ1¸ö
-   ÊôĞÔ£º  itemList
-   ×Ö¶Î£ºiid,iname,icon,originPrice,realPrice,restNum,orderNum
+è´­ç‰©é¡µ     domain.com/shop
+        /shop/index.html   è´­ç‰©è½¦ä¸»é¡µ
+        ä¸»é¡µè½¬å‘è´­ç‰©è½¦éœ€è¦å¸¦å‚æ•°ï¼š    Ex:   /shop?22:3;54:1;28:1   
+                                   iidä¸º22çš„3ä¸ª iidä¸º54çš„1ä¸ª iidä¸º28çš„1ä¸ª
+   å±æ€§ï¼š  itemList
+   å­—æ®µï¼šiid,iname,icon,originPrice,realPrice,restNum,orderNum
    
    /shop/confirm          confirm.html
-   ²ÎÊıÍ¬ÉÏ
-  ÊôĞÔ£ºitemList   ×Ö¶Î£º iid icon iname orderNum  price(´Ë´¦Îª¸ÃÖÖÉÌÆ·×Ü¼Û¸ñ)
-      totalMoney  ×Ü¼Û¸ñ
-      userTel     ¿Í»§µç»°
-      userName    ¿Í»§ĞÕÃû
-      userRoom    ¿Í»§·¿¼äºÅ
+   å‚æ•°åŒä¸Š
+  å±æ€§ï¼šitemList   å­—æ®µï¼š iid icon iname orderNum  price(æ­¤å¤„ä¸ºè¯¥ç§å•†å“æ€»ä»·æ ¼)
+      totalMoney  æ€»ä»·æ ¼
+      userTel     å®¢æˆ·ç”µè¯
+      userName    å®¢æˆ·å§“å
+      userRoom    å®¢æˆ·æˆ¿é—´å·
       
-  /shop/coupons    ajaxÇëÇó¿Í»§¿ÉÊ¹ÓÃµÄÓÅ»İÈ¯
-  ·µ»Øjson 
-  Êı×éÃû cpList  ¼üÖµ£º  money cuid(Ğë±£´æ£¬Èç¿Í»§Ê¹ÓÃÓÅ»İÈ¯Òª×÷Îª²ÎÊı´«¸øºóÌ¨) endDate
+  /shop/coupons    ajaxè¯·æ±‚å®¢æˆ·å¯ä½¿ç”¨çš„ä¼˜æƒ åˆ¸
+  è¿”å›json 
+  æ•°ç»„å cpList  é”®å€¼ï¼š  money cuid(é¡»ä¿å­˜ï¼Œå¦‚å®¢æˆ·ä½¿ç”¨ä¼˜æƒ åˆ¸è¦ä½œä¸ºå‚æ•°ä¼ ç»™åå°) endDate
 
 
 /shop/pay               pay-success.html
-²ÎÊı£º   userTel
+å‚æ•°ï¼š   userTel
        userName
        userRoom
-       cuid(¿ÉÑ¡)       
-Ö§¸¶Ïà¹ØºóĞøÉÌÈ¶            
-
-   
-   
+       cuid(å¯é€‰)       
+æ”¯ä»˜ç›¸å…³åç»­å•†æ¦·            
   

@@ -12,6 +12,7 @@ import com.jfinal.core.Controller;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Record;
 import com.wxcampus.common.GlobalVar;
+import com.wxcampus.common.NoUrlPara;
 import com.wxcampus.index.Areas;
 import com.wxcampus.items.Coupons;
 import com.wxcampus.items.Coupons_use;
@@ -25,14 +26,14 @@ import com.wxcampus.user.UserInterceptor;
 import com.wxcampus.util.Util;
 
 /**
- * Î¢ĞÅ¶Ë¹ºÎï·½Ãæ¿ØÖÆÆ÷Àà
+ * å¾®ä¿¡ç«¯è´­ç‰©æ–¹é¢æ§åˆ¶å™¨ç±»
  * @author Potato
  *
  */
 @Before(UserInterceptor.class)
 public class ShopController extends Controller{
 	
-	@Before(ShopInterceptor.class)
+	@Before({NoUrlPara.class,ShopInterceptor.class})
 	public void index()
 	{
 		String items[]=getPara().split("-");
@@ -46,7 +47,7 @@ public class ShopController extends Controller{
 			{
 			int iid=Integer.parseInt(temp[0]);
 			Record item;
-			item=Db.findFirst("select a.iid,a.iname,a.icon,a.originPrice,a.realPrice,b.restNum from items as a,items_on_sale as b where b.location="+areaID+" and a.iid="+iid+" and a.iid=b.iid");
+			item=Db.findFirst("select a.iid,a.iname,a.icon,a.originPrice,a.realPrice,b.restNum from items as a,items_on_sale as b where a.iid=b.iid and b.location=? and a.iid=?"+areaID,iid);
 		    item.set("orderNum", Integer.parseInt(temp[1]));
 			itemList.add(item);
 			}else
@@ -69,10 +70,10 @@ public class ShopController extends Controller{
 			{
 			int iid=Integer.parseInt(temp[0]);
 			int num=Integer.parseInt(temp[1]);
-			Items_on_sale ios=Items_on_sale.dao.findFirst("select * from items_on_sale where location="+areaID+" and iid="+iid);
+			Items_on_sale ios=Items_on_sale.dao.findFirst("select * from items_on_sale where location=? and iid=?",areaID,iid);
 			if(ios.getInt("restNum")<num)
 				{redirect("error.html"); break;}
-			Items item=Items.dao.findFirst("select * from items where iid="+iid);
+			Items item=Items.dao.findFirst("select * from items where iid=?",iid);
 			record.set("iid", item.getInt("iid"));
 			record.set("iname", item.getStr("iname"));
 			record.set("icon", item.getStr("icon")+"-small");
@@ -105,7 +106,7 @@ public class ShopController extends Controller{
 	{
 		User user=getSessionAttr(GlobalVar.WXUSER);
 		String date=Util.getDate();
-		List<Record> cpList=Db.find("select a.money,b.cuid,b.endDate from coupons as a,coupons_user as b where b.owner="+user.getInt("uid")+" and b.used=0 and a.cid=b.cid and b.endDate>="+date);
+		List<Record> cpList=Db.find("select a.money,b.cuid,b.endDate from coupons as a,coupons_user as b where b.owner=?  and b.used=0 and a.cid=b.cid and b.endDate>=?",user.getInt("uid"),date);
 		setAttr("cpList", cpList);
 		renderJson();
 	}
@@ -122,12 +123,12 @@ public class ShopController extends Controller{
 		double totalMoney=getSessionAttr("totalMoney");
 		int areaID=getSessionAttr("areaID");
 		int rid=Trades.dao.findFirst("select * from trades order by rid desc").getInt("rid")+1;
-		Managers manager=Managers.dao.findFirst("select * from managers where location="+areaID);
+		Managers manager=Managers.dao.findFirst("select * from managers where location=?",areaID);
 		String cuid=getPara("cuid");
 		if(cuid!=null)
 		{
 			
-			Record coupons=Db.findFirst("select a.money,a.cid from coupons as a,coupons_user as b where b.cuid="+cuid+" and b.used=0 and b.endDate>="+date+" and a.cid=b.cid");
+			Record coupons=Db.findFirst("select a.money,a.cid from coupons as a,coupons_user as b where b.cuid=? and b.used=0 and b.endDate>=? and a.cid=b.cid",cuid,date);
 			if(cuid!=null)
 			{
 			  totalMoney-=coupons.getDouble("money");
@@ -153,7 +154,7 @@ public class ShopController extends Controller{
 		  trades.set("item", itemList.get(i).getInt("iid"));
 		  trades.set("price", itemList.get(i).getDouble("price"));
 		  trades.set("orderNum", itemList.get(i).getInt("orderNum"));
-		  trades.set("state", 0);  //0:ÕıÔÚÅÉËÍ  1:½»Ò×Íê³É
+		  trades.set("state", 0);  //0:æ­£åœ¨æ´¾é€  1:äº¤æ˜“å®Œæˆ
 		  trades.save();
 		}
 		removeSessionAttr("itemList");

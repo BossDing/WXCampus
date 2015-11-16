@@ -11,7 +11,7 @@ public class GetOpenidInterceptor implements Interceptor{
 	public void intercept(Invocation arg0) {
 		Controller c=arg0.getController();
 		if(c.getSessionAttr(GlobalVar.OPENID)==null)
-		c.redirect("Î¢ĞÅÊÚÈ¨Ò³");    //»Øµ÷/index/authorize
+		c.redirect("å¾®ä¿¡æˆæƒé¡µ");    //index/authorize
 		else
 		arg0.invoke();
 	

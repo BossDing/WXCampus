@@ -16,7 +16,7 @@ public class LocationInterceptor implements Interceptor{
 		String building=c.getPara("building");
 		if(city!=null && college!=null && building!=null)
 		{
-		Areas areas=Areas.dao.findFirst("select * from areas where city="+city+" and college="+college+" and building="+building);
+		Areas areas=Areas.dao.findFirst("select * from areas where city=? and college=? and building=?",city,college,building);
 		if(areas!=null)
 		{
 			User user=c.getSessionAttr(GlobalVar.WXUSER);

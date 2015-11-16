@@ -6,7 +6,7 @@ import com.wxcampus.common.GlobalVar;
 public class VcodeWaitThread implements Runnable{
 
 	/**
-	 *  保证手机验证码有效期5分钟
+	 *  鎵嬫満楠岃瘉鐮佹湁鏁堟湡5鍒嗛挓
 	 */
 	private Controller c;
 	public VcodeWaitThread(Controller c)

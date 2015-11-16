@@ -10,8 +10,8 @@ public class IndexService {
 
 	
 	/**
-	 * ¸üĞÂµêÆÌÓªÒµ×´Ì¬
-	 * @param areas  µêÆÌËùÔÚµØÇø
+	 * æ›´æ–°è¥ä¸šçŠ¶æ€Ì¬
+	 * @param areas 
 	 */
 	public void updateShopState(Areas areas)
 	{

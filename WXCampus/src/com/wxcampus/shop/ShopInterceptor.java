@@ -5,7 +5,7 @@ import com.jfinal.aop.Invocation;
 import com.wxcampus.index.Areas;
 
 /**
- * ÓÃÓÚÀ¹½ØÔÚµêÆÌ´òìÈÖ®ºóµÄ·Ç·¨ÇëÇó
+ * ç”¨äºæ‹¦æˆªåœ¨åº—é“ºæ‰“çƒŠä¹‹åçš„éæ³•è¯·æ±‚
  * @author Potato
  *
  */
@@ -18,7 +18,7 @@ public class ShopInterceptor implements Interceptor{
 		if(areas.getBoolean("state")==true)
 			arg0.invoke();
 		else
-			arg0.getController().redirect("error.html");
+			arg0.getController().redirect("/index/error?Msg=å½“å‰åº—é“ºæœªè¥ä¸š");
 		
 	}
 

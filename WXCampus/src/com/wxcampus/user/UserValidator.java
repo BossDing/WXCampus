@@ -15,9 +15,9 @@ public class UserValidator extends Validator{
 	@Override
 	protected void validate(Controller arg0) {
 		// TODO Auto-generated method stub
-		User user=User.me.findFirst("select * from user where tel="+arg0.getModel(User.class).getInt("tel"));
+		User user=User.me.findFirst("select * from user where tel=?",arg0.getModel(User.class).getInt("tel"));
 		if(user!=null)
-			addError("TelMsg", "µ±Ç°ÊÖ»úºÅÒÑ±»×¢²á");	
+			addError("TelMsg", "å½“å‰æ‰‹æœºå·å·²è¢«æ³¨å†Œ");	
 	}
 
 }

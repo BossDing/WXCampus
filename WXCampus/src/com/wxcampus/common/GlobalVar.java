@@ -1,9 +1,9 @@
 package com.wxcampus.common;
 
 public class GlobalVar {
-      public static final String WXUSER="sessionUser";     //Î¢ĞÅ¶Ësession
-      public static final String OPENID="openid";     //Î¢ĞÅ¶Ësession
-      public static final String VCODE="VerifyCode";     //Î¢ĞÅ¶Ësession
-      public static final String VCODETIME="VerifyStartTime";     //Î¢ĞÅ¶Ësession
-      public static final String BEUSER="manageUser";      //ºóÌ¨¹ÜÀísession
+      public static final String WXUSER="sessionUser";     //å¾®ä¿¡ç«¯session
+      public static final String OPENID="openid";     //å¾®ä¿¡ç«¯session
+      public static final String VCODE="VerifyCode";     //å¾®ä¿¡ç«¯session
+      public static final String VCODETIME="VerifyStartTime";     //å¾®ä¿¡ç«¯session
+      public static final String BEUSER="manageUser";      //åå°ç®¡ç†session
 }
