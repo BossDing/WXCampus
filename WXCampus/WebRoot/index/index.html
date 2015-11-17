@@ -34,7 +34,7 @@
             <p>公告</p>
         </div>
         <div class="floor_right" id="floor_right">
-                <#if Area.status==1>
+                <#if Area.state==true>
                     <p style="margin-top: 20px"><span><img src="/index/images_shop/workong.png"></span><span style="margin-left: 10px">营业中</span></p>
                  <#else>
                      <p style="margin-top: 20px"><span><img src="/index/images_shop/stop.png"></span><span style="margin-left: 10px">休息中</span></p>
@@ -43,8 +43,8 @@
     </div>
     <hr color="#000" width="100%" size="3"/>
     <div class="bottom" id="bottom">
-    <#list Category.getList as x>
-        <div class="bottom_content" onclick="getFood("+${x.category}+")">
+    <#list Category as x>
+        <div class="bottom_content" onclick="getFood('+${x.category}+')">
             <p><span class="span_img"><img src="/index/images_shop/food.png"></span><span class="span_title">${x.category}</span><span class="span_next"><img src="/index/images_shop/next_1.png"></span></p>
         </div>
      </#list>

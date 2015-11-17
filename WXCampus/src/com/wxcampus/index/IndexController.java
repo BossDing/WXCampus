@@ -60,6 +60,8 @@ public class IndexController extends Controller {
 			Managers manager=Managers.dao.findFirst("select * from managers where location=?",areas.getInt("aid"));
 			setAttr("Manager", manager); // 店长信息
 			
+			List<Items> category=Items.dao.find("select distinct category from items");
+			setAttr("Category",category);
 //			List<Items_on_sale> iosList=Items_on_sale.dao.find("select * from items_on_sale where location=?",areas.getStr("aid"));
 //			List<Items> itemList=new ArrayList<Items>();
 //			for(int i=0;i<iosList.size();i++)
