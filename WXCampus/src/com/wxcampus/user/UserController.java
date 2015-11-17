@@ -48,26 +48,35 @@ public class UserController extends Controller{
 		for(int i=0;i<ridList.size();i++)
 		{
 			int rid=ridList.get(i).getInt("rid");
-			List<Record> itemsRecords=Db.find("select b.iname,b.icon,price,orderNum from trades as a,items as b where rid=?",rid);
-			Record [] items=itemsRecords.toArray(new Record[itemsRecords.size()]);
+			List<Record> itemsRecords=Db.find("select b.iname,b.icon,a.price,a.orderNum from trades as a,items as b where a.item=b.iid and a.rid=?",rid);
+			//Record [] items=itemsRecords.toArray(new Record[itemsRecords.size()]);
 			Record temp=new Record();
 			temp.set("rid", rid);
 			temp.set("state", ridList.get(i).getBoolean("state"));
 			temp.set("addedDate", ridList.get(i).get("addedDate"));
 			temp.set("addedTime", ridList.get(i).get("addedTime"));
+			temp.set("items", itemsRecords);
+			records.add(temp);
 		}
-		List<Trades> tradeList=Trades.dao.find("select * from trades where customer=?",user.getInt("uid"));
-		setAttr("tradeList", tradeList);
+		//List<Trades> tradeList=Trades.dao.find("select * from trades where customer=?",user.getInt("uid"));
+		setAttr("tradeList", records);
 		render("trades.html");
 	}
 	
 	public void spetrade()  //订单详情页
 	{
-		int tid=getParaToInt("tid");
-		Trades trade=Trades.dao.findById(tid);
+		int rid=getParaToInt("rid");
+		Trades trade=Trades.dao.findFirst("select * from trades where rid=?", rid);
+		List<Record> itemsRecords=Db.find("select b.iname,b.icon,a.price,a.orderNum from trades as a,items as b where a.item=b.iid and a.rid=?",rid);
+		//Record [] items=itemsRecords.toArray(new Record[itemsRecords.size()]);
 		Record record=new Record();
-		String temp[]={"aaa","bbb"};
-		record.set("items", temp);
+		record.set("rid", rid);
+		record.set("state", trade.getBoolean("state"));
+		record.set("addedDate", trade.get("addedDate"));
+		record.set("addedTime", trade.get("addedTime"));
+		record.set("items", itemsRecords);
+		setAttr("trade", record);
+		render("spetrade.html");
 	}
 	
 	public void coupons()   //查看优惠券
