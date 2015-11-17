@@ -102,6 +102,11 @@ public class IndexController extends Controller {
 			renderJson();
 		}
 	}
+	
+	public void area()
+	{
+		render("area.html");
+	}
 	public void getItems()  //ajax获取商品信息
 	{
 		int aid=getSessionAttr("areaID");

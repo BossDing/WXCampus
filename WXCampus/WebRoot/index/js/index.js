@@ -1,9 +1,10 @@
 /**
  * Created by ASUS on 2015/11/7.
  */
-//»ñÈ¡ÊÓÆµÁÐ±í
-function getFood(){
-    var dataInfo=foodInfo;
+//ï¿½ï¿½È¡ï¿½ï¿½Æµï¿½Ð±ï¿½
+function getFood(foodclass){
+	  var dataInfo=foodclass;
+	    var url='/index/getItems';
     $.ajax(
         {
             url:url,
@@ -17,7 +18,7 @@ function getFood(){
         }
     );
 }
-//ËÑË÷³É¹¦£¬·µ»ØÉÌÆ·ÁÐ±í
+//ï¿½ï¿½ï¿½ï¿½ï¿½É¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ·ï¿½Ð±ï¿½
 function backFoodList(data){
     document.getElementById("bottom_center").innerHTML="";
     var foodList='';
@@ -29,7 +30,7 @@ function backFoodList(data){
             '<div class="food_info_center">'+
             '<p style="color: #843534;font-size: 2em;margin-left: 10px">'+data.itemList[i].iname+'</p>'+
             '<p style="color: #843534;font-size: 2em;margin-left: 10px">'+data.itemList[i].resNum+'</p>'+
-            '<p style="color: #843534;font-size: 2em;margin-left: 10px">'+data.itemList[i].realPrice+'£¤</p>'+
+            '<p style="color: #843534;font-size: 2em;margin-left: 10px">'+data.itemList[i].realPrice+'ï¿½ï¿½</p>'+
             '</div>'+
             '<div class="food_info_right" style="text-align: right">'+
             '<p style="margin-top: 1em"><img src="image_find/save.png" style="width:3em;height: 3em;margin-right: 1em "></p>'+
@@ -41,4 +42,9 @@ function backFoodList(data){
             '<HR style="float: left;width: 100%;height: 2px;color: #080808">';
     }
     $("#bottom_center").append(foodList);
+}
+
+//é€‰æ‹©åœ°åŒº
+function selectLocation(){
+	window.location="/index/area.html";
 }
