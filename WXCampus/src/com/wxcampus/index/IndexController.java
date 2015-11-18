@@ -192,11 +192,13 @@ public class IndexController extends Controller {
 		String jsonStr=GeneralGet.getResponse("https://api.weixin.qq.com/sns/oauth2/access_token?appid="+GetOpenidInterceptor.APPID+"&secret="+GetOpenidInterceptor.APPSECRET+"&code="+code+"&grant_type=authorization_code");
 		JSONObject json=JSONObject.parseObject(jsonStr);
 		String openid=json.getString("openid");
-		String accesstoken=json.getString("access_token");
 		setSessionAttr(GlobalVar.OPENID, openid);
-		
+		if(User.me.findFirst("select uid from user where openid=?", openid)==null)
+		{
+		String accesstoken=json.getString("access_token");
 		JSONObject json2=JSONObject.parseObject(GeneralGet.getResponse("https://api.weixin.qq.com/sns/userinfo?access_token="+accesstoken+"&openid="+openid+"&lang=zh_CN"));
 		setSessionAttr("headicon", json2.getString("headimgurl"));
+		}
 		
 		redirect("/index");
 	}

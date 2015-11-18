@@ -15,7 +15,7 @@ import com.jfinal.plugin.activerecord.Model;
 | item         | int(10)       | NO   |     | NULL    |                |
 | price        | decimal(10,2) | NO   |     | NULL    |                |
 | orderNum     | int(5)        | NO   |     | NULL    |                |
-| state        | int(1)        | NO   |     | NULL    |                |
+| state        | int(1)        | NO   |     | NULL    |    state=0表示正在派送     =1 表示已完成的订单              |
 | addedDate    | date          | NO   |     | NULL    |                |
 | addedTime    | time          | NO   |     | NULL    |                |
 | finishedDate | date          | YES  |     | NULL    |                |

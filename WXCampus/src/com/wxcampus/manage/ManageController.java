@@ -114,7 +114,7 @@ public class ManageController extends Controller{
 		// logger.info(manager.getStr("name")+"---查看订单");
 		 switch (manager.getInt("ring")) {
 		case 0:     Ring0Service ring0Service=new Ring0Service(this, manager);
-			     
+			        ring0Service.trades();
 			break;
 			
 		case 1:   Ring1Service ring1Service=new Ring1Service(this,manager);
@@ -132,7 +132,7 @@ public class ManageController extends Controller{
 		 Managers manager=getSessionAttr(GlobalVar.BEUSER);
 		 switch (manager.getInt("ring")) {
 		case 0:     Ring0Service ring0Service=new Ring0Service(this, manager);
-			     
+			        ring0Service.setSellingTime();
 			break;
 			
 		case 1:   Ring1Service ring1Service=new Ring1Service(this,manager);
@@ -270,6 +270,28 @@ public class ManageController extends Controller{
 		 }
 	 }
 	 
+	 /**
+	  *  订单提醒
+	  */
+	 public void inform()  //ajax
+	 {
+		 Managers manager=getSessionAttr(GlobalVar.BEUSER);
+		 Trades trades=Trades.dao.findFirst("select state from trades where location=? order by addedDate,addedTime desc",manager.getInt("location"));
+		 if(trades.getInt("state")==0)
+			 renderHtml("YES");
+		 else {
+			renderHtml("NO");
+		}
+	 }
+	 
+	 /**
+	  * 查看整体订单
+	  */
+	 @Before(Ring0Interceptor.class)
+	 public void tradesALL()
+	 {
+		 
+	 }
 	 /**
 	  *     进货管理  待定
 	  */
