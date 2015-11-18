@@ -134,6 +134,8 @@ public class UserController extends Controller{
 	{
 		if(getSessionAttr(GlobalVar.WXUSER)!=null)
 			redirect("/index");
+		
+		render("registion.html");
 	}
 	
 	@Clear(UserInterceptor.class)

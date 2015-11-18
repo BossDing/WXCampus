@@ -33,7 +33,7 @@ function backFoodList(data){
             '<p style="color: #843534;font-size: 2em;margin-left: 10px">'+data.itemList[i].realPrice+'￥</p>'+
             '</div>'+
             '<div class="food_info_right" style="text-align: right">'+
-            '<p style="margin-top: 1em"><img src="/index/image_find/save.png" style="width:3em;height: 3em;margin-right: 1em "></p>'+
+            '<p style="margin-top: 1em"><img src="/index/image_find/save.png" style="width:3em;height: 3em;margin-right: 1em " onclick=save("'+data.itemList[i].iid+'")></p>'+
             '<p style="margin-top: 3em"><span><img src="/index/image_find/add.png" style="width: 2.5em;height: 2.5em;float: right;margin-right: 1em"></span>'+
             ' <span id="kuankuan">2</span>'+
             '<span><img src="/index/image_find/reduce.png" style="width: 2.5em;height: 2.5em;margin-right: 1em;float: right "></span></p>'+
@@ -48,3 +48,29 @@ function backFoodList(data){
 function selectLocation(){
 	window.location="/index/area.html";
 }
+//收藏
+function save(iid){
+	var dataInfo="iid="+iid;
+	var url='/usr/addItemStar';
+  $.ajax(
+      {
+          url:url,
+          dataType: "json",
+          type: 'POST',
+          data:dataInfo,
+          success:function reback(data){
+        	  if(data=="OK"){
+        		  alert("收藏成功");
+        	  }
+        	  else{
+        		  alert("收藏失败");
+        	  }
+          },
+          error: function () {
+              alert("error");
+          }
+      }
+  );
+}
+
+
