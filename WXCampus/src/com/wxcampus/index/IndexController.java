@@ -4,6 +4,7 @@ package com.wxcampus.index;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.alibaba.fastjson.JSONObject;
 import com.jfinal.aop.Before;
 import com.jfinal.aop.Clear;
 import com.jfinal.core.Controller;
@@ -16,6 +17,7 @@ import com.wxcampus.items.Items;
 import com.wxcampus.items.Items_on_sale;
 import com.wxcampus.manage.Managers;
 import com.wxcampus.user.User;
+import com.wxcampus.util.GeneralGet;
 
 /**
  * 主页控制器
@@ -153,12 +155,33 @@ public class IndexController extends Controller {
 	@Clear
 	public void error()
 	{
-		//error.html
+		String Msg=getPara("Msg");
+		String backURL=getPara("backurl");
+		if(Msg==null)
+			Msg="未知错误！";
+		if(backURL==null)
+			backURL="/index";
+		setAttr("Msg", Msg);
+		setAttr("backurl", backURL);
+		render("error.html");
 	}
 	
 	@Clear
 	public void authorize()
 	{
+		//检测useragent
+		String agent=getRequest().getHeader("User-Agent");
+		if(!agent.contains("MicroMessenger"))
+		{
+			redirect("/index/error?Msg=请使用微信客户端访问！&backurl=http://www.baidu.com");
+			return;
+		}
+		String referer=getRequest().getHeader("Referer");
+		if(referer==null || !referer.contains("www.domain.com"))
+		{
+			redirect("/index/error?Msg=非法请求&backurl=http://www.baidu.com");
+			return;
+		}
 		String code=getPara("CODE");
 		String state=getPara("state");
 		if(code==null || state==null || !state.equals("6666"))
@@ -166,8 +189,16 @@ public class IndexController extends Controller {
 			return;}
 		
 		//请求openid        
+		String jsonStr=GeneralGet.getResponse("https://api.weixin.qq.com/sns/oauth2/access_token?appid="+GetOpenidInterceptor.APPID+"&secret="+GetOpenidInterceptor.APPSECRET+"&code="+code+"&grant_type=authorization_code");
+		JSONObject json=JSONObject.parseObject(jsonStr);
+		String openid=json.getString("openid");
+		String accesstoken=json.getString("access_token");
+		setSessionAttr(GlobalVar.OPENID, openid);
 		
+		JSONObject json2=JSONObject.parseObject(GeneralGet.getResponse("https://api.weixin.qq.com/sns/userinfo?access_token="+accesstoken+"&openid="+openid+"&lang=zh_CN"));
+		setSessionAttr("headicon", json2.getString("headimgurl"));
 		
+		redirect("/index");
 	}
 }
 

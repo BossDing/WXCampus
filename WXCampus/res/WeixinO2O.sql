@@ -21,6 +21,7 @@ CREATE TABLE `user` (
   `tel` int(11) NOT NULL,
   `password` varchar(255) NOT NULL,
   `openid` varchar(255) not null,
+  `headicon` varchar(255) not null,
   `name` varchar(255) default null,
   `room` varchar(255) default null,
   `location` int(10) DEFAULT 1,

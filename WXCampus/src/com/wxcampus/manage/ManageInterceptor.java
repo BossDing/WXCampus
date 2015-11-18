@@ -10,7 +10,7 @@ public class ManageInterceptor implements Interceptor{
 	public void intercept(Invocation arg0) {
 		Managers manager=arg0.getController().getSessionAttr(GlobalVar.BEUSER);
 		if(manager==null)
-			arg0.getController().redirect("/admin/login");
+			arg0.getController().redirect("/mgradmin/login");
 		else
 			arg0.invoke();
 	}

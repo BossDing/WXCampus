@@ -40,7 +40,7 @@ public class ManageController extends Controller{
 	 public void login()   //login.html
 	 {
 		 if(getSessionAttr(GlobalVar.BEUSER)!=null)
-			 redirect("/admin");
+			 redirect("/mgradmin");
 		 
 		 render("login.html");
 	 }
@@ -278,9 +278,18 @@ public class ManageController extends Controller{
 		 
 	 }
 	 
+	 @Clear
 	 public void error()
 	 {
-		 
+			String Msg=getPara("Msg");
+			String backURL=getPara("backurl");
+			if(Msg==null)
+				Msg="未知错误！";
+			if(backURL==null)
+				backURL="/mgradmin";
+			setAttr("Msg", Msg);
+			setAttr("backurl", backURL);
+			render("error.html");
 	 }
 }
 
