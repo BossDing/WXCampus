@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta id="viewport" name="viewport" content="width=device-width; initial-scale=1.0; minimum-scale=0.5; maximum-scale=2.0;" />
+    <link rel=stylesheet href="/bootstrap/css/bootstrap.css">
+    <link rel=stylesheet href="/usr/css/sign.css">
+    <script src="/jquery/jquery-2.1.4.min.js"></script>
+    <script src="/bootstrap/js/bootstrap.js"></script>
+    <title>注册</title>
+</head>
+<body>
+<div class="main">
+    <div class="top"></div>
+    <div class="center">
+        <p style="font-size: 25px;color: #595959; margin-top: 12.5px;">注册新账号</p>
+    </div>
+    <div class="floor">
+        <form action="/usr/register" method="post">
+            <p class="input_p" style="margin-top: 40px"><input type="text" class="form-control input_name" id="username" name="user.tel">
+                <span class="input-group-addon span_name"><img src="/usr/image_sign/username.png"></span></p>
+            <p  class="input_p"><input type="password" class="form-control input_password" id="password" name="user.password">
+                <span class="input-group-addon span_password"><img src="/usr/image_sign/password.png"></span></p>
+            <p  class="input_p"><input type="text" class="form-control input_confirm" id="confirm_id" name="vcode">
+                <span class="span_confirm"><a onclick="sendConfirm()">发送手机验证码</a></span></p>
+
+            <p  class="input_p"><input type="submit" class="btn btn-default button_sign" value="立即注册"></p>
+        </form>
+    </div>
+    <div class="bottom"></div>
+</div>
+ <script src="/usr/js/sign.js"></script>
+</body>
+</html>
