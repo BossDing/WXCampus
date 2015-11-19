@@ -1,4 +1,4 @@
 jdbcUrl = jdbc:mysql://127.0.0.1/wxcampus?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull
 user = root
-password =sqg950625yjh
+password =2341198
 devMode = true

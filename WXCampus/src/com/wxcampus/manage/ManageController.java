@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.jfinal.aop.Before;
 import com.jfinal.aop.Clear;
 import com.jfinal.core.Controller;
@@ -198,7 +200,23 @@ public class ManageController extends Controller{
 	 }
 	 
 	 //可不可以修改某地区商品存货数量的问题。
-	 
+	 /**
+	  *  ajax提交修改货物存量
+	  */
+	 @Before(Ring0Interceptor.class)
+	 public void modifyRestNum()
+	 {
+		 JSONArray jsonarr=JSONObject.parseArray(getPara("json"));
+		 for(int i=0;i<jsonarr.size();i++)
+		 {
+			 JSONObject json=jsonarr.getJSONObject(i);
+			 int iosid=json.getIntValue("iosid");
+			 int restNum=json.getIntValue("restNum");
+			 Items_on_sale.dao.findById(iosid).set("restNum", restNum).update();
+		 }
+		 
+		 renderHtml(Util.getJsonText("OK"));
+	 }
 	 
 	 
 	 @Before(Ring0Interceptor.class)
