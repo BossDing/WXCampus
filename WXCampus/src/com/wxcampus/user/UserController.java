@@ -43,7 +43,7 @@ public class UserController extends Controller{
 	public void trades()    //查看订单                *****可能需要分页查询*****
 	{
 		User user=getSessionAttr(GlobalVar.WXUSER);
-		List<Trades> ridList=Trades.dao.find("select distinct rid,state,addedDate,addedTime from trades where customer=? order by addedDate,addedTime",user.getInt("uid"));
+		List<Trades> ridList=Trades.dao.find("select distinct rid,state,addedDate,addedTime from trades where customer=? order by addedDate,addedTime desc",user.getInt("uid"));
 		List<Record> records=new ArrayList<Record>();
 		for(int i=0;i<ridList.size();i++)
 		{
@@ -52,7 +52,7 @@ public class UserController extends Controller{
 			//Record [] items=itemsRecords.toArray(new Record[itemsRecords.size()]);
 			Record temp=new Record();
 			temp.set("rid", rid);
-			temp.set("state", ridList.get(i).getBoolean("state"));
+			temp.set("state", ridList.get(i).getInt("state"));
 			temp.set("addedDate", ridList.get(i).get("addedDate"));
 			temp.set("addedTime", ridList.get(i).get("addedTime"));
 			temp.set("items", itemsRecords);
@@ -71,7 +71,7 @@ public class UserController extends Controller{
 		//Record [] items=itemsRecords.toArray(new Record[itemsRecords.size()]);
 		Record record=new Record();
 		record.set("rid", rid);
-		record.set("state", trade.getBoolean("state"));
+		record.set("state", trade.getInt("state"));
 		record.set("addedDate", trade.get("addedDate"));
 		record.set("addedTime", trade.get("addedTime"));
 		record.set("items", itemsRecords);

@@ -1,5 +1,6 @@
 package com.wxcampus.manage;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.jfinal.core.Controller;
@@ -7,6 +8,7 @@ import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Record;
 import com.wxcampus.index.Areas;
 import com.wxcampus.index.IndexService;
+import com.wxcampus.items.Trades;
 import com.wxcampus.util.Util;
 
 public class Ring0Service {
@@ -22,21 +24,35 @@ public class Ring0Service {
 	{
 		 String location=c.getPara("location");
 		 String date=c.getPara("date");		
-		 List<Record> tradeList;
+		 List<Trades> ridList;
 		 String state=c.getPara("state");
 		 if(state==null)
-		 tradeList=Db.find("select a.rid,a.item,a.price,a.orderNum,a.state,a.addedTime,b.tel,b.room,b.name from trades as a,user as b where a.customer=b.uid and a.location=?  and a.addedDate=? order by a.addedTime desc",location,date);
+			 ridList=Trades.dao.find("select distinct rid,state,addedDate,addedTime from trades where location=? and addedDate=? order by addedTime desc",location,date);
 		 else {
 			if(state.equals("0"))
-				tradeList=Db.find("select a.rid,a.item,a.price,a.orderNum,a.state,a.addedTime,b.tel,b.room,b.name from trades as a,user as b where a.customer=b.uid and a.state=0 and a.location=? and a.addedDate=? order by a.addedTime desc",location,date);
+				ridList=Trades.dao.find("select distinct rid,state,addedDate,addedTime from trades where state=0 and location=? and addedDate=? order by addedTime desc",location,date);
 			else if(state.equals("1"))
-				tradeList=Db.find("select a.rid,a.item,a.price,a.orderNum,a.state,a.addedTime,b.tel,b.room,b.name from trades as a,user as b where a.customer=b.uid and a.state=1 and a.location=? and a.addedDate=? order by a.addedTime desc",location,date);
+				ridList=Trades.dao.find("select distinct rid,state,addedDate,addedTime from trades where state=1 and location=? and addedDate=? order by addedTime desc",location,date);
 			else {
-				c.redirect("error.html");
+				c.redirect("/404/error");
 				return;
 			}
 		}
-		 c.setAttr("tradeList", tradeList);
+			List<Record> records=new ArrayList<Record>();
+			for(int i=0;i<ridList.size();i++)
+			{
+				int rid=ridList.get(i).getInt("rid");
+				List<Record> itemsRecords=Db.find("select b.iname,b.icon,a.price,a.orderNum from trades as a,items as b where a.item=b.iid and a.rid=?",rid);
+				//Record [] items=itemsRecords.toArray(new Record[itemsRecords.size()]);
+				Record temp=new Record();
+				temp.set("rid", rid);
+				temp.set("state", ridList.get(i).getInt("state"));
+				temp.set("addedDate", ridList.get(i).get("addedDate"));
+				temp.set("addedTime", ridList.get(i).get("addedTime"));
+				temp.set("items", itemsRecords);
+				records.add(temp);
+			}
+		 c.setAttr("tradeList", records);
 		 c.renderJson();
 	}
 	

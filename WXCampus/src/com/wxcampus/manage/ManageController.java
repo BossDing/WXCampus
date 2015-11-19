@@ -1,6 +1,7 @@
 package com.wxcampus.manage;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -151,7 +152,15 @@ public class ManageController extends Controller{
 		 setAttr("iosList", iosList);
 		 render("itemnum.html");
 	 }
-	 
+	 /**
+	  *  店长确认订单
+	  */
+	 public void confirmTrade()
+		{
+		 Managers manager=getSessionAttr(GlobalVar.BEUSER);
+		 Ring1Service ring1Service=new Ring1Service(this,manager);
+         ring1Service.confirmTrade();;
+		}
 	 /**
 	  *    添加地区
 	  */
@@ -289,8 +298,37 @@ public class ManageController extends Controller{
 	  */
 	 @Before(Ring0Interceptor.class)
 	 public void tradesALL()
-	 {
-		 
+	 {	
+		 List<Trades> ridList;
+		 String state=getPara("state");
+		 if(state==null)
+			 ridList=Trades.dao.find("select distinct rid,state,addedDate,addedTime from trades order by addedDate,addedTime desc");
+		 else {
+			if(state.equals("0"))
+				ridList=Trades.dao.find("select distinct rid,state,addedDate,addedTime from trades where state=0  order by addedDate,addedTime desc");
+			else if(state.equals("1"))
+				ridList=Trades.dao.find("select distinct rid,state,addedDate,addedTime from trades where state=1  order by addedDate,addedTime desc");
+			else {
+				redirect("/404/error");
+				return;
+			}
+		}
+			List<Record> records=new ArrayList<Record>();
+			for(int i=0;i<ridList.size();i++)
+			{
+				int rid=ridList.get(i).getInt("rid");
+				List<Record> itemsRecords=Db.find("select b.iname,b.icon,a.price,a.orderNum from trades as a,items as b where a.item=b.iid and a.rid=?",rid);
+				//Record [] items=itemsRecords.toArray(new Record[itemsRecords.size()]);
+				Record temp=new Record();
+				temp.set("rid", rid);
+				temp.set("state", ridList.get(i).getInt("state"));
+				temp.set("addedDate", ridList.get(i).get("addedDate"));
+				temp.set("addedTime", ridList.get(i).get("addedTime"));
+				temp.set("items", itemsRecords);
+				records.add(temp);
+			}
+		 setAttr("tradeList", records);
+		 renderJson();
 	 }
 	 /**
 	  *     进货管理  待定
