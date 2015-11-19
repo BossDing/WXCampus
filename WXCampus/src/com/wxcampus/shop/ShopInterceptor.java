@@ -18,7 +18,7 @@ public class ShopInterceptor implements Interceptor{
 		if(areas.getBoolean("state")==true)
 			arg0.invoke();
 		else
-			arg0.getController().redirect("/index/error?Msg=当前店铺未营业");
+			arg0.getController().redirect("/404/error?Msg=当前店铺未营业");
 		
 	}
 

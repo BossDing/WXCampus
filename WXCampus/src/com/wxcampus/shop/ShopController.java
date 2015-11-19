@@ -36,7 +36,7 @@ public class ShopController extends Controller{
 	@Before({NoUrlPara.class,ShopInterceptor.class})
 	public void index()
 	{
-		String items[]=getPara().split("-");
+		String items[]=getPara("para").split(";");
 		int areaID=getSessionAttr("areaID");
 
 		List<Record> itemList=new ArrayList<Record>();
@@ -45,9 +45,10 @@ public class ShopController extends Controller{
 			String temp[]=items[i].split(":");
 			if(temp.length==2)
 			{
+				
 			int iid=Integer.parseInt(temp[0]);
 			Record item;
-			item=Db.findFirst("select a.iid,a.iname,a.icon,a.originPrice,a.realPrice,b.restNum from items as a,items_on_sale as b where a.iid=b.iid and b.location=? and a.iid=?"+areaID,iid);
+			item=Db.findFirst("select a.iid,a.iname,a.icon,a.originPrice,a.realPrice,b.restNum from items as a,items_on_sale as b where a.iid=b.iid and b.location=? and a.iid=?",areaID,iid);
 		    item.set("orderNum", Integer.parseInt(temp[1]));
 			itemList.add(item);
 			}else
@@ -58,7 +59,7 @@ public class ShopController extends Controller{
 	}
 	public void confirm()
 	{
-		String items[]=getPara().split("-");
+		String items[]=getPara("para").split(";");
 		int areaID=getSessionAttr("areaID");
 		List<Record> itemList=new ArrayList<Record>();
 		double totalMoney=0;

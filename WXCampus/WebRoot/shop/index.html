@@ -16,7 +16,25 @@
         <p><span class="span_image"><img src="/shop/image_gouWuCar/back.png"></span><span class="span_person">购物车</span></p>
     </div>
     <div class="center">
-
+    <#list itemList as x>
+		 	<div class="food_info">  
+             <div class="food_info_left">  
+             <img src=${x.icon} style="width:10em;height:10em;margin-left:20px">  
+             </div>  
+             <div class="food_info_center">  
+             <p style="color: #843534;font-size: 2em;margin-left: 10px">  ${x.iname} </p>  
+             <p style="color: #843534;font-size: 2em;margin-left: 10px">  ${x.restNum} </p>  
+             <p style="color: #843534;font-size: 2em;margin-left: 10px">  ${x.realPrice}￥</p>  
+             </div>  
+             <div class="food_info_right" style="text-align: right">  
+             <p style="margin-top: 1em"><img src="/index/image_find/save.png" style="width:3em;height: 3em;margin-right: 1em "></p>  
+             <p style="margin-top: 3em"><span><img src="/index/image_find/reduce.png" style="width: 2.5em;height: 2.5em;float: right;margin-right: 1em"></span>  
+              <span class="kuankuan">${x.orderNum}</span>  
+             <span><img src="/index/image_find/add.png" style="width: 2.5em;height: 2.5em;margin-right: 1em;float: right "></span></p>  
+             </div>  
+             </div>  
+             <HR style="float: left;width: 100%;height: 2px;color: #080808"> ;
+   </#list>
     </div>
 </div>
 </body>

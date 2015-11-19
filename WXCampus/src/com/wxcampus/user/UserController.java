@@ -169,7 +169,7 @@ public class UserController extends Controller{
 		form.set("registerDate", Util.getDate());
 		form.set("registerTime", Util.getTime());
 		if(getSessionAttr("areaID")==null)
-			form.set("location", 3);
+			form.set("location", 1);
 		else
 		    form.set("location", getSessionAttr("areaID"));
 		//form.set("headicon", getSessionAttr("headicon"));
