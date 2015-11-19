@@ -51,7 +51,7 @@ public class ShopController extends Controller{
 		    item.set("orderNum", Integer.parseInt(temp[1]));
 			itemList.add(item);
 			}else
-				redirect("error.html");
+				redirect("/404/error");
 		}
 		setAttr("itemList", itemList);
 		render("index.html");
@@ -72,7 +72,7 @@ public class ShopController extends Controller{
 			int num=Integer.parseInt(temp[1]);
 			Items_on_sale ios=Items_on_sale.dao.findFirst("select * from items_on_sale where location=? and iid=?",areaID,iid);
 			if(ios.getInt("restNum")<num)
-				{redirect("error.html"); break;}
+				{redirect("/404/error"); break;}
 			Items item=Items.dao.findFirst("select * from items where iid=?",iid);
 			record.set("iid", item.getInt("iid"));
 			record.set("iname", item.getStr("iname"));
@@ -82,7 +82,7 @@ public class ShopController extends Controller{
 			totalMoney+=(item.getDouble("realPrice")*num);
 			itemList.add(record);
 			}else
-				redirect("error.html");
+				redirect("/404/error");
 		}
 		setAttr("itemList", itemList);
 		setSessionAttr("itemList", itemList);
@@ -90,7 +90,7 @@ public class ShopController extends Controller{
 		setSessionAttr("totalMoney", totalMoney);
 		
 		User user=getSessionAttr("sessionUser");
-		setAttr("userTel", user.getInt("tel"));
+		setAttr("userTel", user.getStr("tel"));
 		if(user.getStr("name")!=null)
 			setAttr("userName", user.getStr("name"));
 		else

@@ -18,6 +18,7 @@ import com.wxcampus.items.Items_on_sale;
 import com.wxcampus.manage.Managers;
 import com.wxcampus.user.User;
 import com.wxcampus.util.GeneralGet;
+import com.wxcampus.util.Util;
 
 /**
  * 主页控制器
@@ -141,7 +142,7 @@ public class IndexController extends Controller {
 			  renderJson();
 			}
 		else
-			renderHtml("您要找的学校暂不存在");
+			renderHtml(Util.getJsonText("您要找的学校暂不存在"));
 	}
 	public void searchItems() //ajax
 	{
@@ -152,19 +153,6 @@ public class IndexController extends Controller {
 		renderJson();
 	}
 	
-	@Clear
-	public void error()
-	{
-		String Msg=getPara("Msg");
-		String backURL=getPara("backurl");
-		if(Msg==null)
-			Msg="未知错误！";
-		if(backURL==null)
-			backURL="/index";
-		setAttr("Msg", Msg);
-		setAttr("backurl", backURL);
-		render("error.html");
-	}
 	
 	@Clear
 	public void authorize()
@@ -173,19 +161,19 @@ public class IndexController extends Controller {
 		String agent=getRequest().getHeader("User-Agent");
 		if(!agent.contains("MicroMessenger"))
 		{
-			redirect("/index/error?Msg=请使用微信客户端访问！&backurl=http://www.baidu.com");
+			redirect("/404/error?Msg=请使用微信客户端访问！&backurl=http://www.baidu.com");
 			return;
 		}
 		String referer=getRequest().getHeader("Referer");
 		if(referer==null || !referer.contains("www.domain.com"))
 		{
-			redirect("/index/error?Msg=非法请求&backurl=http://www.baidu.com");
+			redirect("/404/error?Msg=非法请求&backurl=http://www.baidu.com");
 			return;
 		}
 		String code=getPara("CODE");
 		String state=getPara("state");
 		if(code==null || state==null || !state.equals("6666"))
-			{redirect("/index/error.html");
+			{redirect("/404/error");
 			return;}
 		
 		//请求openid        

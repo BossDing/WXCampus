@@ -96,7 +96,7 @@ public class UserController extends Controller{
         user=User.me.findById(user.getInt("uid"));
         removeSessionAttr(GlobalVar.WXUSER);
         setSessionAttr(GlobalVar.WXUSER, user);  //待测试是否需要更新session
-        renderHtml("OK");
+        renderHtml(Util.getJsonText("OK"));
 	}
 	
 	public void itemstar() //我的收藏
@@ -133,7 +133,9 @@ public class UserController extends Controller{
 	public void registion()  //registion.html
 	{
 		if(getSessionAttr(GlobalVar.WXUSER)!=null)
-			redirect("/index");
+			{redirect("/index");
+			return;
+			}
 		
 		render("registion.html");
 	}
@@ -145,30 +147,35 @@ public class UserController extends Controller{
 		if(getSessionAttr(GlobalVar.WXUSER)!=null)
 			redirect("/index");
 		User form=getModel(User.class);
-		if(form==null || form.getInt("tel")==null)
+		//form.set("tel", Long.parseLong(getPara("user.tel"))).set("password", getPara("password"));
+		if(form==null)
 		{
-			redirect("/index/error");
+			redirect("/404/error");
 			return;
 		}
-		if(getSessionAttr(GlobalVar.VCODE)!=null)
+		if(getSessionAttr(form.getStr("tel"))!=null)
 		{
 			String vCode=getPara("vcode");
-			if (!vCode.equals(getSessionAttr(GlobalVar.VCODE))) {
-				redirect("/index/error?Msg=验证码输入错误&backurl=/usr/registion");
+			if (!vCode.equals(getSessionAttr(form.getStr("tel")))) {
+				redirect("/404/error?Msg=验证码输入错误&backurl=/usr/registion");
 				return;
 			}
 		}else {
-			redirect("/index/error?Msg=验证码超时,请重新获取&backurl=/usr/registion");
+			redirect("/404/error?Msg=验证码超时,请重新获取&backurl=/usr/registion");
 			return;
 		}
-		//form.set("openid", openid);  //openid未加
+		form.set("openid", "1123456");  //openid未加
 		form.set("password", Util.filterUserInputContent(form.getStr("password")));
 		form.set("registerDate", Util.getDate());
 		form.set("registerTime", Util.getTime());
-		form.set("location", getSessionAttr("areaID"));
+		if(getSessionAttr("areaID")==null)
+			form.set("location", 3);
+		else
+		    form.set("location", getSessionAttr("areaID"));
 		//form.set("headicon", getSessionAttr("headicon"));
+		form.set("headicon", "/imgs/aaa.png");
 		form.save();
-		form=User.me.findFirst("select * from user where tel=?",form.getInt("tel"));
+		form=User.me.findFirst("select * from user where tel=?",form.getStr("tel"));
 	    setSessionAttr(GlobalVar.WXUSER, form);
 		redirect("/index");	
 	}
@@ -210,18 +217,18 @@ public class UserController extends Controller{
 				{
 				setSessionAttr(GlobalVar.VCODETIME, new Date().toString());
 				System.out.println("VerifyCode:"+veryfiCode);	
-				setSessionAttr(GlobalVar.VCODE, veryfiCode);
+				setSessionAttr(getPara("tel"), veryfiCode);
 				VcodeWaitThread vwt=new VcodeWaitThread(this);
 				Thread t=new Thread(vwt);
 				t.start();
-				renderHtml("验证码发送成功，请查收！");		
+				renderHtml(Util.getJsonText("验证码发送成功，请查收！"));		
 				}
 			else
-				renderHtml("验证码发送失败，请稍后再试！");
+				renderHtml(Util.getJsonText("验证码发送失败，请稍后再试！"));
 		}else
-			redirect("/index/error");
+			redirect("/404/error");
 		}else {
-			renderHtml("两次验证码发送间隔须超过一分钟");
+			renderHtml(Util.getJsonText("两次验证码发送间隔须超过一分钟"));
 		}
 	}
 	

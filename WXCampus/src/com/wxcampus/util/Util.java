@@ -14,6 +14,8 @@ import org.jsoup.safety.Whitelist;
 
 import com.mysql.jdbc.StringUtils;
 
+import freemarker.cache.StringTemplateLoader;
+
 public class Util {
 	private final static Whitelist user_content_filter = Whitelist.relaxed();  
 	static {  
@@ -35,6 +37,10 @@ public class Util {
 	{
 		SimpleDateFormat sdf=new SimpleDateFormat("HH:mm:ss");
 		return sdf.format(new Date());
+	}
+	public static String getJsonText(String text)
+	{
+		return "{\"Msg\":\""+text+"\"}";
 	}
 	public static String getImgPath()
 	{

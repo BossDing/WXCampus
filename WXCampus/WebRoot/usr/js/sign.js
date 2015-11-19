@@ -12,7 +12,7 @@ function sendConfirm(){
 	            dataType: "json",
 	            type: 'POST',
 	            data:dataInfo,
-	            success:backSuccSign,
+	            success:backSuccess,
 	            error: function () {
 	                alert("error");
 	            }
@@ -21,7 +21,7 @@ function sendConfirm(){
     
 }
 function backSuccess(data){
-        alert(data);
+        alert(data.Msg);
 }
 //����ע��
 function signLiji(){

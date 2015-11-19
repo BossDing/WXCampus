@@ -18,7 +18,7 @@ CREATE TABLE `areas` (
 DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
   `uid` int(10) NOT NULL AUTO_INCREMENT,
-  `tel` int(11) NOT NULL,
+  `tel` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
   `openid` varchar(255) not null,
   `headicon` varchar(255) not null,
@@ -79,7 +79,7 @@ DROP TABLE IF EXISTS `managers`;
 CREATE TABLE `managers` (
   `mid` int(10) NOT NULL AUTO_INCREMENT,
   `ring` int(1) NOT NULL,
-  `tel`  int(11) not null,
+  `tel`  varchar(255) not null,
   `name` varchar(255) not null,
   `password` varchar(255) not null,
   `location` int(10) not null,

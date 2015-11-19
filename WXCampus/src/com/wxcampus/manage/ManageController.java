@@ -54,30 +54,30 @@ public class ManageController extends Controller{
 		 //防暴力检测
 		 if(ManageLoginSafe.isExist(""+getParaToInt("Managers.tel")))
 	        {
-			   redirect("/mgradmin/error?Msg=密码输入错误次数过多，请十分钟后再试！");
+			   redirect("/404/error?Msg=密码输入错误次数过多，请十分钟后再试！");
 	        }else{      
 		 Managers form=getModel(Managers.class);
-		 Managers manager=Managers.dao.findFirst("select * from managers where tel=?",form.getInt("tel"));
+		 Managers manager=Managers.dao.findFirst("select * from managers where tel=?",form.getStr("tel"));
 		 if(form.getStr("password").equals(manager.getStr("password")))
 		 {
 			 setSessionAttr(GlobalVar.BEUSER, manager);
 			 logger.info(manager.getStr("name")+"---登录后台");
 			 redirect("/mgradmin");
 		 }else {
-				if(getSessionAttr(manager.getInt("tel")+"")!=null)
+				if(getSessionAttr(manager.getStr("tel"))!=null)
 				{
-				int left=getSessionAttr(manager.getInt("tel")+"");
+				int left=getSessionAttr(manager.getStr("tel"));
 				left--;
 				if(left==0)
 				{
-					loginSafe ls=new loginSafe(manager.getInt("tel")+"",this);
+					loginSafe ls=new loginSafe(manager.getStr("tel"),this);
 					Thread t=new Thread(ls);
 					t.start();
 				}else
-				setSessionAttr(manager.getInt("tel")+"", left);
+				setSessionAttr(manager.getStr("tel"), left);
 				}
 				else
-				setSessionAttr(manager.getInt("tel")+"",5);
+				setSessionAttr(manager.getStr("tel"),5);
 			setAttr("errorMsg", "用户名或密码错误！");
 			keepModel(Managers.class);
 			render("login.html");
@@ -98,7 +98,7 @@ public class ManageController extends Controller{
 		 {
 			 manager.set("password", Util.filterUserInputContent(newPass)).update();
 			 logger.info(manager.getStr("name")+"---修改密码");
-			 renderHtml("OK");
+			 renderHtml(Util.getJsonText("OK"));
 		 }else {
 			renderHtml("原始密码输入错误");
 		}
@@ -227,7 +227,7 @@ public class ManageController extends Controller{
 			//删除商品     ajax
 			 int iid=getParaToInt("del");
 			 Items.dao.deleteById(iid);
-			 renderHtml("OK");
+			 renderHtml(Util.getJsonText("OK"));
 		}else {
 			//某个商品详情页
 			 int iid=getParaToInt();
@@ -278,9 +278,9 @@ public class ManageController extends Controller{
 		 Managers manager=getSessionAttr(GlobalVar.BEUSER);
 		 Trades trades=Trades.dao.findFirst("select state from trades where location=? order by addedDate,addedTime desc",manager.getInt("location"));
 		 if(trades.getInt("state")==0)
-			 renderHtml("YES");
+			 renderHtml(Util.getJsonText("YES"));
 		 else {
-			renderHtml("NO");
+			renderHtml(Util.getJsonText("NO"));
 		}
 	 }
 	 
