@@ -13,7 +13,7 @@
 <body>
 <div class="main">
     <div class="top">
-        <p><span class="span_image"><img src="/shop/image_gouWuCar/back.png"></span><span class="span_person">购物车</span></p>
+        <p><span class="span_image" onclick=backtoindex()><img src="/shop/image_gouWuCar/back.png"></span><span class="span_person">购物车</span></p>
     </div>
     <div class="center">
     <#list itemList as x>
@@ -27,10 +27,10 @@
              <p style="color: #843534;font-size: 2em;margin-left: 10px">  ${x.realPrice}￥</p>  
              </div>  
              <div class="food_info_right" style="text-align: right">  
-             <p style="margin-top: 1em"><img src="/index/image_find/save.png" style="width:3em;height: 3em;margin-right: 1em "></p>  
-             <p style="margin-top: 3em"><span><img src="/index/image_find/reduce.png" style="width: 2.5em;height: 2.5em;float: right;margin-right: 1em"></span>  
-              <span class="kuankuan">${x.orderNum}</span>  
-             <span><img src="/index/image_find/add.png" style="width: 2.5em;height: 2.5em;margin-right: 1em;float: right "></span></p>  
+             <p style="margin-top: 1em"><img src="/index/image_find/save.png" onclick=save(${x.iid}) style="width:3em;height: 3em;margin-right: 1em "></p>  
+             <p style="margin-top: 3em"><span onclick=addNum(${x.iid})><img src="/index/image_find/add.png" style="width: 2.5em;height: 2.5em;float: right;margin-right: 1em"></span>  
+              <span id=${x.iid} class="kuankuan">${x.orderNum}</span>  
+             <span id=${x.iid}_span onclick=reduceNum(${x.iid})><img src="/index/images_shop/reduce.png" id=${x.iid}_reduce style="width: 2.5em;height: 2.5em;margin-right: 1em;float: right "></span></p>  
              </div>  
              </div>  
              <HR style="float: left;width: 100%;height: 2px;color: #080808"> ;

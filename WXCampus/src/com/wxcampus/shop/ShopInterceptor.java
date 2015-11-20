@@ -1,5 +1,8 @@
 package com.wxcampus.shop;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+
 import com.jfinal.aop.Interceptor;
 import com.jfinal.aop.Invocation;
 import com.wxcampus.index.Areas;
@@ -18,7 +21,15 @@ public class ShopInterceptor implements Interceptor{
 		if(areas.getBoolean("state")==true)
 			arg0.invoke();
 		else
-			arg0.getController().redirect("/404/error?Msg=当前店铺未营业");
+		{
+			try {
+				arg0.getController().redirect("/404/error?Msg="+URLEncoder.encode("当前商铺未营业", "utf-8"));
+				} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
 		
 	}
 

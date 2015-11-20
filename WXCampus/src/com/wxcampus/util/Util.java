@@ -1,6 +1,8 @@
 package com.wxcampus.util;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -41,6 +43,17 @@ public class Util {
 	public static String getJsonText(String text)
 	{
 		return "{\"Msg\":\""+text+"\"}";
+	}
+	public static String getEncodeText(String text)
+	{
+		String str="";
+		try {
+			str=URLEncoder.encode(text, "utf-8");
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return str;
 	}
 	public static String getImgPath()
 	{

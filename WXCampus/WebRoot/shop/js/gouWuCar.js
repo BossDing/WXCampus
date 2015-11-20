@@ -41,3 +41,65 @@ function backFoodList(){
     }
     $("#center").append(foodList);
 }
+function backtoindex()
+{
+	window.location="/index";
+}
+//增加数量
+function addNum(iid){
+	var num=parseInt(document.getElementById(iid).innerHTML);
+	num++;
+	document.getElementById(iid).innerHTML="";
+	document.getElementById(iid).innerHTML=num;
+	if(num>0){	
+		document.getElementById(iid+'_reduce').src='/index/images_shop/reduce.png';
+//		var obj=document.getElementById(iid+'_span');
+//		obj.onclick=reduceNum(iid);
+		document.getElementById(iid+'_span').onclick=function(){
+			reduceNum(iid);
+		};
+	}
+	
+}
+//减少数量
+function reduceNum(iid){
+	var num=parseInt(document.getElementById(iid).innerHTML);
+	num--;
+	document.getElementById(iid).innerHTML="";
+	document.getElementById(iid).innerHTML=num;
+	if(num<=0){
+		document.getElementById(iid+'_reduce').src='/index/image_find/reduce.png';
+		document.getElementById(iid+'_span').onclick='';
+//		var obj=document.getElementById(iid+'_span');
+//		obj.attachEvent("onclick", Foo); 
+//		function Foo() 
+//		{ 
+//		reduceNum(iid);
+//		} 
+	}
+}
+
+//收藏
+function save(iid){
+	var dataInfo="iid="+iid;
+	var url='/usr/addItemStar';
+  $.ajax(
+      {
+          url:url,
+          dataType: "json",
+          type: 'POST',
+          data:dataInfo,
+          success:function reback(data){
+        	  if(data.Msg=="OK"){
+        		  alert("收藏成功");
+        	  }
+        	  else{
+        		  alert(data.Msg);
+        	  }
+          },
+          error: function () {
+              alert("未登录用户不能收藏");
+          }
+      }
+  );
+}

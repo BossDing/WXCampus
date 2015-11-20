@@ -36,7 +36,13 @@ public class ShopController extends Controller{
 	@Before({NoUrlPara.class,ShopInterceptor.class})
 	public void index()
 	{
-		String items[]=getPara("para").split(";");
+		String para=getPara("para");
+		if( para==null || para.equals(""))
+		{
+			redirect("/404/error?Msg="+Util.getEncodeText("尚未选择商品"));
+			return;
+		}
+		String items[]=para.split(";");
 		int areaID=getSessionAttr("areaID");
 
 		List<Record> itemList=new ArrayList<Record>();

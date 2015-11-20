@@ -1,6 +1,7 @@
 package com.wxcampus.index;
 
 
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -161,13 +162,13 @@ public class IndexController extends Controller {
 		String agent=getRequest().getHeader("User-Agent");
 		if(!agent.contains("MicroMessenger"))
 		{
-			redirect("/404/error?Msg=请使用微信客户端访问！&backurl=http://www.baidu.com");
+			redirect("/404/error?Msg="+Util.getEncodeText("请使用微信客户端访问")+"&backurl=http://www.baidu.com");
 			return;
 		}
 		String referer=getRequest().getHeader("Referer");
 		if(referer==null || !referer.contains("www.domain.com"))
 		{
-			redirect("/404/error?Msg=非法请求&backurl=http://www.baidu.com");
+			redirect("/404/error?Msg="+Util.getEncodeText("非法请求")+"&backurl=http://www.baidu.com");
 			return;
 		}
 		String code=getPara("CODE");

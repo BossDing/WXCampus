@@ -57,7 +57,7 @@ public class ManageController extends Controller{
 		 //防暴力检测
 		 if(ManageLoginSafe.isExist(""+getParaToInt("Managers.tel")))
 	        {
-			   redirect("/404/error?Msg=密码输入错误次数过多，请十分钟后再试！");
+			   redirect("/404/error?Msg="+Util.getEncodeText("密码输入错误次数过多，请十分钟后再试！"));
 	        }else{      
 		 Managers form=getModel(Managers.class);
 		 Managers manager=Managers.dao.findFirst("select * from managers where tel=?",form.getStr("tel"));

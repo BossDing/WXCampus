@@ -66,11 +66,11 @@ function save(iid){
         		  alert("收藏成功");
         	  }
         	  else{
-        		  alert("收藏失败");
+        		  alert(data.Msg);
         	  }
           },
           error: function () {
-              alert("error");
+              alert("未登录用户不能收藏");
           }
       }
   );
@@ -114,9 +114,14 @@ function gotoshop()
 {
 	var str='';
 	for(var i=0;i<arr.length;i++){
-		str+=arr[i]+":"+document.getElementById(arr[i]).innerHTML+";";
+		var num=parseInt(document.getElementById(arr[i]).innerHTML);
+		if(num>0)
+		   str+=arr[i]+":"+document.getElementById(arr[i]).innerHTML+";";
 	}
-	window.location='/shop?para='+str;
+	if(str=='')
+		alert("您尚未选择任何商品！");
+	else
+	    window.location='/shop?para='+str;
 }
 
 

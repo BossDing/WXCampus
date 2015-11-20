@@ -87,7 +87,7 @@ public class Ring0Service {
 				c.renderHtml("当前添加地区已存在！");
 			}
 		}else 
-			c.redirect("/index/error.html");   //参数错误
+			c.redirect("/404/error");   //参数错误
 	}
 	
 	public void setManager()

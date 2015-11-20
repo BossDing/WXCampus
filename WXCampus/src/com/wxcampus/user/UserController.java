@@ -91,12 +91,18 @@ public class UserController extends Controller{
 		User user=getSessionAttr(GlobalVar.WXUSER);
 		int iid=getParaToInt("iid");
 		String itemStar=user.getStr("itemsStar");
+		if(itemStar.contains(iid+";"))
+		{
+			renderHtml(Util.getJsonText("您已收藏该商品,不能重复收藏！"));
+			return;
+		}else {
 		itemStar+=(iid+";");
 		user.set("itemsStar", itemStar).update();
         user=User.me.findById(user.getInt("uid"));
         removeSessionAttr(GlobalVar.WXUSER);
         setSessionAttr(GlobalVar.WXUSER, user);  //待测试是否需要更新session
         renderHtml(Util.getJsonText("OK"));
+		}
 	}
 	
 	public void itemstar() //我的收藏
@@ -157,11 +163,11 @@ public class UserController extends Controller{
 		{
 			String vCode=getPara("vcode");
 			if (!vCode.equals(getSessionAttr(form.getStr("tel")))) {
-				redirect("/404/error?Msg=验证码输入错误&backurl=/usr/registion");
+				redirect("/404/error?Msg="+Util.getEncodeText("验证码输入错误")+"&backurl=/usr/registion");
 				return;
 			}
 		}else {
-			redirect("/404/error?Msg=验证码超时,请重新获取&backurl=/usr/registion");
+			redirect("/404/error?Msg="+Util.getEncodeText("验证码超时,请重新获取")+"&backurl=/usr/registion");
 			return;
 		}
 		form.set("openid", "1123456");  //openid未加
