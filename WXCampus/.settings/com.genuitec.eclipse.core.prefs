@@ -1,3 +1,3 @@
 eclipse.preferences.version=1
-validator.Checked=WebRoot/jquery,WebRoot/shop,WebRoot/selectCollege/js/select_college.js
+validator.Checked=WebRoot/shop,WebRoot/shop/index.html,WebRoot/jquery,WebRoot/selectCollege/js/select_college.js
 validator.Unchecked=

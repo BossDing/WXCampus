@@ -24,7 +24,7 @@
              <div class="food_info_center">  
              <p style="color: #843534;font-size: 2em;margin-left: 10px">  ${x.iname} </p>  
              <p style="color: #843534;font-size: 2em;margin-left: 10px">  ${x.restNum} </p>  
-             <p style="color: #843534;font-size: 2em;margin-left: 10px">  ${x.realPrice}￥</p>  
+             <p id=${x.iid}_price style="color: #843534;font-size: 2em;margin-left: 10px">  ${x.realPrice}￥</p>  
              </div>  
              <div class="food_info_right" style="text-align: right">  
              <p style="margin-top: 1em"><img src="/index/image_find/save.png" onclick=save(${x.iid}) style="width:3em;height: 3em;margin-right: 1em "></p>  
@@ -33,9 +33,23 @@
              <span id=${x.iid}_span onclick=reduceNum(${x.iid})><img src="/index/images_shop/reduce.png" id=${x.iid}_reduce style="width: 2.5em;height: 2.5em;margin-right: 1em;float: right "></span></p>  
              </div>  
              </div>  
-             <HR style="float: left;width: 100%;height: 2px;color: #080808"> ;
+             <HR style="float: left;width: 100%;height: 2px;color: #080808"> 
+   <script>
+   getiid(${x.iid});
+   </script>
    </#list>
     </div>
+      <div class="bottom">
+        <div class="bottom_left">
+            <p><span>实际付：&nbsp;&nbsp;&nbsp;&nbsp;<sqg style="color: #ff5200" id="allPrice"></sqg></span></p>
+        </div>
+        <div class="bottom_right">
+            <p onclick=confoirmPage()>确认订单</p>
+        </div>
+    </div>
 </div>
+<script>
+window.onload=getPrice();
+</script>
 </body>
 </html>

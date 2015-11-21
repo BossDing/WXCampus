@@ -67,4 +67,41 @@
     background-size: 4em 2.5em;
     text-align: center;
 }
-
+.bottom{
+    width: 100%;
+    height: 80px;
+    float: left;
+    position: fixed;
+    bottom: 0px;
+    background: url("/shop/image_KTstore/bottom.png") no-repeat;
+    background-size: 100% 80px;
+}
+.bottom_left{
+    width: 70%;
+    height: 80px;
+    float: left;
+}
+.bottom_right{
+    width: 30%;
+    height: 80px;
+    float: left;
+    text-align: center;
+    background: url("/shop/image_confirm/juxin.png") no-repeat;
+    background-size: 100% 80px;
+}
+.bottom_left p{
+    width: 100%;
+    height: 80px;
+    font-size: 25px;
+    color: #595959;
+}
+.bottom_left p span{
+    display: block;
+    margin-top: 20px;
+    margin-left: 20px;
+}
+.bottom_right p{
+    height: 40px;
+    font-size: 25px;
+    margin-top: 20px;
+}

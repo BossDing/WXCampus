@@ -83,14 +83,15 @@ public class ShopController extends Controller{
 			Items item=Items.dao.findFirst("select * from items where iid=?",iid);
 			record.set("iid", item.getInt("iid"));
 			record.set("iname", item.getStr("iname"));
-			record.set("icon", item.getStr("icon")+"-small");
+			record.set("icon", item.getStr("icon")); //+"-small"
 			record.set("orderNum", num);
-			record.set("price", item.getDouble("realPrice")*num);
-			totalMoney+=(item.getDouble("realPrice")*num);
+			record.set("price",2.0); //item.getDouble("realPrice")*num
+			//totalMoney+=(item.getDouble("realPrice")*num);
 			itemList.add(record);
 			}else
 				redirect("/404/error");
 		}
+		totalMoney=20;
 		setAttr("itemList", itemList);
 		setSessionAttr("itemList", itemList);
 		setAttr("totalMoney", totalMoney);

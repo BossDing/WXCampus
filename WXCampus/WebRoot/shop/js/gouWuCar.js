@@ -59,7 +59,7 @@ function addNum(iid){
 			reduceNum(iid);
 		};
 	}
-	
+	getPrice();
 }
 //减少数量
 function reduceNum(iid){
@@ -77,6 +77,7 @@ function reduceNum(iid){
 //		reduceNum(iid);
 //		} 
 	}
+	getPrice();
 }
 
 //收藏
@@ -102,4 +103,29 @@ function save(iid){
           }
       }
   );
+}
+
+var arr=[];
+var i=0;
+function getiid(iid){
+	arr[i]=iid;
+	i++;
+}
+//计算价格
+function getPrice(){
+	var price=0;
+	for(var i=0;i<arr.length;i++){
+		price+=parseInt(document.getElementById(arr[i]+'_price').innerHTML)*
+		parseInt(document.getElementById(arr[i]).innerHTML);
+	}
+	document.getElementById("allPrice").innerHTML=price;
+}
+
+//确认订单
+function confoirmPage(){
+	var str='';
+	for(var i=0;i<arr.length;i++){
+	str+=arr[i]+':'+document.getElementById(arr[i]).innerHTML+';';
+	}
+	window.location='/shop/confirm?para='+str;
 }
