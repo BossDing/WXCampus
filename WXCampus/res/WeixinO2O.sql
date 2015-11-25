@@ -10,6 +10,7 @@ CREATE TABLE `areas` (
   `state` tinyint(1) default 0,  
   `startTime` time default "21:00:00",
   `endTime` time default "23:00:00",
+  `startPrice` decimal(10,2) default 10.00,
   `addedDate` date NOT NULL,
   `addedTime` time NOT NULL,
   PRIMARY KEY (`aid`)
@@ -39,8 +40,9 @@ CREATE TABLE `items` (
   `iid` int(10) NOT NULL AUTO_INCREMENT,
   `iname` varchar(255) NOT NULL,
   `icon` varchar(255) NOT NULL,
-  `originPrice` decimal(10,2) not null,
+  `originPrice` decimal(10,2) default null,
   `realPrice` decimal(10,2) not null,
+  `cost` decimal(10,2) not null,
   `category` varchar(20) not null,
   `restNum` int(5) default 0,
   `addedDate` date NOT NULL,
@@ -52,6 +54,9 @@ DROP TABLE IF EXISTS `items_on_sale`;
 CREATE TABLE `items_on_sale` (
   `iosid` int(10) NOT NULL AUTO_INCREMENT,
   `iid` int(10) NOT NULL,
+  `minPrice` decimal(10,2) not null,
+  `maxPrice` decimal(10,2) not null,
+  `price` decimal(10,2) not null,
   `restNum` int(5) not null,
   `location` int(10) not null,
   `addedDate` date NOT NULL,
@@ -63,8 +68,24 @@ CREATE TABLE `items_on_sale` (
   CONSTRAINT `ios_items_fk2` FOREIGN KEY (`location`) REFERENCES `areas` (`aid`) on delete cascade on update cascade
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS `settings`;
+CREATE TABLE `settings` (
+  `sid` int(10) NOT NULL AUTO_INCREMENT,
+  `key` varchar(255) NOT NULL,
+  `value` int(10) NOT NULL,
+  `addedDT` timestamp not null,
+  PRIMARY KEY (`sid`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
-
+DROP TABLE IF EXISTS `promotion`;
+CREATE TABLE `promotion` (
+  `pid` int(10) NOT NULL AUTO_INCREMENT,
+  `content` varchar(255) NOT NULL,
+  `location` int(10) default 0,
+  `isshow` tinyint(1) not null,
+  `addedDT` timestamp not null,
+  PRIMARY KEY (`pid`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `advertisement`;
 CREATE TABLE `advertisement` (
@@ -75,6 +96,7 @@ CREATE TABLE `advertisement` (
   PRIMARY KEY (`astid`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
+
 DROP TABLE IF EXISTS `managers`;
 CREATE TABLE `managers` (
   `mid` int(10) NOT NULL AUTO_INCREMENT,
@@ -83,13 +105,47 @@ CREATE TABLE `managers` (
   `name` varchar(255) not null,
   `password` varchar(255) not null,
   `location` int(10) not null,
+  `shopname` varchar(255) default "",
+  `shopimg` varchar(255) default "",
   `say` varchar(255) default "",
   `addedDate` date NOT NULL,
   `addedTime` time NOT NULL,
   PRIMARY KEY (`mid`),
-  KEY `location` (`location`),
-  CONSTRAINT `manager_area_fk1` FOREIGN KEY (`location`) REFERENCES `areas` (`aid`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+insert into managers(ring,tel,name,password,location,addedDate,addedTime) values(0,"","管理员","admin666",0,"2015-11-25","00:00:00");
+
+DROP TABLE IF EXISTS `informs`;
+CREATE TABLE `informs` (
+  `iid` int(10) NOT NULL AUTO_INCREMENT,
+  `type` varchar(255) NOT NULL,
+  `to` int(10) not null,
+  `addedDT` timestamp not null,
+  PRIMARY KEY (`iid`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `incomes`;
+CREATE TABLE `incomes` (
+  `iid` int(10) NOT NULL AUTO_INCREMENT,
+  `mid` int(10) NOT NULL,
+  `sales` decimal(10,2) not null,
+  `addedDT` timestamp not null,
+  PRIMARY KEY (`iid`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+insert into incomes(mid,sales,addedDT) values(1,0.00,"2015-11-25 00:00:00");
+
+DROP TABLE IF EXISTS `ingoods`;
+CREATE TABLE `ingoods` (
+  `iid` int(10) NOT NULL AUTO_INCREMENT,
+  `rid` int(10) not null,
+  `from` int(10) NOT NULL,
+  `to` int(10) not null,
+  `item` int(10) not null,
+  `num` int(5) not null,
+  `state` int(1) not null,
+  `addedDT` timestamp not null,
+  PRIMARY KEY (`iid`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
 
 DROP TABLE IF EXISTS `trades`;
 CREATE TABLE `trades` (
@@ -146,6 +202,7 @@ CREATE TABLE `advices` (
   `aid` int(10) NOT NULL AUTO_INCREMENT,
   `uid` int(10) NOT NULL,
   `content` text not null,
+  `location` int(10) not null,
   `addedDate` date NOT NULL,
   `addedTime` time NOT NULL,
   PRIMARY KEY (`aid`)

@@ -1,8 +1,13 @@
 package com.wxcampus.manage;
 
+import java.awt.geom.Area;
 import java.io.File;
+import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.sound.midi.MidiDevice.Info;
 
 import org.apache.log4j.Logger;
 
@@ -14,13 +19,20 @@ import com.jfinal.core.Controller;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Record;
 import com.jfinal.upload.UploadFile;
+import com.mchange.v2.c3p0.impl.NewPooledConnection;
 import com.wxcampus.common.GlobalVar;
 import com.wxcampus.common.NoUrlPara;
 import com.wxcampus.index.Areas;
 import com.wxcampus.index.IndexService;
+import com.wxcampus.items.Incomes;
+import com.wxcampus.items.Informs;
+import com.wxcampus.items.Ingoods;
 import com.wxcampus.items.Items;
 import com.wxcampus.items.Items_on_sale;
+import com.wxcampus.items.Promotion;
+import com.wxcampus.items.Settings;
 import com.wxcampus.items.Trades;
+import com.wxcampus.user.Advices;
 import com.wxcampus.util.Util;
 
 /**
@@ -36,6 +48,19 @@ public class ManageController extends Controller{
 	 @Before(NoUrlPara.class)
 	 public void index()
 	 {
+		 Managers manager=getSessionAttr(GlobalVar.BEUSER);
+		 Incomes income=Incomes.dao.findFirst("select * from incomes where mid=?",manager.getInt("mid"));
+		 setAttr("Sales", income.getBigDecimal("sales").doubleValue());
+		 switch (manager.getInt("ring")) {
+		case 1:
+			setAttr("Income", income.getBigDecimal("sales").doubleValue()*0.03);
+			break;
+		case 2:
+			setAttr("Income", income.getBigDecimal("sales").doubleValue()*0.2);
+			break;
+		default:
+			break;
+		}
 		 render("index.html");
 	 }
 	 
@@ -119,9 +144,12 @@ public class ManageController extends Controller{
 		case 0:     Ring0Service ring0Service=new Ring0Service(this, manager);
 			        ring0Service.trades();
 			break;
-			
-		case 1:   Ring1Service ring1Service=new Ring1Service(this,manager);
-		          ring1Service.trades();
+		case 1:    Ring1Service ring1Service=new Ring1Service(this, manager);
+                   ring1Service.trades();
+			break;
+		case 2:   Ring2Service ring2Service=new Ring2Service(this,manager);
+		          ring2Service.trades();
+		          break;
 		default:
 			break;
 		}		
@@ -138,9 +166,8 @@ public class ManageController extends Controller{
 			        ring0Service.setSellingTime();
 			break;
 			
-		case 1:   Ring1Service ring1Service=new Ring1Service(this,manager);
-		          ring1Service.setSellingTime();
-		default:
+		case 2:   Ring2Service ring2Service=new Ring2Service(this,manager);
+		          ring2Service.setSellingTime();
 			break;
 		}	
 	 }
@@ -150,9 +177,36 @@ public class ManageController extends Controller{
 	 public void itemnum()
 	 {
 		 Managers manager=getSessionAttr(GlobalVar.BEUSER);
-		 List<Record> iosList=Db.find("select a.iname,a.icon,a.realPrice,a.category,b.iosid,b.restNum from items as a,items_on_sale as b where a.iid=b.iid and b.location=?",manager.getInt("location"));
+		 List<Record> iosList=Db.find("select a.iname,a.icon,a.category,b.iosid,b.restNum,b.price,b.minPrice,b.maxPrice from items as a,items_on_sale as b where a.iid=b.iid and b.location=?",manager.getInt("location"));
 		 setAttr("iosList", iosList);
 		 render("itemnum.html");
+	 }
+	 /**
+	  *  店长一定范围内设置售价
+	  */
+	 public void setPrice()
+	 {
+		 int iosid=getParaToInt("iosid");
+		 double price=Double.parseDouble(getPara("price"));
+		 Items_on_sale ios=Items_on_sale.dao.findById(iosid);
+		 if(price>=ios.getBigDecimal("minPrice").doubleValue() && price<=ios.getBigDecimal("maxPrice").doubleValue())
+		 {
+			 ios.set("price", new BigDecimal(price)).update();
+			 renderHtml(Util.getJsonText("OK"));
+		 }else {
+			renderHtml(Util.getJsonText("所设置价格越界"));
+		}
+	 }
+	 /**
+	  *  店长设置起送费
+	  */
+	 public void setStartPrice() //ajax
+	 {
+		 Managers manager=getSessionAttr(GlobalVar.BEUSER);
+		 double price=Double.parseDouble(getPara("price"));
+		 Areas area=Areas.dao.findById(manager.getInt("location"));
+		 area.set("startPrice", new BigDecimal(price)).update();
+		 renderHtml(Util.getJsonText("OK"));
 	 }
 	 /**
 	  *  店长确认订单
@@ -160,9 +214,153 @@ public class ManageController extends Controller{
 	 public void confirmTrade()
 		{
 		 Managers manager=getSessionAttr(GlobalVar.BEUSER);
-		 Ring1Service ring1Service=new Ring1Service(this,manager);
-         ring1Service.confirmTrade();;
+		 Ring2Service ring2Service=new Ring2Service(this,manager);
+         ring2Service.confirmTrade();
 		}
+	 /**
+	  *  店长，校区负责人确认收到进货
+	  */
+	 public void confirmIngoods()
+	 {
+		 Managers manager=getSessionAttr(GlobalVar.BEUSER);
+		 int rid=getParaToInt("rid");
+		 List<Ingoods> igList=Ingoods.dao.find("select * from ingoods where rid=?",rid);
+		 if(igList!=null && igList.get(0).getInt("from")!=manager.getInt("mid"))
+		 {
+			 redirect("/404/error");
+			 return;
+		 }
+		 for(int i=0;i<igList.size();i++)
+		 {
+			 igList.get(i).set("state", 3).update();  //3 已完成
+			 Items_on_sale ios=Items_on_sale.dao.findFirst("select * from items_on_sale where location=? and iid=?",manager.getInt("location"),igList.get(i).getInt("item"));
+			 if(ios==null)
+			 {
+				 Items item=Items.dao.findById(igList.get(i).getInt("item"));
+				 BigDecimal cost=item.getBigDecimal("cost");
+				 BigDecimal price=item.getBigDecimal("realPrice");
+				 ios=new Items_on_sale();
+				 ios.set("iid", igList.get(i).getInt("item"));
+				 ios.set("minPrice", new BigDecimal(cost.doubleValue()*1.2)).set("maxPrice", new BigDecimal(cost.doubleValue()*2));
+				 ios.set("price", price);
+				 ios.set("restNum", igList.get(i).getInt("num")).set("location", manager.getInt("location"));
+				 ios.set("addedDate", Util.getDate()).set("addedTime", Util.getTime());
+				 ios.save();
+			 }else {
+				ios.set("restNum", ios.getInt("restNum")+igList.get(i).getInt("num")).update();
+			}
+		 }
+	 }
+	 /**
+	  *  店长,校区负责人查看提交的进货订单
+	  */
+	 public void seeInGoods()
+	 {
+		 Managers manager=getSessionAttr(GlobalVar.BEUSER);
+         List<Ingoods> igList=Ingoods.dao.find("select distinct rid,addedDT,state from ingoods where from=?",manager.getInt("mid"));
+		 setAttr("igList", igList);
+		 List<Informs> informs=Informs.dao.find("select * from informs where to=?",manager.getInt("mid"));
+		 for(int i=0;i<informs.size();i++)
+			 informs.get(i).delete();
+	 }
+	 /**
+	  *  管理,校区负责人处理提交的进货订单
+	  */
+	 public void dealInGoods()
+	 {
+		 Managers manager=getSessionAttr(GlobalVar.BEUSER);
+		 if(manager.getInt("ring")!=0 &&manager.getInt("ring")!=1)
+		 {
+			 redirect("/404/error?Msg="+Util.getEncodeText("无权操作"));
+			 return;
+		 }
+         List<Ingoods> igList=Ingoods.dao.find("select distinct rid,addedDT,state from ingoods where to=?",manager.getInt("mid"));
+		 setAttr("igList", igList);
+		 List<Informs> informs=Informs.dao.find("select * from informs where to=?",manager.getInt("mid"));
+		 for(int i=0;i<informs.size();i++)
+			 informs.get(i).delete();
+	 }
+	 /**
+	  *   进货订单详情
+	  */
+	 public void igdetails()
+	 {
+		 int rid=getParaToInt("rid");
+		 Managers manager=getSessionAttr(GlobalVar.BEUSER);
+		 List<Record> records=Db.find("select a.num,b.iname,b.icon,b.realPrice,b.category,a.from,a.to from ingoods as a,items as b where a.item=b.iid and a.rid=?",rid);
+	     if(manager.getInt("ring")==2)
+	     {
+	    	 if(records!=null && records.get(0).getInt("from")!=manager.getInt("mid"))
+	    	 {
+	    		 redirect("/404/error");
+	    		 return;
+	    	 }
+	     }else if(manager.getInt("ring")==1)
+	     {
+	    	 if(records!=null && (records.get(0).getInt("from")!=manager.getInt("mid") && records.get(0).getInt("to")!=manager.getInt("mid")))
+	    	 {
+	    		 redirect("/404/error");
+	    		 return;
+	    	 }
+	     }
+	     setAttr("igList", records);
+	 }
+	 /**
+	  * ajax返回商品详情
+	  */
+	 public void seeItems()
+	 {
+		 List<Items> itemList=Items.dao.find("select iid,iname,icon,realPrice,category from items order by category");
+		 setAttr("itemList", itemList);
+		 renderJson();
+	 }
+	 /**
+	  * 提交进货订单
+	  */
+	 public void ingoods() //ajax
+	 {
+		 Managers manager=getSessionAttr(GlobalVar.BEUSER);
+		 int to=1;
+		 if(manager.getInt("ring")==2)
+		 {
+			 Areas areas=Areas.dao.findById(manager.getInt("location"));
+			 Areas area=Areas.dao.findFirst("select aid from areas where city=? and college=? and building=?",areas.getStr("city"),areas.getStr("college"),"");
+			 to=area.getInt("aid");
+		 }else if(manager.getInt("ring")==1)
+			 to=1;  //总管理员mid
+		 String content[]=getPara("content").split("-");
+		 int rid=Ingoods.dao.findFirst("select distinct rid from ingoods order by rid desc").getInt("rid")+1;
+		 for(int i=0;i<content.length;i++)
+		 {
+			 String temp[]=content[i].split(":");
+			 Ingoods ig=new Ingoods();
+			 ig.set("rid", rid).set("from", manager.getInt("mid")).set("to", to);
+			 ig.set("item", Integer.parseInt(temp[0])).set("num", Integer.parseInt(temp[1]));
+			 ig.set("state", 1);  //1 已提交
+			 ig.set("addedDT", new Timestamp(System.currentTimeMillis()));
+			 ig.save();
+		 }
+		 new Informs().set("type", "ingoods").set("to", to).set("addedDT", new Timestamp(System.currentTimeMillis())).save();
+		 renderHtml(Util.getJsonText("OK"));
+	 }
+	 /**
+	  *  管理，校区负责人确认处理进货订单
+	  */
+	 public void confirmDealIg() //ajax
+	 {
+		 int rid=getParaToInt("rid");
+		 Managers manager=getSessionAttr(GlobalVar.BEUSER);
+		 List<Ingoods> igList=Ingoods.dao.find("select state,to from ingoods where rid=?",rid);
+		 if(igList!=null && igList.get(0).getInt("to")!=manager.getInt("mid"))
+		 {
+			 redirect("/404/error");
+			 return;
+		 }
+		 for(int i=0;i<igList.size();i++)
+			 igList.get(i).set("state", 2).update();  // 2 处理中
+		 new Informs().set("type", "ingoods").set("to", igList.get(0).getInt("from")).set("addedDT", new Timestamp(System.currentTimeMillis())).save();
+		 renderHtml(Util.getJsonText("OK"));
+	 }
 	 /**
 	  *    添加地区
 	  */
@@ -177,23 +375,41 @@ public class ManageController extends Controller{
 	 /**
 	  *  查看地区
 	  */
-	 @Before(Ring0Interceptor.class)
+	 @Before(Ring1Interceptor.class)
 	 public void areas()
 	 {
-		 String area=getPara();  //  areas?6  
+		 Managers login=getSessionAttr(GlobalVar.BEUSER);
+		 Areas areas=Areas.dao.findById(login.getInt("location"));
+		 String area=getPara(0);  //  areas?6  
 		 if(area==null)
 		 {
+			 if(login.getInt("ring")==0)
+			 {
 		 List<Areas> areasList=Areas.dao.find("select * from areas order by city,college,building asc");
 		 setAttr("areasList", areasList);   //aid,city,college,building
 		 render("areas.html");
+			 }else {
+				List<Areas> areasList=Areas.dao.find("select * from areas where city=? and college=? order by building asc",areas.getStr("city"),areas.getStr("college"));
+				setAttr("areasList", areasList);   //aid,city,college,building
+				render("areas.html");
+			}
 		 }else
 		 {
-			 int areaID=Integer.parseInt(area); 
+			 int areaID=Integer.parseInt(area);
 			 //显示某个地区的具体页面。内容待定
+			 if(login.getInt("ring")==1)
+			 {
+				 Areas building=Areas.dao.findById(areaID);
+				 if(!areas.getStr("city").equals(building.getStr("city")) ||  !areas.getStr("college").equals(building.getStr("college")))
+				 {
+					 redirect("/404/error?Msg="+Util.getJsonText("无权访问"));
+					 return;
+				 }
+			 }
 			 Managers manager=Managers.dao.findFirst("select * from managers where location=?",areaID);
 			 setAttr("Manager", manager);
 			 
-			 List<Record> iosList=Db.find("select a.iname,a.icon,a.realPrice,a.category,b.iosid,b.restNum from items as a,items_on_sale as b where a.iid=b.iid and b.location=?",areaID);
+			 List<Record> iosList=Db.find("select a.iname,a.icon,a.category,b.iosid,b.restNum,b.price from items as a,items_on_sale as b where a.iid=b.iid and b.location=?",areaID);
 			 setAttr("iosList", iosList);
 			 render("spearea.html");
 		 }
@@ -203,7 +419,7 @@ public class ManageController extends Controller{
 	 /**
 	  *  ajax提交修改货物存量
 	  */
-	 @Before(Ring0Interceptor.class)
+	 @Before(Ring1Interceptor.class)
 	 public void modifyRestNum()
 	 {
 		 JSONArray jsonarr=JSONObject.parseArray(getPara("json"));
@@ -214,8 +430,84 @@ public class ManageController extends Controller{
 			 int restNum=json.getIntValue("restNum");
 			 Items_on_sale.dao.findById(iosid).set("restNum", restNum).update();
 		 }
-		 
 		 renderHtml(Util.getJsonText("OK"));
+	 }
+	 /**
+	  *    设置编辑促销活动
+	  */
+	 @Before(Ring0Interceptor.class)
+	 public void promotion()
+	 {
+		 int showNum=0;
+		 Settings set=Settings.dao.findFirst("select value from settings where key=?","promotionShowNum");
+		 if(set!=null)
+		 {
+			 showNum=set.getInt("value");
+		 }
+		 setAttr("showNum", showNum);
+		 
+		 List<Promotion> proList=Promotion.dao.find("select * from promotion where isshow=true order by addedDT desc");
+		 proList.addAll(Promotion.dao.find("select * from promotion where isshow=false order by addedDT desc"));
+		 setAttr("proList", proList);
+		 
+		 render("promotion.html");
+	 }
+	 @Before(Ring0Interceptor.class)
+	 public void modifyShowNum()  //ajax
+	 {
+		 int showNum=getParaToInt("showNum");
+		 Settings set=Settings.dao.findFirst("select * from settings where key=?","promotionShowNum");
+         set.set("value", showNum).update();
+         renderHtml(Util.getJsonText("OK"));
+	 }
+	 @Before(Ring0Interceptor.class)
+	 public void delPromotion()  //ajax
+	 {
+		 int pid=getParaToInt("pid");
+		 Promotion.dao.findById(pid).delete();
+         renderHtml(Util.getJsonText("OK"));
+	 }
+	 @Before(Ring0Interceptor.class)
+	 public void editPromotion()  //ajax
+	 {
+		 int pid=getParaToInt("pid");
+		 String content=getPara("content");
+		 Promotion.dao.findById(pid).set("content", content).update();
+         renderHtml(Util.getJsonText("OK"));
+	 }
+	 @Before(Ring0Interceptor.class)
+	 public void addPromotion()   //ajax
+	 {
+		 String content=getPara("content");
+		 new Promotion().set("content", content).set("isshow", false).set("addedDT", new Timestamp(System.currentTimeMillis())).save();
+         renderHtml(Util.getJsonText("OK"));
+	 }
+	 @Before(Ring0Interceptor.class)
+	 public void adjustIsshow()   //ajax
+	 {
+		 String para=getPara("para");
+		 String []temp=para.split("-");
+		 int showNum=0;
+		 Settings set=Settings.dao.findFirst("select value from settings where key=?","promotionShowNum");
+		 if(set!=null)
+		 {
+			 showNum=set.getInt("value");
+		 }
+		 if(showNum!=temp.length)
+		 {
+			 renderHtml(Util.getJsonText("配置错误"));
+			 return;
+		 }
+		 List<Promotion> proList=Promotion.dao.find("select isshow from promotion where isshow=true");
+		 for(int i=0;i<proList.size();i++)
+		 {
+			 proList.get(i).set("isshow", false).update();
+		 }
+		 for(int i=0;i<showNum;i++)
+		 {
+			 Promotion.dao.findById(Integer.parseInt(temp[i])).set("isshow", true);
+		 }
+         renderHtml(Util.getJsonText("OK"));
 	 }
 	 
 	 
@@ -296,7 +588,38 @@ public class ManageController extends Controller{
 			
 		 }
 	 }
-	 
+	 /**
+	  *  查看投诉建议
+	  */
+	 @Before(Ring1Interceptor.class)
+	 public void seeAdvices()
+	 {
+		 Managers manager=getSessionAttr(GlobalVar.BEUSER);
+		 
+		 if(manager.getInt("ring")==1)
+		 {
+			 Areas area=Areas.dao.findById(manager.getInt("location"));
+			 List<Advices> advices=new ArrayList<Advices>();
+			 List<Record> records=new ArrayList<Record>();
+			 List<Areas> areaList=Areas.dao.find("select * from areas where city=? and college=?",area.getStr("city"),area.getStr("college"));
+			 for(int i=0;i<areaList.size();i++)
+			 {
+				 List<Advices> ads=Advices.dao.find("select * from advices where location=?",areaList.get(i).getInt("aid"));
+				 advices.addAll(ads);
+			 }
+			 for(int i=0;i<advices.size();i++)
+			 {
+				 Record record=Db.findFirst("select a.content,a.addedDate,a.addedTime,b.building from advices as a,areas as b where a.location=b.aid and a.aid=?",advices.get(i).getInt("aid"));
+				 records.add(record);
+			 }
+			 setAttr("Advices", records);
+		 }else {
+			 List<Record> records=Db.find("select a.content,a.addedDate,a.addedTime,b.city,b.college,b.building from advices as a,areas as b where a.location=b.aid");
+			 setAttr("Advices", records);
+		}
+		 
+		 render("advice.html");
+	 }
 	 /**
 	  *  订单提醒
 	  */
@@ -310,7 +633,18 @@ public class ManageController extends Controller{
 			renderHtml(Util.getJsonText("NO"));
 		}
 	 }
-	 
+	 /**
+	  *  获取通知
+	  */
+	 public void getinforms()
+	 {
+		 Managers manager=getSessionAttr(GlobalVar.BEUSER);
+		 List<Informs> informs=Informs.dao.find("select * from informs where to=?",manager.getInt("mid"));
+		 if(!informs.isEmpty())
+			 renderHtml(Util.getJsonText(informs.size()+""));
+		 else
+			 renderHtml(Util.getJsonText("NONE"));
+	 }
 	 /**
 	  * 查看整体订单
 	  */

@@ -16,8 +16,12 @@ import com.wxcampus.index.IndexController;
 import com.wxcampus.items.Coupons;
 import com.wxcampus.items.Coupons_use;
 import com.wxcampus.items.Coupons_user;
+import com.wxcampus.items.Incomes;
+import com.wxcampus.items.Informs;
 import com.wxcampus.items.Items;
 import com.wxcampus.items.Items_on_sale;
+import com.wxcampus.items.Promotion;
+import com.wxcampus.items.Settings;
 import com.wxcampus.items.Trades;
 import com.wxcampus.manage.ManageController;
 import com.wxcampus.manage.Managers;
@@ -73,6 +77,10 @@ public class WXCampusConfig extends JFinalConfig{
 		arp.addMapping("coupons_user", "cuid",Coupons_user.class);
 		arp.addMapping("coupons_use", "cuid",Coupons_use.class);
 		arp.addMapping("advices", "aid",Advices.class);
+		arp.addMapping("settings", "sid",Settings.class);
+		arp.addMapping("promotion", "pid",Promotion.class);
+		arp.addMapping("incomes", "iid",Incomes.class);
+		arp.addMapping("informs", "iid",Informs.class);
 	}
 
 	

@@ -127,6 +127,7 @@ public class IndexController extends Controller {
 			else
 				 item=Items.dao.findFirst("select * from items where iid=?",iosList.get(i).getInt("iid"));
 			item.set("restNum", iosList.get(i).getInt("restNum"));
+			item.set("price", iosList.get(i).getBigDecimal("price"));
 			itemList.add(item);
 		}
 		setAttr("itemList", itemList); 
@@ -149,7 +150,7 @@ public class IndexController extends Controller {
 	{
 		String itemName=getPara("q");
 		int areaID=getSessionAttr("areaID");
-		List<Record> itemList=Db.find("select a.iid,a.iname,a.icon,a.originPrice,a.realPrice,b.restNum from items as a,items_on_sale as b where b.location=? and a.iid=b.iid and a.iname regexp ?",areaID,".*"+itemName+".*");
+		List<Record> itemList=Db.find("select a.iid,a.iname,a.icon,b.restNum,b.price from items as a,items_on_sale as b where b.location=? and a.iid=b.iid and a.iname regexp ?",areaID,".*"+itemName+".*");
 		setAttr("itemList", itemList);
 		renderJson();
 	}

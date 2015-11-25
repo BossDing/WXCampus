@@ -7,12 +7,10 @@ import com.jfinal.core.Controller;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Record;
 import com.wxcampus.index.Areas;
-import com.wxcampus.index.IndexService;
 import com.wxcampus.items.Trades;
-import com.wxcampus.util.Util;
+import com.wxcampus.user.Advices;
 
 public class Ring1Service {
-	
 	private Controller c;
 	private Managers manager;
 	
@@ -24,21 +22,27 @@ public class Ring1Service {
 	
 	public void trades()
 	{
+		 Areas area=Areas.dao.findById(manager.getInt("location"));
+		 List<Areas> areaList=Areas.dao.find("select * from areas where city=? and college=?",area.getStr("city"),area.getStr("college"));
 		 String date=c.getPara("date");		
-		 List<Trades> ridList;
+		 List<Trades> ridList=new ArrayList<Trades>();
 		 String state=c.getPara("state");
+		 for(int i=0;i<areaList.size();i++)
+		 {
 		 if(state==null)
-			 ridList=Trades.dao.find("select distinct rid,state,addedDate,addedTime from trades where seller=? and addedDate=? order by addedTime desc",manager.getInt("mid"),date);
+			 ridList.addAll(Trades.dao.find("select distinct rid,state,addedDate,addedTime from trades where location=? and addedDate=? order by addedTime desc",areaList.get(i).getInt("aid"),date));
 		 else {
 			if(state.equals("0"))
-				ridList=Trades.dao.find("select distinct rid,state,addedDate,addedTime from trades where state=0 and seller=? and addedDate=? order by addedTime desc",manager.getInt("mid"),date);
+				ridList.addAll(Trades.dao.find("select distinct rid,state,addedDate,addedTime from trades where state=0 and location=? and addedDate=? order by addedTime desc",areaList.get(i).getInt("aid"),date));
 			else if(state.equals("1"))
-				ridList=Trades.dao.find("select distinct rid,state,addedDate,addedTime from trades where state=1 and seller=? and addedDate=? order by addedTime desc",manager.getInt("mid"),date);
+				ridList.addAll(Trades.dao.find("select distinct rid,state,addedDate,addedTime from trades where state=1 and location=? and addedDate=? order by addedTime desc",areaList.get(i).getInt("aid"),date));
 			else {
 				c.redirect("/404/error");
 				return;
 			}
-		}
+		   }
+		 }
+		 
 			List<Record> records=new ArrayList<Record>();
 			for(int i=0;i<ridList.size();i++)
 			{
@@ -56,38 +60,4 @@ public class Ring1Service {
 		 c.setAttr("tradeList", records);
 		 c.renderJson();
 	}
-	public void confirmTrade()
-	{
-		int rid=c.getParaToInt("rid");
-		List<Trades> trades=Trades.dao.find("select state,seller from trades where rid=?", rid);
-		if(trades!=null)
-		{
-			if(trades.get(0).getInt("seller")!=manager.getInt("mid"))
-			{
-				c.redirect("/404/error");
-				return;
-			}
-			for(int i=0;i<trades.size();i++)
-			{
-				trades.get(i).set("state", 1).update();
-			}
-		}else {
-			c.redirect("/404/error");
-			return;
-		}
-		
-		c.renderHtml(Util.getJsonText("OK"));
-	}
-	public void setSellingTime()
-	{
-		 String startTime=c.getPara("stime")+":00";
-		 String endTime=c.getPara("etime")+":00";	 
-		 Areas areas=Areas.dao.findFirst("select * from areas where aid=?",manager.getInt("location"));
-		 areas.set("startTime", Util.filterUserInputContent(startTime)).set("endTime", Util.filterUserInputContent(endTime)).update();
-		 IndexService iService=new IndexService();
-		 iService.updateShopState(areas);
-		 areas=Areas.dao.findById(areas.getInt("aid"));//需不需要更新对象待测试
-		 c.renderHtml(areas.getStr("state"));
-	}
-
 }

@@ -73,9 +73,38 @@ public class Ring0Service {
 		String city=c.getPara("city");
 		String college=c.getPara("college");
 		String building=c.getPara("building");
-		if(city!=null && college!=null && building!=null)
+		if(city!=null)
 		{
-			Areas areas=Areas.dao.findFirst("select * from areas where city=? and college=? and building=?",city,college,building);
+			Areas areas=null;
+			if(college==null)
+			{
+				areas=Areas.dao.findFirst("select * from areas where city=? and college=? and building=?",city,"","");
+				if(areas==null)
+				{
+					Areas area=new Areas();
+					area.set("city", Util.filterUserInputContent(city)).set("college", "").set("building", "");
+					area.set("addedDate", Util.getDate()).set("addedTime", Util.getTime());
+					area.save();		
+					ManageController.logger.info(manager.getStr("name")+"---添加了城市-"+city);
+				}else
+					c.renderHtml(Util.getJsonText("当前添加城市已存在！"));
+				return;
+			}
+			if(building==null)
+			{
+				areas=Areas.dao.findFirst("select * from areas where city=? and college=? and building=?",city,college,"");
+				if(areas==null)
+				{
+					Areas area=new Areas();
+					area.set("city", Util.filterUserInputContent(city)).set("college", Util.filterUserInputContent(college)).set("building", "");
+					area.set("addedDate", Util.getDate()).set("addedTime", Util.getTime());
+					area.save();		
+					ManageController.logger.info(manager.getStr("name")+"---添加了学校-"+city+"-"+college);
+				}else
+					c.renderHtml(Util.getJsonText("当前添加学校已存在！"));
+				return;
+			}
+			areas=Areas.dao.findFirst("select * from areas where city=? and college=? and building=?",city,college,building);
 			if(areas==null)
 			{
 				Areas area=new Areas();
@@ -84,7 +113,7 @@ public class Ring0Service {
 				area.save();		
 				ManageController.logger.info(manager.getStr("name")+"---添加了地区-"+city+"-"+college+"-"+building);
 			}else {
-				c.renderHtml("当前添加地区已存在！");
+				c.renderHtml(Util.getJsonText("当前添加地区已存在！"));
 			}
 		}else 
 			c.redirect("/404/error");   //参数错误
@@ -93,10 +122,21 @@ public class Ring0Service {
 	public void setManager()
 	{
 		Managers manager=c.getModel(Managers.class);  //ring tel name password location
+		if(manager.getInt("ring")==1)
+		{
+			Areas area=Areas.dao.findById(manager.getInt("location"));
+			if(!area.getStr("building").equals(""))
+			{
+				c.redirect("/404/error");
+				return;
+			}
+		}else if(manager.getInt("ring")==2)
+		{
 		manager.set("name",Util.filterUserInputContent(manager.getStr("name")));
 		manager.set("addedDate", Util.getDate()).set("addedTime", Util.getTime());
 		manager.save();
 		c.redirect("/mgradmin/areas?"+manager.getInt("location"));
+		}
 		
 	}
 	

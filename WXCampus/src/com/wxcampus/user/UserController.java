@@ -129,8 +129,10 @@ public class UserController extends Controller{
 	public void submitAdvice()  //提交投诉
 	{
 		User user=getSessionAttr(GlobalVar.WXUSER);
+		int areaID=getSessionAttr("areaID");
 		Advices advice=getModel(Advices.class);
 		advice.set("content", Util.filterUserInputContent(advice.getStr("content")));
+		advice.set("location", areaID);
 		advice.set("uid", user.getInt("uid")).set("addedDate", Util.getDate()).set("addedTime", Util.getTime()).save();
 		redirect("submit-success.html");
 	}
