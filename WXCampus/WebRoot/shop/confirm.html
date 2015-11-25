@@ -38,7 +38,11 @@
 
     </div>
     <div class="three">
-        <p><span>活动：</span></p>
+        <p><span>活动：</span>
+        </p>
+        <#list proList as x>
+        	<p>${x.content}</p>
+        </#list>
     </div>
     <div class="last">
     </div>
@@ -46,7 +50,7 @@
         <div class="bottom_left">
             <p><span>实际付：&nbsp;&nbsp;&nbsp;&nbsp;<sqg style="color: #ff5200">${totalMoney}￥</sqg></span></p>
         </div>
-        <div class="bottom_right">
+        <div class="bottom_right" onclick="payFor()">
             <p>确认支付</p>
         </div>
     </div>

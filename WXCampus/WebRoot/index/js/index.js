@@ -3,13 +3,13 @@
  */
 //��ȡ��Ƶ�б�
 function getFood(foodclass){
-	  var dataInfo=foodclass;
+	  var dataInfo="category="+foodclass;
 	    var url='/index/getItems';
     $.ajax(
         {
             url:url,
             dataType: "json",
-            type: 'GET',
+            type: 'POST',
             data:dataInfo,
             success:backFoodList,
             error: function () {
@@ -32,7 +32,7 @@ function backFoodList(data){
             '<div class="food_info_center">'+
             '<p style="color: #843534;font-size: 2em;margin-left: 10px">'+data.itemList[i].iname+'</p>'+
             '<p style="color: #843534;font-size: 2em;margin-left: 10px">'+data.itemList[i].restNum+'</p>'+
-            '<p style="color: #843534;font-size: 2em;margin-left: 10px">'+data.itemList[i].realPrice+'￥</p>'+
+            '<p style="color: #843534;font-size: 2em;margin-left: 10px">'+data.itemList[i].price+'￥</p>'+
             '</div>'+
             '<div class="food_info_right" style="text-align: right">'+
             '<p style="margin-top: 1em"><img src="/index/image_find/save.png" style="width:3em;height: 3em;margin-right: 1em " onclick=save("'+data.itemList[i].iid+'")></p>'+
@@ -124,4 +124,6 @@ function gotoshop()
 	    window.location='/shop?para='+str;
 }
 
-
+function findFood(){
+	window.location='/index/find';
+}

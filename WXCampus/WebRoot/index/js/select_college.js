@@ -35,7 +35,7 @@ function backCollegeList(data){
 function inialCollege(){
 	
     var url="/index/location";
-    var data="city=城市";
+    var data="city=济南";
     $.ajax(
         {
             url:url,
@@ -67,7 +67,7 @@ var collInfo;
 function inialBuildings(data){
 	collInfo=data;
  var url='/index/location';
-    var dataInfo="city=城市&college="+data;
+    var dataInfo="city=济南&college="+data;
     $.ajax(
         {
             url:url,
@@ -94,5 +94,10 @@ function backBuilList(data){
 }
 
 function tiaozhuan(college,build){
-	window.location='/index?city=城市&college='+college+'&building='+build;
+	window.location='/index?city=济南&college='+college+'&building='+build;
+}
+
+//刷新界面
+function refresh(){
+	window.location.reload();
 }
