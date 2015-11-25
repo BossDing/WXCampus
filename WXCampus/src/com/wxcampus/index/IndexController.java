@@ -58,8 +58,8 @@ public class IndexController extends Controller {
 			removeSessionAttr("areaID");
 			setSessionAttr("areaID", areas.getInt("aid"));
 			
-			//List<Advertisement> adList=Advertisement.dao.find("select * from advertisement order by aid desc limit 0,4");
-			//setAttr("AdList", adList);   //广告图片信息
+			List<Advertisement> adList=Advertisement.dao.find("select * from advertisement order by astid desc limit 0,4");
+			setAttr("AdList", adList);   //广告图片信息
 			
 			Managers manager=Managers.dao.findFirst("select * from managers where location=?",areas.getInt("aid"));
 			setAttr("Manager", manager); // 店长信息
@@ -117,18 +117,13 @@ public class IndexController extends Controller {
 	{
 		int aid=getSessionAttr("areaID");
 		String category=getPara("category");
-		List<Items_on_sale> iosList=Items_on_sale.dao.find("select * from items_on_sale where location=?",aid);
-		List<Items> itemList=new ArrayList<Items>();
-		for(int i=0;i<iosList.size();i++)
+		List<Record> itemList;
+		if(category!=null)
 		{
-			Items item;
-			if(category!=null)
-			    item=Items.dao.findFirst("select * from items where iid=? and category=?",iosList.get(i).getInt("iid"),category);
-			else
-				 item=Items.dao.findFirst("select * from items where iid=?",iosList.get(i).getInt("iid"));
-			item.set("restNum", iosList.get(i).getInt("restNum"));
-			item.set("price", iosList.get(i).getBigDecimal("price"));
-			itemList.add(item);
+			 itemList=Db.find("select a.iid,a.iname,a.icon,b.restNum,b.price from items as a,items_on_sale as b where a.iid=b.iid and b.location=? and a.category=?",aid,category);
+		}else
+		{
+			 itemList=Db.find("select a.iid,a.iname,a.icon,a.category,b.restNum,b.price from items as a,items_on_sale as b where a.iid=b.iid and b.location=?");
 		}
 		setAttr("itemList", itemList); 
 		renderJson();
@@ -154,7 +149,10 @@ public class IndexController extends Controller {
 		setAttr("itemList", itemList);
 		renderJson();
 	}
-	
+	public void find()
+	{
+		render("find.html");
+	}
 	
 	@Clear
 	public void authorize()

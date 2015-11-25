@@ -93,7 +93,7 @@ public class ShopController extends Controller{
 			record.set("iname", item.getStr("iname"));
 			record.set("icon", item.getStr("icon")); //+"-small"
 			record.set("orderNum", num);
-			record.set("price",ios.getBigDecimal("price").doubleValue()*num); //item.getDouble("realPrice")*num
+			record.set("price",new BigDecimal(ios.getBigDecimal("price").doubleValue()*num)); //item.getDouble("realPrice")*num
 			totalMoney+=(ios.getBigDecimal("price").doubleValue()*num);
 			itemList.add(record);
 			}else
@@ -148,7 +148,12 @@ public class ShopController extends Controller{
 		List<Record> itemList=getSessionAttr("itemList");
 		double totalMoney=getSessionAttr("totalMoney");
 		int areaID=getSessionAttr("areaID");
-		int rid=Trades.dao.findFirst("select * from trades order by rid desc").getInt("rid")+1;
+		Trades temptrade=Trades.dao.findFirst("select * from trades order by rid desc");
+		int rid;
+		if(temptrade==null)
+			rid=1;
+		else
+			rid=temptrade.getInt("rid")+1;
 		Managers manager=Managers.dao.findFirst("select * from managers where location=?",areaID);
 		String cuid=getPara("cuid");
 		if(cuid!=null)

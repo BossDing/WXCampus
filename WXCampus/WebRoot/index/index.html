@@ -8,6 +8,15 @@
     <script src="/jquery/jquery-2.1.4.min.js"></script>
     <script src="/bootstrap/js/bootstrap.js"></script>
     <script src="/index/js/index.js"></script>
+     <script src="/index/image_zhuanhuan/myfocus-2.0.4.min.js" type="text/javascript"></script>
+    <script src="/index/image_zhuanhuan/mf-pattern/mF_YSlider.js" type="text/javascript"></script>
+    <link href="/index/image_zhuanhuan/mf-pattern/mF_YSlider.css"  rel="stylesheet" type="text/css" />
+    <script type="text/javascript">
+        myFocus.set({
+            id:'picBox'
+        })
+
+    </script>
     <title>楼主店铺</title>
 </head>
 <body>
@@ -19,11 +28,21 @@
             <p>${Area.college}-${Area.building}</p>
         </div>
         <div class="top_right">
-            <p><img src="/index/images_shop/find.png" >
-            <img src="/index/images_shop/find.png" ></p>
+            <p><img src="/index/images_shop/find.png">
+            <img src="/index/images_shop/find.png"  onclick="findFood()"></p>
         </div>
     </div>
-    <div class="center"></div>
+    <div class="center">
+    	 <div class="ad" id="picBox" style="height:200px ">
+            <div class="pic" >
+                <ul>
+                <#list AdList as x>
+                    <li><img src=${x.img} /></li>
+                </#list>
+                </ul>
+            </div>
+        </div><!--ad结束-->
+    </div>
     <div class="floor">
         <div class="floor_left" id="floor_left">
                 <p style="margin-top: 5px">${Area.startTime?string("HH:mm:ss")}--${Area.endTime?string("HH:mm:ss")}</p>
@@ -44,7 +63,7 @@
     <hr color="#000" width="100%" size="3"/>
     <div class="bottom" id="bottom">
     <#list Category as x>
-        <div class="bottom_content" onclick="getFood('+${x.category}+')">
+        <div class="bottom_content" onclick="getFood('${x.category}')">
             <p><span class="span_img"><img src="/index/images_shop/food.png"></span><span class="span_title">${x.category}</span><span class="span_next"><img src="/index/images_shop/next_1.png"></span></p>
         </div>
      </#list>
