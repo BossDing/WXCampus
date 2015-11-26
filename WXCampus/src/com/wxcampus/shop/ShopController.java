@@ -111,6 +111,7 @@ public class ShopController extends Controller{
 				return;}
 		}
 		setSessionAttr("Carts", map);
+		renderHtml(Util.getJsonText("OK"));
 	}
 	public void confirm()
 	{
@@ -185,12 +186,23 @@ public class ShopController extends Controller{
 	{
 		String date=Util.getDate();
 		String time=Util.getTime();
-		String tel=getPara("userTel");
+	//	String tel=getPara("userTel");
 		String name=getPara("userName");
 		String room=getPara("userRoom");
 		User user=getSessionAttr("sessionUser");
+		if(name==null || room==null)
+		{
+			redirect("/404/error");
+			return;
+		}
+		user.set("name", name).set("room",room).update();
 		List<Record> itemList=getSessionAttr("itemList");
 		double totalMoney=getSessionAttr("totalMoney");
+		if(itemList==null || getSessionAttr("totalMoney")==null)
+		{
+			redirect("/404/error");
+			return;
+		}
 		int areaID=getSessionAttr("areaID");
 		Trades temptrade=Trades.dao.findFirst("select * from trades order by rid desc");
 		int rid;
@@ -297,7 +309,7 @@ public class ShopController extends Controller{
 		removeSessionAttr("itemList");
 		removeSessionAttr("Carts");
 		removeAttr("totalMoney");
-		render("pay-success.html");
+		redirect("/404/error?Msg="+Util.getEncodeText("支付成功！"));
 	}
 
 }

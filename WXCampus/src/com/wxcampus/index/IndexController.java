@@ -172,6 +172,21 @@ public class IndexController extends Controller {
 	}
 	public void find()
 	{
+		if(getSessionAttr("Carts")==null)
+		    setSessionAttr("Carts", new HashMap<Integer,Integer>());
+		HashMap<Integer, Integer> map=getSessionAttr("Carts");
+		int totalnum=0;
+		if(map!=null && !map.isEmpty())
+		{
+			Set<Integer> items=map.keySet();
+			Iterator<Integer> iterator=items.iterator();
+			while(iterator.hasNext())
+			{
+				int iid=iterator.next();
+				totalnum+=map.get(iid);
+			}
+		}
+		setAttr("TotalNum", totalnum);
 		render("find.html");
 	}
 	

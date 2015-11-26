@@ -4,9 +4,12 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
+import java.util.Set;
 
 import com.alibaba.fastjson.JSONObject;
 import com.jfinal.aop.Before;
@@ -17,6 +20,7 @@ import com.jfinal.plugin.activerecord.Record;
 import com.mchange.v2.c3p0.impl.NewPooledConnection;
 import com.wxcampus.common.GlobalVar;
 import com.wxcampus.common.NoUrlPara;
+import com.wxcampus.index.Areas;
 import com.wxcampus.items.Coupons_user;
 import com.wxcampus.items.Items;
 import com.wxcampus.items.Items_on_sale;
@@ -44,7 +48,14 @@ public class UserController extends Controller{
 	{
 		User user=getSessionAttr(GlobalVar.WXUSER);
 		int page=getParaToInt(0);
-		List<Trades> ridList=Trades.dao.paginate(page, 10, "select distinct rid,state,addedDate,addedTime","from trades where customer=? order by addedDate,addedTime desc",user.getInt("uid")).getList();
+		List<Trades> ridList;
+		if(getPara("state")==null)
+			ridList=Trades.dao.paginate(page, 10, "select distinct rid,state,addedDate,addedTime","from trades where customer=? order by addedDate,addedTime desc",user.getInt("uid")).getList();
+		else{
+			int state=getParaToInt("state");
+			ridList=Trades.dao.paginate(page, 10, "select distinct rid,state,addedDate,addedTime","from trades where customer=? and state=? order by addedDate,addedTime desc",user.getInt("uid"),state).getList();
+		}
+		
 		//List<Trades> ridList=Trades.dao.find("select distinct rid,state,addedDate,addedTime from trades where customer=? order by addedDate,addedTime desc",user.getInt("uid"));
 		List<Record> records=new ArrayList<Record>();
 		for(int i=0;i<ridList.size();i++)
@@ -52,11 +63,17 @@ public class UserController extends Controller{
 			int rid=ridList.get(i).getInt("rid");
 			List<Record> itemsRecords=Db.find("select b.iname,b.icon,a.price,a.orderNum from trades as a,items as b where a.item=b.iid and a.rid=?",rid);
 			//Record [] items=itemsRecords.toArray(new Record[itemsRecords.size()]);
+			double money=0;
+			for(int k=0;k<itemsRecords.size();k++)
+			{
+				money+=itemsRecords.get(k).getBigDecimal("price").doubleValue();
+			}
 			Record temp=new Record();
 			temp.set("rid", rid);
 			temp.set("state", ridList.get(i).getInt("state"));
 			temp.set("addedDate", ridList.get(i).get("addedDate"));
 			temp.set("addedTime", ridList.get(i).get("addedTime"));
+			temp.set("money", money);
 			temp.set("items", itemsRecords);
 			records.add(temp);
 		}
@@ -68,17 +85,31 @@ public class UserController extends Controller{
 	public void spetrade()  //订单详情页
 	{
 		int rid=getParaToInt("rid");
+		User user=getSessionAttr(GlobalVar.WXUSER);
 		Trades trade=Trades.dao.findFirst("select * from trades where rid=?", rid);
+		int areaID=trade.getInt("location");
+		Areas area=Areas.dao.findById(areaID);
+		String location=area.getStr("college")+area.getStr("building")+user.getStr("room");
 		List<Record> itemsRecords=Db.find("select b.iname,b.icon,a.price,a.orderNum from trades as a,items as b where a.item=b.iid and a.rid=?",rid);
 		//Record [] items=itemsRecords.toArray(new Record[itemsRecords.size()]);
+		double money=0;
+		int num=0;
+		for(int k=0;k<itemsRecords.size();k++)
+		{
+			num+=itemsRecords.get(k).getInt("orderNum");
+			money+=itemsRecords.get(k).getBigDecimal("price").doubleValue();
+		}
 		Record record=new Record();
 		record.set("rid", rid);
 		record.set("state", trade.getInt("state"));
 		record.set("addedDate", trade.get("addedDate"));
 		record.set("addedTime", trade.get("addedTime"));
+		record.set("num", num).set("money", money);
+		record.set("userTel", user.getStr("tel"));
+		record.set("location",location);
 		record.set("items", itemsRecords);
-		setAttr("trade", record);
-		render("spetrade.html");
+		setAttr("trades", record);
+		render("trades_info.html");
 	}
 	
 	public void coupons()   //查看优惠券
@@ -106,27 +137,48 @@ public class UserController extends Controller{
         renderHtml(Util.getJsonText("OK"));
 		}
 	}
+	//取消收藏
 	
+	public void mySave()
+	{
+		if(getSessionAttr("Carts")==null)
+		    setSessionAttr("Carts", new HashMap<Integer,Integer>());
+		HashMap<Integer, Integer> map=getSessionAttr("Carts");
+		int totalnum=0;
+		if(map!=null && !map.isEmpty())
+		{
+			Set<Integer> items=map.keySet();
+			Iterator<Integer> iterator=items.iterator();
+			while(iterator.hasNext())
+			{
+				int iid=iterator.next();
+				totalnum+=map.get(iid);
+			}
+		}
+		setAttr("TotalNum", totalnum);
+		render("mySave.html");
+	}
 	public void itemstar() //我的收藏
 	{
 		User user=getSessionAttr(GlobalVar.WXUSER);
 		String items[]=user.getStr("itemsStar").split(";");
 		int areaID=getSessionAttr("areaID");
-		List<Items> itemList=new ArrayList<Items>();
+		List<Record> itemList=new ArrayList<Record>();
 		for(int i=0;i<items.length;i++)
 		{
 			if(items[i].equals("")) continue;
-			Items item=Items.dao.findFirst("select * from items where iid=?",Integer.parseInt(items[i]));
-			Items_on_sale items_on_sale=Items_on_sale.dao.findFirst("select * from items_on_sale where location=? and iid=?",areaID,Integer.parseInt(items[i]));
-			item.set("restNum", items_on_sale.getInt("restNum"));
+			Record item=Db.findFirst("select a.iid,a.iname,a.icon,b.restNum,b.price from items as a,items_on_sale as b where a.iid=b.iid and b.location=? and a.iid=?",areaID,Integer.parseInt(items[i]));
+			//Items_on_sale items_on_sale=Items_on_sale.dao.findFirst("select * from items_on_sale where location=? and iid=?",areaID,Integer.parseInt(items[i]));
+			//item.set("restNum", items_on_sale.getInt("restNum"));
 			itemList.add(item);		
 		}
 		setAttr("itemList", itemList);
-		render("itemStar.html");
+		renderJson();
+		//render("itemStar.html");
 	}
 	public void advice()  //advice.html
 	{
-		
+		render("advice.html");
 	}
 	public void submitAdvice()  //提交投诉
 	{
@@ -136,7 +188,7 @@ public class UserController extends Controller{
 		advice.set("content", Util.filterUserInputContent(advice.getStr("content")));
 		advice.set("location", areaID);
 		advice.set("uid", user.getInt("uid")).set("addedDate", Util.getDate()).set("addedTime", Util.getTime()).save();
-		redirect("submit-success.html");
+		this.renderHtml("<script>alert('提交成功');this.location.href='/usr';</script>");
 	}
 	
 	@Clear(UserInterceptor.class)

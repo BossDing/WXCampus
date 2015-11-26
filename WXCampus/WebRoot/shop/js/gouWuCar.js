@@ -60,6 +60,7 @@ function addNum(iid){
 		};
 	}
 	getPrice();
+	sendajax(iid,"0");
 }
 //减少数量
 function reduceNum(iid){
@@ -77,7 +78,9 @@ function reduceNum(iid){
 //		reduceNum(iid);
 //		} 
 	}
+
 	getPrice();
+	sendajax(iid,"1");
 }
 
 //收藏
@@ -112,10 +115,12 @@ function getiid(iid){
 	i++;
 }
 //计算价格
-function getPrice(){
+var LimitPrice='';
+function getPrice(limitPrice){
+	LimitPrice=limitPrice;
 	var price=0;
 	for(var i=0;i<arr.length;i++){
-		price+=parseInt(document.getElementById(arr[i]+'_price').innerHTML)*
+		price+=parseFloat(document.getElementById(arr[i]+'_price').innerHTML)*
 		parseInt(document.getElementById(arr[i]).innerHTML);
 	}
 	document.getElementById("allPrice").innerHTML=price;
@@ -123,9 +128,33 @@ function getPrice(){
 
 //确认订单
 function confoirmPage(){
-	var str='';
-	for(var i=0;i<arr.length;i++){
-	str+=arr[i]+':'+document.getElementById(arr[i]).innerHTML+';';
+	var price_1=parseFloat(LimitPrice);
+	var price_2=parseFloat(document.getElementById("allPrice").innerHTML);
+
+	if(price_2<price_1){
+		alert("未满起送费");
+		return 0;
 	}
-	window.location='/shop/confirm?para='+str;
+	
+		window.location='/shop/confirm';
+	
+}
+
+function sendajax(iid,type){
+	var url='/shop/incart';
+	var dataInfo='iid='+iid+'&type='+type;
+	$.ajax(
+		      {
+		          url:url,
+		          dataType: "json",
+		          type: 'POST',
+		          data:dataInfo,
+		          success:function reback(data){
+		        	  console.log("success");
+		          },
+		          error: function () {
+		              alert("error");
+		          }
+		      }
+		  );
 }

@@ -1,0 +1,111 @@
+.main{
+    width: 100%;
+    height: 100%;
+    min-width: 560px;
+    position: absolute;
+    background-color: #cccccc;
+}
+.top{
+    width: 100%;
+    height: 80px;
+    float: left;
+    background: url("/shop/image_gouWuCar/top.png") no-repeat;
+    background-size: 100% 80px;
+}
+.center{
+    width: 100%;
+    height: 80px;
+   float: left;
+    margin-top: 20px;
+}
+.top p{
+    width: 100%;
+    height: 80px;
+    margin-top: 0px;
+    text-align: center;
+}
+.center_content{
+    width: 80%;
+    height: 80px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align:center;
+}
+.span_image{
+    float: left;
+    margin-left: 20px;
+}
+.span_image img{
+    width: 60px;
+    height: 60px;
+}
+.span_person{
+    display: block;
+    margin-top: 10px;
+    font-size: 40px;
+    color: #ffffff;
+}
+.center_content p{
+    font-size: 22px;
+    color: #595959;
+}
+.floor{
+    width: 80%;
+    height: auto;
+    margin-left: auto;
+    margin-right: auto;
+}
+.floor_top{
+    width: 100%;
+    height: 60px;
+    float: left;
+    margin-top: 25px;
+}
+.floor_center{
+    width: 100%;
+    height: 260px;
+    float: left;
+    margin-top: 30px;
+}
+.floor_bottom{
+    width: 100%;
+    height: 60px;
+    float: left;
+    margin-top: 25px;
+}
+.span_class{
+    width: 10%;
+    height: 60px;
+    float: left;
+    font-size: 20px;
+    color: #595959;
+}
+.input_class{
+    width: 90%;
+    height: 40px;
+    float: left;
+}
+.textarea_input{
+    width: 90%;
+    height: 260px;
+    float: left;
+}
+.bottom{
+    width: 100%;
+    height: 60px;
+    float: left;
+    margin-top:20px;
+    text-align: center;
+}
+.bottom p{
+    width: 100%;
+    height: 60px;
+    float: left;
+}
+.button_submit{
+    width: 20%;
+    height: 40px;
+    margin-top: 10px;
+    background: url("../image_sign/top.png") no-repeat;
+    background-size: 100% 40px;
+}

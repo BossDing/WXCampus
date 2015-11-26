@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta id="viewport" name="viewport" content="width=device-width; initial-scale=1.0; minimum-scale=0.5; maximum-scale=2.0;" />
+    <link rel=stylesheet href="/bootstrap/css/bootstrap.css">
+    <link rel=stylesheet href="/usr/css/mySave.css">
+    <script src="/jquery/jquery-2.1.4.min.js"></script>
+    <script src="/bootstrap/js/bootstrap.js"></script>
+    <script src="/usr/js/mySave.js"></script>
+    <title>我的收藏</title>
+</head>
+<body>
+<div class="main" id="main">
+   	<div class="top">
+        <p><span class="span_image"><img onclick="backPerson()" src="image_personInfo/back.png"></span><span class="span_person">我的收藏</span></p>
+    </div>
+    <div class=center id=center_content></div>
+</div>
+<div  style="width:90px;height:90px;position: fixed;bottom: 100px;left: 80px;">
+<img src="/index/images_shop/car.png" onclick="gotoshop()" style="width: 80px;height: 80px;position: fixed;opacity: 0.5">
+<span id="totalNum" style="display:block;text-align:center;width:20px;height:20px;position: fixed;bottom: 170px;left: 130px;color:#ffffff;font-size:15px;border-radius:10px;background-color:red">${TotalNum}</span>
+<script>
+    window.onload=getSaveList();
+</script>
+</body>
+</html>

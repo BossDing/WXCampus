@@ -28,7 +28,7 @@
             <p>${Area.college}-${Area.building}</p>
         </div>
         <div class="top_right">
-            <p><img src="/index/images_shop/find.png">
+            <p><img src="/index/images_shop/gerenzhongxin.png" onclick="personInfo()">
             <img src="/index/images_shop/find.png"  onclick="findFood()"></p>
         </div>
     </div>
@@ -69,6 +69,9 @@
      </#list>
     </div>
 </div>
-<img src="/index/images_shop/car.png" onclick="gotoshop()" style="position: fixed;bottom: 100px;left: 80px;width: 80px;height: 80px;opacity: 0.5">
+<div  style="width:90px;height:90px;position: fixed;bottom: 100px;left: 80px;">
+<img src="/index/images_shop/car.png" onclick="gotoshop()" style="width: 80px;height: 80px;position: fixed;opacity: 0.5">
+<span id="totalNum" style="display:block;text-align:center;width:20px;height:20px;position: fixed;bottom: 170px;left: 130px;color:#ffffff;font-size:15px;border-radius:10px;background-color:red">${TotalNum}</span>
+</div>
 </body>
 </html>

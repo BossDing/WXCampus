@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta id="viewport" name="viewport" content="width=device-width; initial-scale=1.0; minimum-scale=0.5; maximum-scale=2.0;" />
+    <link rel=stylesheet href="/bootstrap/css/bootstrap.css">
+    <link rel=stylesheet href="/usr/css/person_info.css">
+    <script src="/jquery/jquery-2.1.4.min.js"></script>
+    <script src="/bootstrap/js/bootstrap.js"></script>
+    <script src="/usr/js/person_info.js"></script>
+    <title>个人中心</title>
+</head>
+<body>
+<div class="main">
+    <div class="top">
+        <p><span class="span_image"><img onclick="backshop()" src="/usr/image_personInfo/back.png"></span><span class="span_person">个人中心</span></p>
+    </div>
+    <div class="center">
+        <div class="center_left">
+            <img src="/usr/image_personInfo/money.png">
+        </div>
+        <div class="center_right">
+            <p>昵称</p>
+        </div>
+    </div>
+    <div class="floor">
+        <div class="floor_content" style="margin-top: 15px" onclick="myTrades()">
+            <p><span class="span_img"><img src="/usr/image_personInfo/gouwuCar.png"></span><span class="span_title">我的订单</span>
+                <span class="span_next"><img src="/usr/image_personInfo/next.png"></span></p>
+        </div>
+        <div class="floor_content" style="margin-top: 2px" onclick="mysave()">
+            <p><span class="span_img"><img src="/usr/image_personInfo/save.png"></span><span class="span_title">我的收藏</span>
+                <span class="span_next"><img src="/usr/image_personInfo/next.png"></span></p>
+        </div>
+        <div class="floor_content" style="margin-top: 2px">
+            <p><span class="span_img"><img src="/usr/image_personInfo/money.png"></span><span class="span_title">优惠券</span>
+                <span class="span_next"><img src="/usr/image_personInfo/next.png"></span></p>
+        </div>
+        <div class="floor_content" style="margin-top: 2px" onclick="advice()">
+            <p><span class="span_img"><img src="/usr/image_personInfo/telephone.png"></span><span class="span_title">投诉与建议</span>
+                <span class="span_next"><img src="/usr/image_personInfo/next.png"></span></p>
+        </div>
+    </div>
+</div>
+</body>
+</html>

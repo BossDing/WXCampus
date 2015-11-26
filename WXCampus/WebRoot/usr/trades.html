@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta id="viewport" name="viewport" content="width=device-width; initial-scale=1.0; minimum-scale=0.5; maximum-scale=2.0;" />
+    <link rel=stylesheet href="/bootstrap/css/bootstrap.css">
+    <link rel=stylesheet href="/usr/css/myTrades.css">
+    <script src="/jquery/jquery-2.1.4.min.js"></script>
+    <script src="/bootstrap/js/bootstrap.js"></script>
+    <script src="/usr/js/myTrades.js"></script>
+    <title>我的订单</title>
+</head>
+<body>
+<div class="main">
+    <div class="top">
+        <p><span class="span_image"><img onclick=backPerson() src="/usr/image_personInfo/back.png"></span><span class="span_person">我的订单</span></p>
+    </div>
+    <div class="center">
+        <div class="center_left" onclick="selectAll()">
+            <p>全部</p>
+        </div>
+        <div class="center_center" onclick="selectOld()">
+            <p>已完成</p>
+        </div>
+        <div class="center_right" onclick="selectNew()">
+            <p>待收货</p>
+        </div>
+    </div>
+    <div class="floor">
+    <#list tradeList as x>
+        <div class="food_info" onclick="trade_info('${x.rid}')">
+            <div class="food_info_left">
+                <img src=${x.items.get(0).icon} style="width:10em;height:10em;margin-left:20px">
+            </div>
+            <div class="food_info_center">
+                <p style="color: #843534;font-size: 2em;margin-left: 10px;">${x.items.get(0).iname}等商品</p>
+                <p style="color: #843534;font-size: 2em;margin-left: 10px;">${x.addedDate}</p>
+                <p style="color: #843534;font-size: 2em;margin-left: 10px;">${x.money}￥</p>
+            </div>
+            <div class="food_info_right" style="text-align: right">
+                <p style="margin-top: 1em"><img src="/usr/image_mysave/close.png" style="width:3em;height: 3em;margin-right: 3em "></p>
+                <#if x.state==0>
+            	 <p style="margin-top: 1em"><img src="/usr/image_mysave/newPay.png" style="width:6em;height: 3em;margin-right: 3em;margin-top: 2em "></p>
+            	<#else>
+            	<p style="margin-top: 3em"><span style="width:9em;height: 3em;margin-right: 1em">已完成</span></p>
+           		</#if>
+            </div>
+        </div>
+        <HR style="float: left;width: 100%;height: 2px;color: #080808">
+      </#list>
+    </div>
+</div>
+</body>
+</html>

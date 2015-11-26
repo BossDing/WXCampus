@@ -41,7 +41,10 @@
     </div>
       <div class="bottom">
         <div class="bottom_left">
-            <p><span>实际付：&nbsp;&nbsp;&nbsp;&nbsp;<sqg style="color: #ff5200" id="allPrice"></sqg></span></p>
+            <p><span>实际付：&nbsp;&nbsp;&nbsp;&nbsp;<sqg style="color: #ff5200" id="allPrice"></sqg>
+            <sss style="float: right;margin-right: 20px">${area.startPrice}元起送</sss>
+        	</span>
+            </p>
         </div>
         <div class="bottom_right">
             <p onclick=confoirmPage()>确认订单</p>
@@ -49,7 +52,8 @@
     </div>
 </div>
 <script>
-window.onload=getPrice();
+var priceLimit=${area.startPrice};
+getPrice(priceLimit);
 </script>
 </body>
 </html>

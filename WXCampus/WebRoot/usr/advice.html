@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta id="viewport" name="viewport" content="width=device-width; initial-scale=1.0; minimum-scale=0.5; maximum-scale=2.0;" />
+    <link rel=stylesheet href="/bootstrap/css/bootstrap.css">
+    <link rel=stylesheet href="/usr/css/tousu.css">
+    <script src="/jquery/jquery-2.1.4.min.js"></script>
+    <script src="/bootstrap/js/bootstrap.js"></script>
+    <script src="/usr/js/tousu.js"></script>
+    <title>投诉与建议</title>
+</head>
+<body>
+<div class="main">
+    <div class="top">
+        <p><span class="span_image"><img src="/usr/image_personInfo/back.png"></span><span class="span_person">投诉与建议</span></p>
+    </div>
+    <div class="center">
+        <div class="center_content">
+            <p>售后热线请拨打客服热线</p>
+            <p>投诉与建议请填写下表</p>
+        </div>
+    </div>
+    <form action="/usr/submitAdvice" method="post">
+        <div class="floor">
+            <div class="floor_center">
+                <p><span class="span_class">内容</span>
+                    <textarea class="textarea_input" id="textarea" name="advices.content"></textarea>
+                </p>
+            </div>
+        </div>
+        <div class="bottom">
+            <p  class="input_p"><input type="submit" class="btn btn-default button_submit"></p>
+        </div>
+    </form>
+</div>
+</body>
+</html>

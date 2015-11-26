@@ -90,7 +90,8 @@ function addNum(iid){
 			reduceNum(iid);
 		};
 	}
-	
+	sendajax(iid,"0");
+	document.getElementById("totalNum").innerHTML=parseInt(document.getElementById("totalNum").innerHTML)+1;
 }
 //减少数量
 function reduceNum(iid){
@@ -108,22 +109,42 @@ function reduceNum(iid){
 //		reduceNum(iid);
 //		} 
 	}
+	sendajax(iid,"1");
+	document.getElementById("totalNum").innerHTML=parseInt(document.getElementById("totalNum").innerHTML)-1;
 }
 
 function gotoshop()
 {
-	var str='';
-	for(var i=0;i<arr.length;i++){
-		var num=parseInt(document.getElementById(arr[i]).innerHTML);
-		if(num>0)
-		   str+=arr[i]+":"+document.getElementById(arr[i]).innerHTML+";";
-	}
-	if(str=='')
+	var str=parseInt(document.getElementById("totalNum").innerHTML);
+	if(str==0)
 		alert("您尚未选择任何商品！");
 	else
-	    window.location='/shop?para='+str;
+	    window.location='/shop';
 }
 
 function findFood(){
 	window.location='/index/find';
 }
+function sendajax(iid,type){
+	var url='/shop/incart';
+	var dataInfo='iid='+iid+'&type='+type;
+	$.ajax(
+		      {
+		          url:url,
+		          dataType: "json",
+		          type: 'POST',
+		          data:dataInfo,
+		          success:function reback(data){
+		        	  console.log("success");
+		          },
+		          error: function () {
+		              alert("error");
+		          }
+		      }
+		  );
+}
+
+function personInfo(){
+	window.location='/usr';
+}
+
