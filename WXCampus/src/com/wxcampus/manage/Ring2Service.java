@@ -1,13 +1,16 @@
 package com.wxcampus.manage;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.jfinal.core.Controller;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Record;
+import com.jfinal.render.Render;
 import com.wxcampus.index.Areas;
 import com.wxcampus.index.IndexService;
+import com.wxcampus.items.Areasales;
 import com.wxcampus.items.Trades;
 import com.wxcampus.util.Util;
 
@@ -56,6 +59,9 @@ public class Ring2Service {
 		 c.setAttr("tradeList", records);
 		 c.renderJson();
 	}
+	
+
+	
 	public void confirmTrade()
 	{
 		int rid=c.getParaToInt("rid");

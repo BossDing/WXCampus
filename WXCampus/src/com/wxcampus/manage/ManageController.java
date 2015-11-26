@@ -3,8 +3,10 @@ package com.wxcampus.manage;
 import java.awt.geom.Area;
 import java.io.File;
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.sound.midi.MidiDevice.Info;
@@ -18,6 +20,7 @@ import com.jfinal.aop.Clear;
 import com.jfinal.core.Controller;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Record;
+import com.jfinal.plugin.activerecord.tx.Tx;
 import com.jfinal.upload.UploadFile;
 import com.mchange.v2.c3p0.impl.NewPooledConnection;
 import com.wxcampus.common.GlobalVar;
@@ -154,7 +157,19 @@ public class ManageController extends Controller{
 			break;
 		}		
 	 }
-	 
+	 /**
+	  *  数据统计
+	  */
+	 public void datainfo()
+	 {
+		 Managers manager=getSessionAttr(GlobalVar.BEUSER);
+		 String month=getPara("month");
+		 int year=new Date().getYear();
+		 month=year+"-"+month;	
+		 List<Record> records=Db.find("select a.iname,b.num,b.money from items as a,areasales as b where a.iid=b.item and b.location=? and b.month=?",manager.getInt("location"),month);
+		 setAttr("dataList", records);
+		 render("datainfo.html");	
+	 }
 	 /**
 	  *   设定营业时间
 	  */
@@ -220,7 +235,8 @@ public class ManageController extends Controller{
 	 /**
 	  *  店长，校区负责人确认收到进货
 	  */
-	 public void confirmIngoods()
+	 @Before(Tx.class)
+	 public void confirmIngoods()   //ajax
 	 {
 		 Managers manager=getSessionAttr(GlobalVar.BEUSER);
 		 int rid=getParaToInt("rid");
@@ -230,9 +246,23 @@ public class ManageController extends Controller{
 			 redirect("/404/error");
 			 return;
 		 }
+		 //Managers to=Managers.dao.findById(igList.get(0).getInt("to"));
 		 for(int i=0;i<igList.size();i++)
 		 {
-			 igList.get(i).set("state", 3).update();  //3 已完成
+			 igList.get(i).set("state", 3).update();  //3 已完成	 
+//			 Items_on_sale iosto=Items_on_sale.dao.findFirst("select * from items_on_sale where location=? and iid=?",to.getInt("location"),igList.get(i).getInt("item"));
+//             if(iosto==null)
+//             {
+//    			 redirect("/404/error");
+//    			 return;
+//             }
+//             if(iosto.getInt("restNum")<igList.get(i).getInt("num"))
+//             {
+//            	 return;
+//             }else
+//             iosto.set("restNum", iosto.getInt("restNum")-igList.get(i).getInt("num")).update();
+             
+             
 			 Items_on_sale ios=Items_on_sale.dao.findFirst("select * from items_on_sale where location=? and iid=?",manager.getInt("location"),igList.get(i).getInt("item"));
 			 if(ios==null)
 			 {
@@ -345,19 +375,30 @@ public class ManageController extends Controller{
 	 }
 	 /**
 	  *  管理，校区负责人确认处理进货订单
+	 * @throws SQLException 
 	  */
-	 public void confirmDealIg() //ajax
+	 @Before(Tx.class)
+	 public void confirmDealIg() throws SQLException //ajax
 	 {
 		 int rid=getParaToInt("rid");
 		 Managers manager=getSessionAttr(GlobalVar.BEUSER);
-		 List<Ingoods> igList=Ingoods.dao.find("select state,to from ingoods where rid=?",rid);
+		 List<Ingoods> igList=Ingoods.dao.find("select state,to,item,num from ingoods where rid=?",rid);
 		 if(igList!=null && igList.get(0).getInt("to")!=manager.getInt("mid"))
 		 {
 			 redirect("/404/error");
 			 return;
 		 }
 		 for(int i=0;i<igList.size();i++)
+		 { 
+			 Items_on_sale ios=Items_on_sale.dao.findFirst("select * from items_on_sale where location=? and iid=?",manager.getInt("location"),igList.get(i).getInt("item"));
+			 if(ios.getInt("restNum")<igList.get(i).getInt("num"))
+			 {
+				 renderHtml(Util.getJsonText("货物不足"));
+				 throw new SQLException();
+			 }
+			 ios.set("restNum", ios.getInt("restNum")-igList.get(i).getInt("num")).update();
 			 igList.get(i).set("state", 2).update();  // 2 处理中
+		 }
 		 new Informs().set("type", "ingoods").set("to", igList.get(0).getInt("from")).set("addedDT", new Timestamp(System.currentTimeMillis())).save();
 		 renderHtml(Util.getJsonText("OK"));
 	 }

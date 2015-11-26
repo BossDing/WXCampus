@@ -6,8 +6,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.jfinal.aop.Before;
 import com.jfinal.core.Controller;
@@ -17,6 +19,7 @@ import com.jfinal.plugin.activerecord.tx.Tx;
 import com.wxcampus.common.GlobalVar;
 import com.wxcampus.common.NoUrlPara;
 import com.wxcampus.index.Areas;
+import com.wxcampus.items.Areasales;
 import com.wxcampus.items.Coupons;
 import com.wxcampus.items.Coupons_use;
 import com.wxcampus.items.Coupons_user;
@@ -41,50 +44,93 @@ public class ShopController extends Controller{
 	@Before({NoUrlPara.class,ShopInterceptor.class})
 	public void index()
 	{
-		String para=getPara("para");
-		if( para==null || para.equals(""))
+		//String para=getPara("para");
+		//if( para==null || para.equals(""))
+		HashMap<Integer, Integer> map=getSessionAttr("Carts");
+		if(map==null || map.isEmpty())
 		{
 			redirect("/404/error?Msg="+Util.getEncodeText("尚未选择商品"));
 			return;
 		}
-		String items[]=para.split(";");
 		int areaID=getSessionAttr("areaID");
 		Areas area=Areas.dao.findById(areaID);
 
 		List<Record> itemList=new ArrayList<Record>();
-		for(int i=0;i<items.length;i++)
+		Set<Integer> items=map.keySet();
+		Iterator<Integer> iterator=items.iterator();
+		while(iterator.hasNext())
 		{
-			String temp[]=items[i].split(":");
-			if(temp.length==2)
-			{
-				
-			int iid=Integer.parseInt(temp[0]);
+			//String temp[]=items[i].split(":");
+		//	if(temp.length==2)
+			//{
+			int iid=iterator.next();
 			Record item;
 			item=Db.findFirst("select a.iid,a.iname,a.icon,b.restNum,b.price from items as a,items_on_sale as b where a.iid=b.iid and b.location=? and a.iid=?",areaID,iid);
-		    item.set("orderNum", Integer.parseInt(temp[1]));
+		    item.set("orderNum", map.get(iid));
 			itemList.add(item);
-			}else
-				redirect("/404/error");
+		//	}else
+		//		redirect("/404/error");
 		}
+		//String items[]=para.split(";");
+		
+//		for(int i=0;i<items.length;i++)
+//		{
+
+	//	}
 		setAttr("itemList", itemList);
 		setAttr("area", area);
 		render("index.html");
 	}
+	public void incart()
+	{
+		int iid=getParaToInt("iid");
+		int type=getParaToInt("type");  //0 添加 1减少
+		HashMap<Integer, Integer> map=getSessionAttr("Carts");
+		if(map==null)
+		{
+			redirect("/404/error");
+			return;
+		}
+		if(map.containsKey(iid))
+		{
+			if(type==0)
+			   map.put(iid, map.get(iid)+1);
+			else if(type==1)
+			{
+				if(map.get(iid)==1)
+					map.remove(iid);
+				else {
+					map.put(iid, map.get(iid)-1);
+				}
+			}
+		}else {
+			if(type==0)
+			   map.put(iid, 1);
+			else if(type==1)
+				{redirect("/404/error");
+				return;}
+		}
+		setSessionAttr("Carts", map);
+	}
 	public void confirm()
 	{
-		String items[]=getPara("para").split(";");
+		HashMap<Integer, Integer> map=getSessionAttr("Carts");
+		if(map==null || map.isEmpty())
+		{
+			redirect("/404/error?Msg="+Util.getEncodeText("尚未选择商品"));
+			return;
+		}
 		int areaID=getSessionAttr("areaID");
 		Areas area=Areas.dao.findById(areaID);
 		List<Record> itemList=new ArrayList<Record>();
 		double totalMoney=0;
-		for(int i=0;i<items.length;i++)
+		Set<Integer> items=map.keySet();
+		Iterator<Integer> iterator=items.iterator();
+		while(iterator.hasNext())
 		{
 			Record record=new Record();
-			String temp[]=items[i].split(":");
-			if(temp.length==2)
-			{
-			int iid=Integer.parseInt(temp[0]);
-			int num=Integer.parseInt(temp[1]);
+			int iid=iterator.next();
+			int num=map.get(iid);
 			Items_on_sale ios=Items_on_sale.dao.findFirst("select * from items_on_sale where location=? and iid=?",areaID,iid);
 			if(ios.getInt("restNum")<num)
 				{redirect("/404/error"); break;}
@@ -96,8 +142,6 @@ public class ShopController extends Controller{
 			record.set("price",new BigDecimal(ios.getBigDecimal("price").doubleValue()*num)); //item.getDouble("realPrice")*num
 			totalMoney+=(ios.getBigDecimal("price").doubleValue()*num);
 			itemList.add(record);
-			}else
-				redirect("/404/error");
 		}
 		if(totalMoney<area.getBigDecimal("startPrice").doubleValue())
 		{
@@ -173,6 +217,9 @@ public class ShopController extends Controller{
 			  cu.save();
 			}
 		}
+		
+		Areas area=Areas.dao.findById(areaID);
+		Areas college=Areas.dao.findFirst("select * from areas where city=? and college=? and building=?",area.getStr("city"),area.getStr("college"),"");
 		for(int i=0;i<itemList.size();i++)
 		{
 		  Trades trades=new Trades();
@@ -187,6 +234,42 @@ public class ShopController extends Controller{
 		  trades.set("orderNum", itemList.get(i).getInt("orderNum"));
 		  trades.set("state", 0);  //0:正在派送  1:交易完成
 		  trades.save();
+		  
+		  String month=Util.getMonth();
+		  Areasales as=Areasales.dao.findFirst("select * from areasales where item=? and location=? and month=?",itemList.get(i).getInt("iid"),areaID,month);
+		  if(as==null)
+		  {
+			  as=new Areasales();
+			  as.set("item", itemList.get(i).getInt("iid")).set("num", itemList.get(i).getInt("orderNum"));
+			  as.set("money", itemList.get(i).getBigDecimal("price")).set("location", areaID);
+			  as.set("addedDT", new Timestamp(System.currentTimeMillis())).set("month", month);
+			  as.save();
+		  }else
+			  as.set("num", as.getInt("num")+itemList.get(i).getInt("orderNum")).set("money", as.getBigDecimal("money").add(itemList.get(i).getBigDecimal("price"))).update();
+		  
+		  as=null;
+		  as=Areasales.dao.findFirst("select * from areasales where item=? and location=? and month=?",itemList.get(i).getInt("iid"),college.getInt("aid"),month);
+		  if(as==null)
+		  {
+			  as=new Areasales();
+			  as.set("item", itemList.get(i).getInt("iid")).set("num", itemList.get(i).getInt("orderNum"));
+			  as.set("money", itemList.get(i).getBigDecimal("price")).set("location", college.getInt("aid"));
+			  as.set("addedDT", new Timestamp(System.currentTimeMillis())).set("month", month);
+			  as.save();
+		  }else
+			  as.set("num", as.getInt("num")+itemList.get(i).getInt("orderNum")).set("money", as.getBigDecimal("money").add(itemList.get(i).getBigDecimal("price"))).update();
+		  
+		 as=null;
+		 as=Areasales.dao.findFirst("select * from areasales where item=? and location=? and month=?",itemList.get(i).getInt("iid"),0,month);
+		 if(as==null)
+		  {
+			  as=new Areasales();
+			  as.set("item", itemList.get(i).getInt("iid")).set("num", itemList.get(i).getInt("orderNum"));
+			  as.set("money", itemList.get(i).getBigDecimal("price")).set("location", 0);
+			  as.set("addedDT", new Timestamp(System.currentTimeMillis())).set("month", month);
+			  as.save();
+		  }else
+			  as.set("num", as.getInt("num")+itemList.get(i).getInt("orderNum")).set("money", as.getBigDecimal("money").add(itemList.get(i).getBigDecimal("price"))).update();
 		}
 		Incomes income=Incomes.dao.findFirst("select * from incomes where mid=?",manager.getInt("mid"));
 		if(income==null)
@@ -195,10 +278,9 @@ public class ShopController extends Controller{
 			income.set("mid", manager.getInt("mid")).set("sales", new BigDecimal(totalMoney));
 			income.set("addedDT", new Timestamp(System.currentTimeMillis())).save();
 		}else {
-			income.set("sales", income.getBigDecimal("sales").add(new BigDecimal(totalMoney)));
+			income.set("sales", income.getBigDecimal("sales").add(new BigDecimal(totalMoney))).update();
 		}
-		Areas area=Areas.dao.findById(areaID);
-		Areas college=Areas.dao.findFirst("select * from areas where city=? and college=? and building=?",area.getStr("city"),area.getStr("college"),"");
+		
 		Managers colleger=Managers.dao.findFirst("select mid from managers where location=?",college.getInt("aid"));
 		income=null;
 		income=Incomes.dao.findFirst("select * from incomes where mid=?",colleger.getInt("mid"));
@@ -208,11 +290,12 @@ public class ShopController extends Controller{
 			income.set("mid", manager.getInt("mid")).set("sales", new BigDecimal(totalMoney));
 			income.set("addedDT", new Timestamp(System.currentTimeMillis())).save();
 		}else {
-			income.set("sales", income.getBigDecimal("sales").add(new BigDecimal(totalMoney)));
+			income.set("sales", income.getBigDecimal("sales").add(new BigDecimal(totalMoney))).update();
 		}
 		income=Incomes.dao.findFirst("select * from incomes where mid=?",1);
-		income.set("sales", income.getBigDecimal("sales").add(new BigDecimal(totalMoney)));
+		income.set("sales", income.getBigDecimal("sales").add(new BigDecimal(totalMoney))).update();
 		removeSessionAttr("itemList");
+		removeSessionAttr("Carts");
 		removeAttr("totalMoney");
 		render("pay-success.html");
 	}

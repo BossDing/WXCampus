@@ -3,7 +3,10 @@ package com.wxcampus.index;
 
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import com.alibaba.fastjson.JSONObject;
 import com.jfinal.aop.Before;
@@ -66,6 +69,20 @@ public class IndexController extends Controller {
 			
 			List<Items> category=Items.dao.find("select distinct category from items");
 			setAttr("Category",category);
+			
+			HashMap<Integer, Integer> map=getSessionAttr("Carts");
+			int totalnum=0;
+			if(map!=null && !map.isEmpty())
+			{
+				Set<Integer> items=map.keySet();
+				Iterator<Integer> iterator=items.iterator();
+				while(iterator.hasNext())
+				{
+					int iid=iterator.next();
+					totalnum+=map.get(iid);
+				}
+			}
+			setAttr("TotalNum", totalnum);
 //			List<Items_on_sale> iosList=Items_on_sale.dao.find("select * from items_on_sale where location=?",areas.getStr("aid"));
 //			List<Items> itemList=new ArrayList<Items>();
 //			for(int i=0;i<iosList.size();i++)
@@ -76,6 +93,8 @@ public class IndexController extends Controller {
 //			}
 			//setAttr("itemList", itemList); //商品信息
 		}
+		if(getSessionAttr("Carts")==null)
+		    setSessionAttr("Carts", new HashMap<Integer,Integer>());
 		render("index.html");
 	}
 	
@@ -145,6 +164,8 @@ public class IndexController extends Controller {
 	{
 		String itemName=getPara("q");
 		int areaID=getSessionAttr("areaID");
+		if(getSessionAttr("Carts")==null)
+		    setSessionAttr("Carts", new HashMap<Integer,Integer>());
 		List<Record> itemList=Db.find("select a.iid,a.iname,a.icon,b.restNum,b.price from items as a,items_on_sale as b where b.location=? and a.iid=b.iid and a.iname regexp ?",areaID,".*"+itemName+".*");
 		setAttr("itemList", itemList);
 		renderJson();
