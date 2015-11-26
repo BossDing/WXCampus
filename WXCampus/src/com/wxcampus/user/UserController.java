@@ -43,7 +43,9 @@ public class UserController extends Controller{
 	public void trades()    //查看订单                *****可能需要分页查询*****
 	{
 		User user=getSessionAttr(GlobalVar.WXUSER);
-		List<Trades> ridList=Trades.dao.find("select distinct rid,state,addedDate,addedTime from trades where customer=? order by addedDate,addedTime desc",user.getInt("uid"));
+		int page=getParaToInt(0);
+		List<Trades> ridList=Trades.dao.paginate(page, 10, "select distinct rid,state,addedDate,addedTime","from trades where customer=? order by addedDate,addedTime desc",user.getInt("uid")).getList();
+		//List<Trades> ridList=Trades.dao.find("select distinct rid,state,addedDate,addedTime from trades where customer=? order by addedDate,addedTime desc",user.getInt("uid"));
 		List<Record> records=new ArrayList<Record>();
 		for(int i=0;i<ridList.size();i++)
 		{
