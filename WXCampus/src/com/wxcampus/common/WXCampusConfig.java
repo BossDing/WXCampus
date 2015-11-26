@@ -13,6 +13,7 @@ import com.jfinal.plugin.c3p0.C3p0Plugin;
 import com.wxcampus.index.Advertisement;
 import com.wxcampus.index.Areas;
 import com.wxcampus.index.IndexController;
+import com.wxcampus.items.Areasales;
 import com.wxcampus.items.Coupons;
 import com.wxcampus.items.Coupons_use;
 import com.wxcampus.items.Coupons_user;
@@ -81,6 +82,7 @@ public class WXCampusConfig extends JFinalConfig{
 		arp.addMapping("promotion", "pid",Promotion.class);
 		arp.addMapping("incomes", "iid",Incomes.class);
 		arp.addMapping("informs", "iid",Informs.class);
+		arp.addMapping("areasales", "asid",Areasales.class);
 	}
 
 	

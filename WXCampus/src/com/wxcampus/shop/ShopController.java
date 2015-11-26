@@ -19,6 +19,7 @@ import com.jfinal.plugin.activerecord.tx.Tx;
 import com.wxcampus.common.GlobalVar;
 import com.wxcampus.common.NoUrlPara;
 import com.wxcampus.index.Areas;
+import com.wxcampus.items.Areasales;
 import com.wxcampus.items.Coupons;
 import com.wxcampus.items.Coupons_use;
 import com.wxcampus.items.Coupons_user;
@@ -216,6 +217,9 @@ public class ShopController extends Controller{
 			  cu.save();
 			}
 		}
+		
+		Areas area=Areas.dao.findById(areaID);
+		Areas college=Areas.dao.findFirst("select * from areas where city=? and college=? and building=?",area.getStr("city"),area.getStr("college"),"");
 		for(int i=0;i<itemList.size();i++)
 		{
 		  Trades trades=new Trades();
@@ -230,6 +234,42 @@ public class ShopController extends Controller{
 		  trades.set("orderNum", itemList.get(i).getInt("orderNum"));
 		  trades.set("state", 0);  //0:正在派送  1:交易完成
 		  trades.save();
+		  
+		  String month=Util.getMonth();
+		  Areasales as=Areasales.dao.findFirst("select * from areasales where item=? and location=? and month=?",itemList.get(i).getInt("iid"),areaID,month);
+		  if(as==null)
+		  {
+			  as=new Areasales();
+			  as.set("item", itemList.get(i).getInt("iid")).set("num", itemList.get(i).getInt("orderNum"));
+			  as.set("money", itemList.get(i).getBigDecimal("price")).set("location", areaID);
+			  as.set("addedDT", new Timestamp(System.currentTimeMillis())).set("month", month);
+			  as.save();
+		  }else
+			  as.set("num", as.getInt("num")+itemList.get(i).getInt("orderNum")).set("money", as.getBigDecimal("money").add(itemList.get(i).getBigDecimal("price"))).update();
+		  
+		  as=null;
+		  as=Areasales.dao.findFirst("select * from areasales where item=? and location=? and month=?",itemList.get(i).getInt("iid"),college.getInt("aid"),month);
+		  if(as==null)
+		  {
+			  as=new Areasales();
+			  as.set("item", itemList.get(i).getInt("iid")).set("num", itemList.get(i).getInt("orderNum"));
+			  as.set("money", itemList.get(i).getBigDecimal("price")).set("location", college.getInt("aid"));
+			  as.set("addedDT", new Timestamp(System.currentTimeMillis())).set("month", month);
+			  as.save();
+		  }else
+			  as.set("num", as.getInt("num")+itemList.get(i).getInt("orderNum")).set("money", as.getBigDecimal("money").add(itemList.get(i).getBigDecimal("price"))).update();
+		  
+		 as=null;
+		 as=Areasales.dao.findFirst("select * from areasales where item=? and location=? and month=?",itemList.get(i).getInt("iid"),0,month);
+		 if(as==null)
+		  {
+			  as=new Areasales();
+			  as.set("item", itemList.get(i).getInt("iid")).set("num", itemList.get(i).getInt("orderNum"));
+			  as.set("money", itemList.get(i).getBigDecimal("price")).set("location", 0);
+			  as.set("addedDT", new Timestamp(System.currentTimeMillis())).set("month", month);
+			  as.save();
+		  }else
+			  as.set("num", as.getInt("num")+itemList.get(i).getInt("orderNum")).set("money", as.getBigDecimal("money").add(itemList.get(i).getBigDecimal("price"))).update();
 		}
 		Incomes income=Incomes.dao.findFirst("select * from incomes where mid=?",manager.getInt("mid"));
 		if(income==null)
@@ -238,10 +278,9 @@ public class ShopController extends Controller{
 			income.set("mid", manager.getInt("mid")).set("sales", new BigDecimal(totalMoney));
 			income.set("addedDT", new Timestamp(System.currentTimeMillis())).save();
 		}else {
-			income.set("sales", income.getBigDecimal("sales").add(new BigDecimal(totalMoney)));
+			income.set("sales", income.getBigDecimal("sales").add(new BigDecimal(totalMoney))).update();
 		}
-		Areas area=Areas.dao.findById(areaID);
-		Areas college=Areas.dao.findFirst("select * from areas where city=? and college=? and building=?",area.getStr("city"),area.getStr("college"),"");
+		
 		Managers colleger=Managers.dao.findFirst("select mid from managers where location=?",college.getInt("aid"));
 		income=null;
 		income=Incomes.dao.findFirst("select * from incomes where mid=?",colleger.getInt("mid"));
@@ -251,10 +290,10 @@ public class ShopController extends Controller{
 			income.set("mid", manager.getInt("mid")).set("sales", new BigDecimal(totalMoney));
 			income.set("addedDT", new Timestamp(System.currentTimeMillis())).save();
 		}else {
-			income.set("sales", income.getBigDecimal("sales").add(new BigDecimal(totalMoney)));
+			income.set("sales", income.getBigDecimal("sales").add(new BigDecimal(totalMoney))).update();
 		}
 		income=Incomes.dao.findFirst("select * from incomes where mid=?",1);
-		income.set("sales", income.getBigDecimal("sales").add(new BigDecimal(totalMoney)));
+		income.set("sales", income.getBigDecimal("sales").add(new BigDecimal(totalMoney))).update();
 		removeSessionAttr("itemList");
 		removeSessionAttr("Carts");
 		removeAttr("totalMoney");

@@ -1,12 +1,15 @@
 package com.wxcampus.manage;
 
+import java.awt.geom.Area;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.jfinal.core.Controller;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Record;
 import com.wxcampus.index.Areas;
+import com.wxcampus.items.Areasales;
 import com.wxcampus.items.Trades;
 import com.wxcampus.user.Advices;
 
@@ -60,4 +63,5 @@ public class Ring1Service {
 		 c.setAttr("tradeList", records);
 		 c.renderJson();
 	}
+	
 }

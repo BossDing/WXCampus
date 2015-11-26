@@ -209,6 +209,17 @@ CREATE TABLE `advices` (
   PRIMARY KEY (`aid`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS `areasales`;
+CREATE TABLE `areasales` (
+  `asid` int(10) NOT NULL AUTO_INCREMENT,
+  `item` int(10) NOT NULL,
+  `num` int(10) not null,
+  `money` decimal(10,2) not null,
+  `location` int(10) not null,
+  `month` varchar(127) not null,
+  `addedDT` timestamp NOT NULL,
+  PRIMARY KEY (`asid`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 select * from user;
 
 select * from areas;
