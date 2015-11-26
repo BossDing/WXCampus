@@ -1,5 +1,6 @@
 package com.wxcampus.user;
 
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ import com.mchange.v2.c3p0.impl.NewPooledConnection;
 import com.wxcampus.common.GlobalVar;
 import com.wxcampus.common.NoUrlPara;
 import com.wxcampus.index.Areas;
+import com.wxcampus.items.Applyfor;
 import com.wxcampus.items.Coupons_user;
 import com.wxcampus.items.Items;
 import com.wxcampus.items.Items_on_sale;
@@ -131,13 +133,31 @@ public class UserController extends Controller{
 		}else {
 		itemStar+=(iid+";");
 		user.set("itemsStar", itemStar).update();
-        user=User.me.findById(user.getInt("uid"));
-        removeSessionAttr(GlobalVar.WXUSER);
+        //user=User.me.findById(user.getInt("uid"));
+        //removeSessionAttr(GlobalVar.WXUSER);
         setSessionAttr(GlobalVar.WXUSER, user);  //待测试是否需要更新session
         renderHtml(Util.getJsonText("OK"));
 		}
 	}
-	//取消收藏
+	//ajax取消收藏
+	public void removeItemStar()
+	{
+		User user=getSessionAttr(GlobalVar.WXUSER);
+		int iid=getParaToInt("iid");
+		String itemStar=user.getStr("itemsStar");
+		if(!itemStar.contains(iid+";"))
+		{
+			renderHtml(Util.getJsonText("您未收藏该商品"));
+			return;
+		}else {
+		itemStar=itemStar.replaceAll(iid+";", "");
+		user.set("itemsStar", itemStar).update();
+//        user=User.me.findById(user.getInt("uid"));
+//        removeSessionAttr(GlobalVar.WXUSER);
+        setSessionAttr(GlobalVar.WXUSER, user);  //待测试是否需要更新session
+        renderHtml(Util.getJsonText("OK"));
+		}
+	}
 	
 	public void mySave()
 	{
@@ -292,6 +312,23 @@ public class UserController extends Controller{
 		}else {
 			renderHtml(Util.getJsonText("两次验证码发送间隔须超过一分钟"));
 		}
+	}
+	
+	/**
+	 *   申请当店长
+	 */
+	public void wantosell()
+	{
+		//验证码防bot待加
+		render("wantosell.html");
+	}
+	public void wantosellAction()
+	{
+		Applyfor af=getModel(Applyfor.class);
+		af.set("addedDT", new Timestamp(System.currentTimeMillis()));
+		af.set("state", 0);   //0 未处理 1已处理
+		af.save();
+		renderHtml("<script>alert('提交成功');this.location.href='/usr/wantosell';</script>");
 	}
 	
 

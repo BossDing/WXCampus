@@ -16,7 +16,7 @@ public class LoginInterceptor implements Interceptor{
 	public void intercept(Invocation arg0) {
 		if(arg0.getController().getSessionAttr(GlobalVar.WXUSER)==null)
 		{
-	    arg0.getController().setSessionAttr(GlobalVar.OPENID, "666666");
+	   // arg0.getController().setSessionAttr(GlobalVar.OPENID, "666666");
 		String openid=arg0.getController().getSessionAttr(GlobalVar.OPENID);
 		User user=User.me.findFirst("select * from user where openid=?",openid);
 		if(user!=null)

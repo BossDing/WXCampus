@@ -122,7 +122,7 @@ public class Ring0Service {
 	
 	public void setManager()
 	{
-		Managers manager=c.getModel(Managers.class);  //ring tel name password location
+		Managers manager=c.getModel(Managers.class);  //ring tel name password  ---location---
 		if(manager.getInt("ring")==1)
 		{
 			Areas area=Areas.dao.findById(manager.getInt("location"));
@@ -131,14 +131,22 @@ public class Ring0Service {
 				c.redirect("/404/error");
 				return;
 			}
-		}else if(manager.getInt("ring")==2)
-		{
-		manager.set("name",Util.filterUserInputContent(manager.getStr("name")));
-		manager.set("addedDate", Util.getDate()).set("addedTime", Util.getTime());
-		manager.save();
-		c.redirect("/mgradmin/areas?"+manager.getInt("location"));
 		}
-		
+		Managers oldManager=Managers.dao.findFirst("select * from managers where location=?",manager.getInt("location"));
+		if(oldManager!=null)
+		{
+			oldManager.set("name",Util.filterUserInputContent(manager.getStr("name")));
+			oldManager.set("tel",Util.filterUserInputContent(manager.getStr("tel")));
+			oldManager.set("password", manager.getStr("password")).set("say", "");
+			oldManager.set("addedDate", Util.getDate()).set("addedTime", Util.getTime());
+			oldManager.update();
+		}else {
+			manager.set("name",Util.filterUserInputContent(manager.getStr("name")));
+			manager.set("tel",Util.filterUserInputContent(manager.getStr("tel")));
+			manager.set("addedDate", Util.getDate()).set("addedTime", Util.getTime());
+			manager.save();
+		}
+		c.redirect("/mgradmin/areas?"+manager.getInt("location"));	
 	}
 	
 }

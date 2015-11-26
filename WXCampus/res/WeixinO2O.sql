@@ -220,6 +220,20 @@ CREATE TABLE `areasales` (
   `addedDT` timestamp NOT NULL,
   PRIMARY KEY (`asid`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `applyfor`;
+CREATE TABLE `applyfor` (
+  `aid` int(10) NOT NULL AUTO_INCREMENT,
+  `name` varchar(127) NOT NULL,
+  `tel` varchar(127) not null,
+  `city` varchar(127) not null,
+  `college` varchar(127) not null,
+  `building` varchar(127) not null,
+  `state` int(1) not null,
+  `addedDT` timestamp NOT NULL,
+  PRIMARY KEY (`aid`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
 select * from user;
 
 select * from areas;

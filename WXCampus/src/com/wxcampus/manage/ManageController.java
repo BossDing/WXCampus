@@ -27,6 +27,7 @@ import com.wxcampus.common.GlobalVar;
 import com.wxcampus.common.NoUrlPara;
 import com.wxcampus.index.Areas;
 import com.wxcampus.index.IndexService;
+import com.wxcampus.items.Applyfor;
 import com.wxcampus.items.Incomes;
 import com.wxcampus.items.Informs;
 import com.wxcampus.items.Ingoods;
@@ -628,6 +629,17 @@ public class ManageController extends Controller{
 		    item.update();
 			
 		 }
+	 }
+	 /**
+	  *   查看申请当店长
+	  */
+	 @Before(Ring0Interceptor.class)
+	 public void seeApplyfor()
+	 {
+		 int page=getParaToInt(0);
+		 List<Applyfor> afList=Applyfor.dao.paginate(page, 15, "select *","from applyfor").getList();
+		 setAttr("afList", afList);
+		 render(".html");
 	 }
 	 /**
 	  *  查看投诉建议

@@ -58,7 +58,7 @@ public class IndexController extends Controller {
 			isService.updateShopState(areas);
 			
 			setAttr("Area", areas);  //地区信息
-			removeSessionAttr("areaID");
+			//removeSessionAttr("areaID");
 			setSessionAttr("areaID", areas.getInt("aid"));
 			
 			List<Advertisement> adList=Advertisement.dao.find("select * from advertisement order by astid desc limit 0,4");
@@ -92,6 +92,9 @@ public class IndexController extends Controller {
 //				itemList.add(item);
 //			}
 			//setAttr("itemList", itemList); //商品信息
+		}else {
+			redirect("/404/error");
+			return;
 		}
 		if(getSessionAttr("Carts")==null)
 		    setSessionAttr("Carts", new HashMap<Integer,Integer>());
