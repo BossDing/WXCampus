@@ -177,6 +177,17 @@ public class ManageController extends Controller{
 		 render("datainfo.html");	
 	 }
 	 /**
+	  *  修改店铺状态
+	  */
+	 public void setShopState()
+	 {
+		 Managers manager=getSessionAttr(GlobalVar.BEUSER);
+		 boolean state=getParaToBoolean("state");  // 0关闭  1开启
+		 Areas area=Areas.dao.findById(manager.getInt("location"));
+		 area.set("state", state).update();
+		 renderHtml(Util.getJsonText("OK"));
+	 }
+	 /**
 	  *   设定营业时间
 	  */
 	 public void setSellingTime()  //ajax
@@ -711,16 +722,27 @@ public class ManageController extends Controller{
 	 @Before(Ring0Interceptor.class)
 	 public void tradesALL()
 	 {	
+		int page=1;
+		int flag=0;  // 0 全部 1未处理 2已完成
+		if(getParaToInt(0)!=null){
+			page=getParaToInt(0);
+		}
+		String date=Util.getDate();
+		if(getPara("date")!=null){
+		    date=getPara("date");	
+		}
 		 List<Trades> ridList;
 		 String state=getPara("state");
 		 if(state==null)
-			 ridList=Trades.dao.find("select distinct rid,state,addedDate,addedTime from trades order by addedDate,addedTime desc");
+			 ridList=Trades.dao.paginate(page,15,"select distinct rid,state,addedDate,addedTime","from trades order by addedDate,addedTime desc").getList();
 		 else {
 			if(state.equals("0"))
-				ridList=Trades.dao.find("select distinct rid,state,addedDate,addedTime from trades where state=0  order by addedDate,addedTime desc");
-			else if(state.equals("1"))
-				ridList=Trades.dao.find("select distinct rid,state,addedDate,addedTime from trades where state=1  order by addedDate,addedTime desc");
-			else {
+				{ridList=Trades.dao.paginate(page,15,"select distinct rid,state,addedDate,addedTime","from trades where state=0  order by addedDate,addedTime desc").getList();
+			     flag=1;}
+				else if(state.equals("1"))
+				{ridList=Trades.dao.paginate(page,15,"select distinct rid,state,addedDate,addedTime","from trades where state=1  order by addedDate,addedTime desc").getList();
+			     flag=2; }
+				else {
 				redirect("/404/error");
 				return;
 			}
@@ -731,16 +753,24 @@ public class ManageController extends Controller{
 				int rid=ridList.get(i).getInt("rid");
 				List<Record> itemsRecords=Db.find("select b.iname,b.icon,a.price,a.orderNum from trades as a,items as b where a.item=b.iid and a.rid=?",rid);
 				//Record [] items=itemsRecords.toArray(new Record[itemsRecords.size()]);
+				double money=0;
+				for(int k=0;k<itemsRecords.size();k++)
+				{
+					money+=itemsRecords.get(k).getBigDecimal("price").doubleValue();
+				}
 				Record temp=new Record();
 				temp.set("rid", rid);
 				temp.set("state", ridList.get(i).getInt("state"));
 				temp.set("addedDate", ridList.get(i).get("addedDate"));
 				temp.set("addedTime", ridList.get(i).get("addedTime"));
+				temp.set("money", money);
 				temp.set("items", itemsRecords);
 				records.add(temp);
 			}
 		 setAttr("tradeList", records);
-		 renderJson();
+		 setAttr("flag", flag);
+		 setAttr("date_info", date);
+		 setAttr("page", page);
 	 }
 	 /**
 	  *     进货管理  待定

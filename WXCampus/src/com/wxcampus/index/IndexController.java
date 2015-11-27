@@ -29,7 +29,7 @@ import com.wxcampus.util.Util;
  */
 public class IndexController extends Controller {
 	
-	IndexService isService=new IndexService();
+	//IndexService isService=new IndexService();
 	
 	@Clear(OpenidInterceptor.class)
 	//GetOpenidInterceptor.class,
@@ -55,7 +55,7 @@ public class IndexController extends Controller {
 		}
 		if(areas!=null)
 		{
-			isService.updateShopState(areas);
+			//isService.updateShopState(areas);
 			
 			setAttr("Area", areas);  //地区信息
 			//removeSessionAttr("areaID");
@@ -113,7 +113,7 @@ public class IndexController extends Controller {
 				List<Record> recordList=new ArrayList<Record>();
 				for(int i=0;i<areaList.size();i++)
 				{
-					isService.updateShopState(areaList.get(i));
+					//isService.updateShopState(areaList.get(i));
 					Record record=new Record();
 					record.set("building", areaList.get(i).getStr("building"));
 					record.set("state", areaList.get(i).getBoolean("state"));
