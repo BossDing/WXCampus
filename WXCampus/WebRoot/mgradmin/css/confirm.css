@@ -1,0 +1,145 @@
+.main{
+    width: 100%;
+    height: 100%;
+    min-width: 1200px;
+    float: left;
+    position: absolute;
+    background-color: #f5f5f5;
+}
+
+.main_info{
+    width: 80%;
+    height: 100%;
+    margin: 0px auto;
+}
+.top{
+    width: 100%;
+    height: 100px;
+    float: left;
+    background-color: #F6EB13;
+}
+.center{
+    width: 100%;
+    height: 70px;
+    float: left;
+    background-color: #f5f5f5;
+}
+.floor{
+    width: 100%;
+    height: 500px;
+    float: left;
+    background-color: #f5f5f5;
+}
+.top_left{
+    width: 40%;
+    height: 100px;
+    float: left;
+}
+.top_right{
+    width: 60%;
+    height: 100px;
+    float: left;
+}
+.center_left{
+    width: 70%;
+    height: 70px;
+    float: left;
+}
+.center_right{
+    width: 30%;
+    height: 70px;
+    float: left;
+}
+.top_right li
+{
+    float:left;
+    list-style-type:none;
+    width:100px;
+    text-align:center;
+    line-height:40px;
+    font-size: 20px;
+    color:#000000;
+    font-weight: 900;
+    cursor: pointer;
+}
+
+.top_right a:link,.top_right a:visited
+{
+    text-decoration:none;
+    color:#000000;
+    font-size:20px;
+}
+
+.top_right a:hover,.top_right a:active
+{
+    text-decoration:none;
+    color:#ffffff;
+    font-size:20px;
+}
+.top_right_list{
+    width: 100%;
+    height: 40px;
+    margin: 30px auto;
+}
+.center_left p{
+    font-size: 20px;
+    color: #595959;
+    margin-top: 18px;
+}
+.center_left p span{
+    display: block;
+    height: 34px;
+    float: left;
+    margin-left: 15px;
+    text-align: center;
+    border-radius: 8px;
+    cursor: pointer;
+}
+#all_manage{
+    background-color: #F6EB13 ;
+}
+.center_right p{
+    font-size: 20px;
+    color: #595959;
+    margin-top: 18px;
+    margin-right: 50px;
+}
+.center_right p span{
+    display: block;
+    width: 60px;
+    height: 34px;
+    float: right;
+    text-align: center;
+    cursor: pointer;
+    background-color: #9d9d9d;
+}
+#working{
+    background-color: #F6EB13 ;
+    border-radius: 8px 0px 0px 8px;
+}
+#rest{
+    border-radius: 0px 8px 8px 0px;
+}
+.floor_content{
+    width: 100%;
+    height: 400px;
+    margin: 0px auto;
+    background-color: #ffffff;
+}
+.floor_bottom{
+    width: 100%;
+    min-height: 50px;
+    margin: 0px auto;
+    background-color: #f5f5f5;
+}
+
+.floor_bottom_content{
+    width: 95%;
+    min-height: 50px;
+    margin: 0px auto;
+}
+.floor_bottom_content p{
+    font-size: 17px;
+    color: #595959;
+  margin-top: 15px;
+}

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <link href="/mgradmin/css/manage_food.css" rel="stylesheet" type="text/css">
+    <link href="/bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="/jquery/jquery-2.1.4.min.js"></script>
+    <script type="text/javascript" src="/bootstrap/js/bootstrap.js"></script>
+    <script type="text/javascript" src="/mgradmin/js/manage_food.js"></script>
+    <title>商品管理</title>
+</head>
+<body>
+<div class="main">
+    <div class="main_info">
+        <div class="top">
+            <div class="top_left">
+                <img src="/mgradmin/images/LOGO(3).png" style="display:block;width: auto;height: 60px;margin: 20px auto">
+            </div>
+            <div class="top_right">
+                <div class="top_right_list">
+                    <ul>
+                        <li><a href="/mgradmin">订单处理</a></li>
+                        <li><a href="/mgradmin/itemnum">商品管理</a></li>
+                        <li><a>数据统计</a></li>
+                        <li><a>进货管理</a></li>
+                        <li><a>退出登录</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="center">
+            <div class="center_left">
+                <p>
+                <span>起送价</span><span><input id="startPrice" value=${startPrice} type="number" style="width:80px"></span>
+                <span><a style="cursor:pointer" onclick="changeStartPrice()">修改</a></span>
+                </p>
+            </div>
+            <div class="center_right">
+                <p><span id="rest">休息</span><span id="working">营业</span></p>
+            </div>
+        </div>
+        <div class="floor">
+            <div class="floor_content">
+                <table class="table table-striped" id="list" style="text-align: center">
+                    <caption style="text-align: center">商品列表</caption>
+                    <thead>
+                    <tr>
+                        <th style="text-align: center">编号</th>
+                        <th style="text-align: center">名称</th>
+                        <th style="text-align: center">售价</th>
+                        <th style="text-align: center">库存量</th>
+                        <th style="text-align: center">操作</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <script>var i=1;</script>
+                    <#list iosList as x>
+                    <tr>
+                    <script>document.write('<td>'+i+'</td>');
+                    i++;
+                    </script>
+                        <td>${x.iname}</td>
+                        <td><span>${x.minPrice}~</span><input id=${x.iosid} value=${x.price} type="text" style="width:40px;height:20px;text-align:center">
+                        <span>~${x.maxPrice}</span>
+                        </td>
+                        <td>${x.restNum}</td>
+                        <td><a style="cursor:pointer" onclick="changePrice('${x.iosid}')">修改</a></td>
+                        <td id=${x.iosid}_msg></td>
+                    </tr>
+                    </#list>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

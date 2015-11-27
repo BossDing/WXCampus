@@ -158,6 +158,7 @@ CREATE TABLE `trades` (
   `item` int(10) NOT NULL,
   `price` decimal(10,2) not null,
   `orderNum` int(5) not null,
+  `room` varchar(127) not null,
   `state` int(1) not null,
   `addedDate` date not null,
   `addedTime` time not null,

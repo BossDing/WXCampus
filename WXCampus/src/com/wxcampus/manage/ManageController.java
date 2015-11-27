@@ -49,10 +49,15 @@ public class ManageController extends Controller{
 
 	 public static Logger logger = Util.getLogger();
 	 
-	 @Before(NoUrlPara.class)
+	 //@Before(NoUrlPara.class)
 	 public void index()
 	 {
 		 Managers manager=getSessionAttr(GlobalVar.BEUSER);
+		 if(manager.getInt("ring")==2)
+		 {
+			 Ring2Service ring2Service=new Ring2Service(this,manager);
+	         ring2Service.trades();
+		 }
 		 Incomes income=Incomes.dao.findFirst("select * from incomes where mid=?",manager.getInt("mid"));
 		 setAttr("Sales", income.getBigDecimal("sales").doubleValue());
 		 switch (manager.getInt("ring")) {
@@ -84,7 +89,7 @@ public class ManageController extends Controller{
 			 redirect("/mgradmin");   //已登录就跳转
 		 
 		 //防暴力检测
-		 if(ManageLoginSafe.isExist(""+getParaToInt("Managers.tel")))
+		 if(ManageLoginSafe.isExist(""+getParaToInt("managers.tel")))
 	        {
 			   redirect("/404/error?Msg="+Util.getEncodeText("密码输入错误次数过多，请十分钟后再试！"));
 	        }else{      
@@ -195,6 +200,8 @@ public class ManageController extends Controller{
 		 Managers manager=getSessionAttr(GlobalVar.BEUSER);
 		 List<Record> iosList=Db.find("select a.iname,a.icon,a.category,b.iosid,b.restNum,b.price,b.minPrice,b.maxPrice from items as a,items_on_sale as b where a.iid=b.iid and b.location=?",manager.getInt("location"));
 		 setAttr("iosList", iosList);
+		 Areas area=Areas.dao.findById(manager.getInt("location"));
+		 setAttr("startPrice",area.getBigDecimal("startPrice").doubleValue());
 		 render("itemnum.html");
 	 }
 	 /**

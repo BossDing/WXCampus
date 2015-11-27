@@ -75,7 +75,7 @@ public class Util {
 	}
 	public static Logger getLogger()
 	{
-		String day=new SimpleDateFormat("yyyy-MM-dd").format(new Date().toString());
+		String day=new SimpleDateFormat("yyyy-MM-dd").format(new Date());
 		if(day.equals(currentDay))
 			return logger;
 		else {

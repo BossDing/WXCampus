@@ -244,6 +244,7 @@ public class ShopController extends Controller{
 		  trades.set("item", itemList.get(i).getInt("iid"));
 		  trades.set("price", itemList.get(i).getBigDecimal("price"));
 		  trades.set("orderNum", itemList.get(i).getInt("orderNum"));
+		  trades.set("room", room);
 		  trades.set("state", 0);  //0:正在派送  1:交易完成
 		  trades.save();
 		  

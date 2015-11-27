@@ -27,16 +27,29 @@ public class Ring2Service {
 	
 	public void trades()
 	{
-		 String date=c.getPara("date");		
+		int page=1;
+		int flag=0;  // 0 全部 1未处理 2已完成
+		if(c.getParaToInt(0)!=null){
+			page=c.getParaToInt(0);
+		}
+		 String date=Util.getDate();
+		if(c.getPara("date")!=null){
+			date=c.getPara("date");	
+		}
 		 List<Trades> ridList;
 		 String state=c.getPara("state");
 		 if(state==null)
-			 ridList=Trades.dao.find("select distinct rid,state,addedDate,addedTime from trades where seller=? and addedDate=? order by addedTime desc",manager.getInt("mid"),date);
+			 ridList=Trades.dao.paginate(page, 10, "select distinct rid,room,state,addedDate,addedTime", "from trades where seller=? and addedDate=? order by addedTime desc",manager.getInt("mid"),date).getList();
 		 else {
 			if(state.equals("0"))
-				ridList=Trades.dao.find("select distinct rid,state,addedDate,addedTime from trades where state=0 and seller=? and addedDate=? order by addedTime desc",manager.getInt("mid"),date);
+			{ ridList=Trades.dao.paginate(page, 10, "select distinct rid,room,state,addedDate,addedTime", "from trades where state=? and seller=? and addedDate=? order by addedTime desc",Integer.parseInt(state),manager.getInt("mid"),date).getList();
+			  flag=1;
+			}
 			else if(state.equals("1"))
-				ridList=Trades.dao.find("select distinct rid,state,addedDate,addedTime from trades where state=1 and seller=? and addedDate=? order by addedTime desc",manager.getInt("mid"),date);
+			{
+		     ridList=Trades.dao.paginate(page, 10, "select distinct rid,room,state,addedDate,addedTime", "from trades where state=? and seller=? and addedDate=? order by addedTime desc",Integer.parseInt(state),manager.getInt("mid"),date).getList();
+             flag=2;
+			}
 			else {
 				c.redirect("/404/error");
 				return;
@@ -48,16 +61,25 @@ public class Ring2Service {
 				int rid=ridList.get(i).getInt("rid");
 				List<Record> itemsRecords=Db.find("select b.iname,b.icon,a.price,a.orderNum from trades as a,items as b where a.item=b.iid and a.rid=?",rid);
 				//Record [] items=itemsRecords.toArray(new Record[itemsRecords.size()]);
+				double money=0;
+				for(int k=0;k<itemsRecords.size();k++)
+				{
+					money+=itemsRecords.get(k).getBigDecimal("price").doubleValue();
+				}
 				Record temp=new Record();
 				temp.set("rid", rid);
 				temp.set("state", ridList.get(i).getInt("state"));
 				temp.set("addedDate", ridList.get(i).get("addedDate"));
 				temp.set("addedTime", ridList.get(i).get("addedTime"));
 				temp.set("items", itemsRecords);
+				temp.set("money", money);
+				temp.set("room", ridList.get(i).get("room"));
 				records.add(temp);
 			}
 		 c.setAttr("tradeList", records);
-		 c.renderJson();
+		 c.setAttr("flag", flag);
+		 c.setAttr("date_info", date);
+		 c.setAttr("page", page);
 	}
 	
 

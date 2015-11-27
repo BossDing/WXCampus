@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <link href="/mgradmin/css/login.css" rel="stylesheet" type="text/css">
+    <link href="/bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="/jquery/jquery-2.1.4.min.js"></script>
+    <script type="text/javascript" src="/bootstrap/js/bootstrap.js"></script>
+    <title>登陆</title>
+</head>
+<body>
+<div class="main">
+    <div class="main_info">
+        <div class="login_top">
+            <img src="/mgradmin/images/LOGO(3).png" style="display:block;width: auto;height: 60px;margin: 20px auto">
+        </div>
+        <form action="/mgradmin/loginCheck" method="post">
+            <div class="login_center">
+                <div class="input-group input-group-lg login_info">
+                    <span class="input-group-addon">用户名</span>
+                    <input name="managers.tel" type="text" class="form-control" placeholder="请输入用户名">
+                </div>
+                <div class="input-group input-group-lg login_info">
+                    <span class="input-group-addon">密&nbsp;&nbsp;&nbsp;&nbsp;码</span>
+                    <input name="managers.password" type="password" class="form-control" placeholder="请输入密码">
+                </div>
+            </div>
+            <div class="login_floor">
+                <button type="submit" class="btn btn-success">提交</button>
+                <button type="reset" class="btn btn-default">重置</button>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>
