@@ -14,7 +14,7 @@ public class Ring1Interceptor implements Interceptor{
 		 {
 		   arg0.invoke();
 		 }else
-			 arg0.getController().redirect("/404/error?Msg="+Util.getEncodeText("无权访问"));   //无权访问	
+			 arg0.getController().redirect("/mgradmin/error?Msg="+Util.getEncodeText("无权访问"));   //无权访问	
 	}
 
 }

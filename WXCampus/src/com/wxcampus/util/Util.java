@@ -84,7 +84,7 @@ public class Util {
 			Layout layout = new PatternLayout("%d %p [%c] - %m%n");  	  
 			Appender appender;
 			try {
-				appender = new FileAppender(layout, "./logs+/"+currentDay+".log");				  
+				appender = new FileAppender(layout, "./logs/"+currentDay+".log");				  
 				dayLogger.addAppender(appender); 
 				logger=dayLogger;
 				return logger;

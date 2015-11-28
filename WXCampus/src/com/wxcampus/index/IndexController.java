@@ -203,13 +203,13 @@ public class IndexController extends Controller {
 			redirect("/404/error?Msg="+Util.getEncodeText("请使用微信客户端访问")+"&backurl=http://www.baidu.com");
 			return;
 		}
-		String referer=getRequest().getHeader("Referer");
-		if(referer==null || !referer.contains("www.domain.com"))
-		{
-			redirect("/404/error?Msg="+Util.getEncodeText("非法请求")+"&backurl=http://www.baidu.com");
-			return;
-		}
-		String code=getPara("CODE");
+//		String referer=getRequest().getHeader("Referer");
+//		if(referer==null || !referer.contains("www.domain.com"))
+//		{
+//			redirect("/404/error?Msg="+Util.getEncodeText("非法请求")+"&backurl=http://www.baidu.com");
+//			return;
+//		}
+		String code=getPara("code");
 		String state=getPara("state");
 		if(code==null || state==null || !state.equals("6666"))
 			{redirect("/404/error");

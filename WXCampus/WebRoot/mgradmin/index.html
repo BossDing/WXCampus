@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head lang="en">
-    <meta charset="UTF-8">
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
     <link href="/mgradmin/css/manage_build.css" rel="stylesheet" type="text/css">
     <link href="/bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css">
     <script type="text/javascript" src="/jquery/jquery-2.1.4.min.js"></script>
@@ -11,23 +11,8 @@
 <body>
 <div class="main">
     <div class="main_info">
-        <div class="top">
-            <div class="top_left">
-                <img src="/mgradmin/images/LOGO(3).png" style="display:block;width: auto;height: 60px;margin: 20px auto">
-            </div>
-            <div class="top_right">
-                <div class="top_right_list">
-                    <ul>
-                       <li><a href="/mgradmin">订单处理</a></li>
-                        <li><a  href="/mgradmin/itemnum">商品管理</a></li>
-                        <li><a href="/mgradmin/datainfo">数据统计</a></li>
-                        <li><a href="/mgradmin/seeInGoods">进货管理</a></li>
-                        <li><a href="/mgradmin/quit">退出登录</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-        <div class="center">
+		<#include "_layout.html" />
+<div class="center">
             <div class="center_left">
                 <p><span style="width: 100px;height: 34px;margin-left: 15px">订单筛选:</span>
                     <span id="all_manage" onclick="allTrades()">全部</span>
@@ -90,9 +75,10 @@
                 <span><input id="page" value=${page} type="text" style="text-align:center;width: 60px;" disabled></span><span><a onclick="nextPage()">下一页</a></span></p>
             </div>
         </div>
-    </div>
+              	</div>
 </div>
-
+</body>
+</html>  
 <script>
 var state=${flag};
 var currdate='${date_info}';
@@ -119,5 +105,3 @@ var currdate='${date_info}';
     }
     sendDateInfo(currdate,state);
 </script>
-</body>
-</html>

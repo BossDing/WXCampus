@@ -93,7 +93,7 @@ public class ManageController extends Controller{
 		 //防暴力检测
 		 if(ManageLoginSafe.isExist(""+getParaToInt("managers.tel")))
 	        {
-			   redirect("/404/error?Msg="+Util.getEncodeText("密码输入错误次数过多，请十分钟后再试！"));
+			   redirect("/mgradmin/error?Msg="+Util.getEncodeText("密码输入错误次数过多，请十分钟后再试！"));
 	        }else{      
 		 Managers form=getModel(Managers.class);
 		 Managers manager=Managers.dao.findFirst("select * from managers where tel=?",form.getStr("tel"));
@@ -272,7 +272,7 @@ public class ManageController extends Controller{
 		 List<Ingoods> igList=Ingoods.dao.find("select * from ingoods where rid=?",rid);
 		 if(igList!=null && igList.get(0).getInt("froms")!=manager.getInt("mid"))
 		 {
-			 redirect("/404/error");
+			 redirect("/mgradmin/error");
 			 return;
 		 }
 		 //Managers to=Managers.dao.findById(igList.get(0).getInt("tos"));
@@ -282,7 +282,7 @@ public class ManageController extends Controller{
 //			 Items_on_sale iosto=Items_on_sale.dao.findFirst("select * from items_on_sale where location=? and iid=?",to.getInt("location"),igList.get(i).getInt("item"));
 //             if(iosto==null)
 //             {
-//    			 redirect("/404/error");
+//    			 redirect("/mgradmin/error");
 //    			 return;
 //             }
 //             if(iosto.getInt("restNum")<igList.get(i).getInt("num"))
@@ -339,7 +339,7 @@ public class ManageController extends Controller{
 		 Managers manager=getSessionAttr(GlobalVar.BEUSER);
 		 if(manager.getInt("ring")!=0 &&manager.getInt("ring")!=1)
 		 {
-			 redirect("/404/error?Msg="+Util.getEncodeText("无权操作"));
+			 redirect("/mgradmin/error?Msg="+Util.getEncodeText("无权操作"));
 			 return;
 		 }
          List<Ingoods> igList=Ingoods.dao.find("select distinct rid,addedDT,state from ingoods where tos=?",manager.getInt("mid"));
@@ -361,7 +361,7 @@ public class ManageController extends Controller{
 	    	 int t=records.get(0).getInt("froms");
 	    	 if(records!=null && (t!=manager.getInt("mid")))
 	    	 {
-	    		 redirect("/404/error");
+	    		 redirect("/mgradmin/error");
 //	    		 System.out.println(records.get(0).getInt("froms"));
 //	    		 System.out.println(manager.getInt("mid"));
 //	    		 System.out.println(2!=2);
@@ -372,7 +372,7 @@ public class ManageController extends Controller{
 	     {
 	    	 if(records!=null && (records.get(0).getInt("froms")!=manager.getInt("mid") && records.get(0).getInt("tos")!=manager.getInt("mid")))
 	    	 {
-	    		 redirect("/404/error");
+	    		 redirect("/mgradmin/error");
 	    		 return;
 	    	 }
 	     }
@@ -437,7 +437,7 @@ public class ManageController extends Controller{
 		 List<Ingoods> igList=Ingoods.dao.find("select state,tos,item,num from ingoods where rid=?",rid);
 		 if(igList!=null && igList.get(0).getInt("tos")!=manager.getInt("mid"))
 		 {
-			 redirect("/404/error");
+			 redirect("/mgradmin/error");
 			 return;
 		 }
 		 for(int i=0;i<igList.size();i++)
@@ -495,7 +495,7 @@ public class ManageController extends Controller{
 				 Areas building=Areas.dao.findById(areaID);
 				 if(!areas.getStr("city").equals(building.getStr("city")) ||  !areas.getStr("college").equals(building.getStr("college")))
 				 {
-					 redirect("/404/error?Msg="+Util.getJsonText("无权访问"));
+					 redirect("/mgradmin/error?Msg="+Util.getJsonText("无权访问"));
 					 return;
 				 }
 			 }
@@ -776,7 +776,7 @@ public class ManageController extends Controller{
 				{ridList=Trades.dao.paginate(page,15,"select distinct rid,state,addedDate,addedTime","from trades where state=1  order by addedDate,addedTime desc").getList();
 			     flag=2; }
 				else {
-				redirect("/404/error");
+				redirect("/mgradmin/error");
 				return;
 			}
 		}
@@ -812,7 +812,7 @@ public class ManageController extends Controller{
 	 {
 		 
 	 }
-	 
+	
 	 @Clear
 	 public void error()
 	 {
@@ -824,7 +824,7 @@ public class ManageController extends Controller{
 				backURL="/mgradmin";
 			setAttr("Msg", Msg);
 			setAttr("backurl", backURL);
-			render("error.html");
+			render("/404/error.html");
 	 }
 }
 
