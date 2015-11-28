@@ -1,0 +1,146 @@
+/**
+ * Created by ASUS on 2015/11/26.
+ */
+//ȫ������
+function getAllList(){
+
+}
+//Ӫҵ
+function Working(){
+	var url='/mgradmin/setShopState';
+	var dataInfo='state=true';
+    $.ajax(
+        {
+            url:url,
+            dataType: "json",
+            type: 'POST',
+            data:dataInfo,
+            success:backWorkingInfo,
+            error: function () {
+                alert("error");
+            }
+        }
+    );
+}
+function backWorkingInfo(json){
+    if(json.Msg=="OK"){
+        document.getElementById("working").style.backgroundColor="#F6EB13";
+        document.getElementById("rest").style.backgroundColor="#9d9d9d";
+    }
+    else{
+        alert("error");
+    }
+}
+
+//��Ϣ
+function rest(){
+	
+	var url='/mgradmin/setShopState';
+	var dataInfo='state=false';
+    $.ajax(
+        {
+            url:url,
+            dataType: "json",
+            type: 'POST',
+            data:dataInfo,
+            success:backRestInfo,
+            error: function () {
+                alert("error");
+            }
+        }
+    );
+}
+function backRestInfo(json){
+    if(json.Msg=="OK"){
+        document.getElementById("working").style.backgroundColor="#9d9d9d";
+        document.getElementById("rest").style.backgroundColor="#F6EB13";
+    }
+    else{
+        alert("error");
+    }
+}
+
+//������ڿ�ı仯
+$("#upDate").on("change", function () {
+    sendDate(this);
+});
+
+function sendDate(){
+    var currdate=document.getElementById("upDate").value;
+   window.location='/mgradmin?date='+currdate;
+}
+
+//未处理订单
+function newTrades(){
+	window.location='/mgradmin?state=0&date='+cuDate;
+}
+//已处理订单
+function oldTrades(){
+	window.location='/mgradmin?state=1&date='+cuDate;
+}
+//全部订单
+function allTrades(){
+	window.location='/mgradmin?date='+cuDate;
+}
+var cuDate='';
+var cuState='';
+function sendDateInfo(date,state){
+	cuDate=date;
+	cuState=state;
+}
+
+//上一页
+function lastPage(){
+	var page=parseInt(document.getElementById("page").value);
+	page--;
+	if(cuState==0){
+		window.location='/mgradmin/'+page+'?date='+cuDate;
+	}
+	else if(cuState==1){
+		window.location='/mgradmin/'+page+'?state=0&date='+cuDate;
+	}
+	else{
+		window.location='/mgradmin/'+page+'?state=1&date='+cuDate;
+	}
+}
+//下一页
+function nextPage(){
+	var page=parseInt(document.getElementById("page").value);
+	page++;
+	if(cuState==0){
+		window.location='/mgradmin/'+page+'?date='+cuDate;
+	}
+	else if(cuState==1){
+		window.location='/mgradmin/'+page+'?state=0&date='+cuDate;
+	}
+	else{
+		window.location='/mgradmin/'+page+'?state=1&date='+cuDate;
+	}
+}
+
+//提交订单
+function submitTrade(){
+	var data='<table class="table table-striped" id="list" style="text-align: center">'+
+                    '<caption style="text-align: center">商品列表</caption>'+
+                    '<thead>'+
+                    '<tr>'+
+                    '<th style="text-align: center">编号</th>'+
+                    '<th style="text-align: center">名称</th>'+
+                   '<th style="text-align: center">价格</th>'+
+                    '<th style="text-align: center">数量</th>'+
+                    '<th style="text-align: center">勾选</th>'+
+                    '</tr>'+
+                    '</thead>'+
+                    '<tbody>'+
+                    '<tr>'+
+                    '<td>Tanmay</td>'+
+                    '<td>Bangalore</td>'+
+                    '<td>560001</td>'+
+                    '<td><input type="number" style="width: 60px"></td>'+
+                        '<td><input type="checkbox"></td>'+
+                        '</tr>'+
+                        '</tbody>'+
+                        '</table>';
+	document.getElementById("insertFood").innerHTML=data;
+}
+

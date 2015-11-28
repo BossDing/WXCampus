@@ -57,6 +57,7 @@ public class ManageController extends Controller{
 		 {
 			 Ring2Service ring2Service=new Ring2Service(this,manager);
 	         ring2Service.trades();
+	         setAttr("state", Areas.dao.findById(manager.getInt("location")).getBoolean("state"));
 		 }
 		 Incomes income=Incomes.dao.findFirst("select * from incomes where mid=?",manager.getInt("mid"));
 		 setAttr("Sales", income.getBigDecimal("sales").doubleValue());
@@ -170,10 +171,11 @@ public class ManageController extends Controller{
 	 {
 		 Managers manager=getSessionAttr(GlobalVar.BEUSER);
 		 String month=getPara("month");
-		 int year=new Date().getYear();
-		 month=year+"-"+month;	
+		 if(month==null)
+			 month=Util.getMonth();
 		 List<Record> records=Db.find("select a.iname,b.num,b.money from items as a,areasales as b where a.iid=b.item and b.location=? and b.month=?",manager.getInt("location"),month);
 		 setAttr("dataList", records);
+		 setAttr("date_info", month);
 		 render("datainfo.html");	
 	 }
 	 /**

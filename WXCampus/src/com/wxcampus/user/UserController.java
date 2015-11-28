@@ -293,7 +293,7 @@ public class UserController extends Controller{
 		if(verifyStartTime==null || startDate.before(new Date()))
 		{
 		String veryfiCode=""+(new Random().nextInt(900000)+100000);
-		if(getPara("tel")!=null)
+		if(getPara("tel")!=null && !getPara("tel").equals(""))
 		{
 			if(SendMessageVcode.send(getPara("tel"), veryfiCode))
 				{
@@ -303,33 +303,69 @@ public class UserController extends Controller{
 				VcodeWaitThread vwt=new VcodeWaitThread(this);
 				Thread t=new Thread(vwt);
 				t.start();
-				renderHtml(Util.getJsonText("验证码发送成功，请查收！"));		
+				renderHtml(Util.getJsonText("验证码发送成功，请查收！"));	
+				return;
 				}
 			else
-				renderHtml(Util.getJsonText("验证码发送失败，请稍后再试！"));
+				{renderHtml(Util.getJsonText("验证码发送失败，请稍后再试！"));
+				return;}
 		}else
-			redirect("/404/error");
+		{
+			renderHtml(Util.getJsonText("手机号不能为空！"));	
+			return;
+		}
 		}else {
 			renderHtml(Util.getJsonText("两次验证码发送间隔须超过一分钟"));
+			return;
 		}
 	}
 	
 	/**
 	 *   申请当店长
 	 */
+	@Clear(UserInterceptor.class)
+	public void wtsindex()
+	{
+		render("KTstore.html");
+	}
+	@Clear(UserInterceptor.class)
 	public void wantosell()
 	{
 		//验证码防bot待加
 		render("wantosell.html");
 	}
+	@Clear(UserInterceptor.class)
 	public void wantosellAction()
 	{
 		Applyfor af=getModel(Applyfor.class);
+		String vcode=getSessionAttr(af.getStr("tel"));
+		if(vcode!=null)
+		{
+			String vCode=getPara("vcode");
+			if (!vCode.equals(vcode)) {
+				this.keepModel(Applyfor.class);
+				setAttr("ErrorMsg", "验证码输入错误");
+				render("wantosell.html");
+//				redirect("/404/error?Msg="+Util.getEncodeText("验证码输入错误")+"&backurl=/usr/wantosell");
+				return;
+			}
+		}else {
+			this.keepModel(Applyfor.class);
+			setAttr("ErrorMsg", "验证码超时,请重新获取");
+			render("wantosell.html");
+			//redirect("/404/error?Msg="+Util.getEncodeText("验证码超时,请重新获取")+"&backurl=/usr/wantosell");
+			return;
+		}
 		af.set("addedDT", new Timestamp(System.currentTimeMillis()));
 		af.set("state", 0);   //0 未处理 1已处理
 		af.save();
-		renderHtml("<script>alert('提交成功');this.location.href='/usr/wantosell';</script>");
+		redirect("/usr/applysuccess");
+		//renderHtml("<script>alert('提交成功');this.location.href='/usr/wantosell';</script>");
 	}
-	
+	@Clear(UserInterceptor.class)
+	public void applysuccess()
+	{
+		render("applysuccess.html");
+	}
 
 }

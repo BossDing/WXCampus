@@ -138,7 +138,7 @@ function sendajax(iid,type){
 		        	  console.log("success");
 		          },
 		          error: function () {
-		              alert("error");
+		        	  console.log("error");
 		          }
 		      }
 		  );

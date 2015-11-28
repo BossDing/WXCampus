@@ -31,7 +31,7 @@ function backFoodList(data){
         '<p style="color: #843534;font-size: 2em;margin-left: 10px">'+data.itemList[i].price+'￥</p>'+
         '</div>'+
         '<div class="food_info_right" style="text-align: right">'+
-        '<p style="margin-top: 1em"><img src="/usr/image_mysave/close.png" style="width:3em;height: 3em;margin-right: 1em " onclick=save("'+data.itemList[i].iid+'")></p>'+
+        '<p style="margin-top: 1em"><img src="/usr/image_mysave/close.png" style="width:3em;height: 3em;margin-right: 1em " onclick=cancelsave("'+data.itemList[i].iid+'")></p>'+
         '<p style="margin-top: 3em"><span onclick=addNum("'+data.itemList[i].iid+'")><img  src="/index/image_find/add.png" style="width: 2.5em;height: 2.5em;float: right;margin-right: 1em"></span>'+
         ' <span id="'+data.itemList[i].iid+'" class="kuankuan">0</span>'+
         '<span id="'+data.itemList[i].iid+'_span"><img id="'+data.itemList[i].iid+'_reduce" src="/index/image_find/reduce.png" style="width: 2.5em;height: 2.5em;margin-right: 1em;float: right "></span></p>'+
@@ -111,3 +111,27 @@ function sendajax(iid,type){
 function backPerson(){
 	window.location='/usr';
 }
+function cancelsave(iid){
+	var dataInfo="iid="+iid;
+	var url='/usr/removeItemStar';
+  $.ajax(
+      {
+          url:url,
+          dataType: "json",
+          type: 'POST',
+          data:dataInfo,
+          success:function reback(data){
+        	  if(data.Msg=="OK"){
+        		  window.location.reload();
+        	  }
+        	  else{
+        		  alert(data.Msg);
+        	  }
+          },
+          error: function () {
+              alert("error");
+          }
+      }
+  );
+}
+

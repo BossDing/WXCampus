@@ -85,11 +85,11 @@ public class ShopController extends Controller{
 	{
 		int iid=getParaToInt("iid");
 		int type=getParaToInt("type");  //0 添加 1减少
+		
 		HashMap<Integer, Integer> map=getSessionAttr("Carts");
 		if(map==null)
 		{
-			redirect("/404/error");
-			return;
+			setSessionAttr("Carts",new HashMap<Integer, Integer>() );
 		}
 		if(map.containsKey(iid))
 		{

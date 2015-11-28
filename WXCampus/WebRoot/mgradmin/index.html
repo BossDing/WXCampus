@@ -20,7 +20,7 @@
                     <ul>
                         <li><a href="/mgradmin">订单处理</a></li>
                         <li><a  href="/mgradmin/itemnum">商品管理</a></li>
-                        <li><a>数据统计</a></li>
+                        <li><a href="/mgradmin/datainfo">数据统计</a></li>
                         <li><a>进货管理</a></li>
                         <li><a>退出登录</a></li>
                     </ul>
@@ -37,7 +37,7 @@
                 </p>
             </div>
             <div class="center_right">
-                <p><span id="rest">休息</span><span id="working">营业</span></p>
+                <p><span id="rest" onclick="rest()">休息</span><span onclick="Working()" id="working">营业</span></p>
             </div>
         </div>
         <div class="floor">
@@ -94,7 +94,7 @@ var state=${flag};
 var currdate='${date_info}';
 
 </script>
-<script type="text/javascript" src="/mgradmin/js/manage_build.js"></script>
+<script type="text/javascript" src="/mgradmin/js/index.js"></script>
 <script>
     //var date=new Date();
     //var str=date.getFullYear()+"-"+(date.getMonth()+1)+"-"+date.getDate();
@@ -108,7 +108,11 @@ var currdate='${date_info}';
     else{
     document.getElementById("old_manage").style.backgroundColor="#FEE02A";
     }
-    
+    var status=${state?string("true","false")};
+    if(status=="false"){
+    	document.getElementById("working").style.backgroundColor="#9d9d9d";
+        document.getElementById("rest").style.backgroundColor="#F6EB13";
+    }
     sendDateInfo(currdate,state);
 </script>
 </body>

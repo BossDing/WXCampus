@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <link href="/mgradmin/css/ingoods.css" rel="stylesheet" type="text/css">
+    <link href="/bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="/jquery/jquery-2.1.4.min.js"></script>
+    <script type="text/javascript" src="/bootstrap/js/bootstrap.js"></script>
+    <title>店长管理</title>
+</head>
+<body>
+<div class="main">
+    <div class="main_info">
+        <div class="top">
+            <div class="top_left">
+                <img src="/mgradmin/images/LOGO(3).png" style="display:block;width: auto;height: 60px;margin: 20px auto">
+            </div>
+            <div class="top_right">
+                <div class="top_right_list">
+                    <ul>
+                        <li><a href="/mgradmin">订单处理</a></li>
+                        <li><a  href="/mgradmin/itemnum">商品管理</a></li>
+                        <li><a href="/mgradmin/datainfo">数据统计</a></li>
+                        <li><a>进货管理</a></li>
+                        <li><a>退出登录</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="center">
+            <div class="center_left">
+                <p><span onclick="submitTrade()" style="width: 100px;height: 34px;margin-left: 15px">提交订单</span>
+                </p>
+            </div>
+        </div>
+        <div style="width:100%;height:auto;float:left" id="insertFood"></div>
+        <div class="floor">
+            <div class="floor_content">
+                <table class="table table-striped" id="list" style="text-align: center">
+                    <caption style="text-align: center">订单列表</caption>
+                    <thead>
+                    <tr>
+                        <th style="text-align: center">状态</th>
+                        <th style="text-align: center">总价</th>
+                        <th style="text-align: center">下单日期</th>
+                        <th style="text-align: center">收获地址</th>
+                        <th style="text-align: center">显示详情</th>
+                        <th style="text-align: center"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <#list tradeList as x>
+                    <tr>
+                    <#if x.state==0>
+                        <td>待送货</td>
+                    <#else>
+                    	<td>已完成</td>
+                    </#if>	
+                        <td>${x.money}</td>
+                        <td>${x.addedDate}&nbsp;${x.addedTime}</td>
+                        <td>${x.room}</td>
+                        <td>
+                        <#list x.items as y>
+                        ${y.iname}&nbsp;x${y.orderNum}</br>
+                        </#list>
+                        </td>
+                        <td><a style="cursor: pointer">处理订单</a></td>
+                    </tr>
+                    </#list>
+                    </tbody>
+                </table>
+            </div>
+            <div class="floor_bottom">
+                <p>
+                <#if page==1>
+                <span>上一页</span>
+                <#else>
+                <span><a onclick="lastPage()">上一页</a></span>
+                </#if>
+                <span><input id="page" value=${page} type="text" style="text-align:center;width: 60px;" disabled></span><span><a onclick="nextPage()">下一页</a></span></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+var state=${flag};
+var currdate='${date_info}';
+
+</script>
+<script type="text/javascript" src="/mgradmin/js/ingoods.js"></script>
+<script>
+    //var date=new Date();
+    //var str=date.getFullYear()+"-"+(date.getMonth()+1)+"-"+date.getDate();
+    document.getElementById("upDate").value=currdate;
+    if(state==0){
+    document.getElementById("all_manage").style.backgroundColor="#FEE02A";
+    }
+    else if(state==1){
+    	document.getElementById("new_manage").style.backgroundColor="#FEE02A";
+    }
+    else{
+    document.getElementById("old_manage").style.backgroundColor="#FEE02A";
+    }
+    var status=${state?string("true","false")};
+    if(status=="false"){
+    	document.getElementById("working").style.backgroundColor="#9d9d9d";
+        document.getElementById("rest").style.backgroundColor="#F6EB13";
+    }
+    sendDateInfo(currdate,state);
+</script>
+</body>
+</html>
