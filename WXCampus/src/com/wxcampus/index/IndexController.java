@@ -109,7 +109,7 @@ public class IndexController extends Controller {
 			String college=getPara("college");
 			if(college!=null)
 			{
-				List<Areas> areaList=Areas.dao.find("select * from areas where city=? and college=? order by building",city,college);
+				List<Areas> areaList=Areas.dao.find("select * from areas where city=? and college=? and building<>? order by building",city,college,"");
 				List<Record> recordList=new ArrayList<Record>();
 				for(int i=0;i<areaList.size();i++)
 				{
@@ -122,7 +122,7 @@ public class IndexController extends Controller {
 				setAttr("buildings", recordList);
 				renderJson();
 			}else {
-				setAttr("colleges", Areas.dao.find("select distinct college from areas where city=? order by college",city));
+				setAttr("colleges", Areas.dao.find("select distinct college from areas where city=? and college<>? order by college",city,""));
 				renderJson();;
 			}
 		}else {

@@ -455,6 +455,28 @@ public class ManageController extends Controller{
 		 renderHtml(Util.getJsonText("OK"));
 	 }
 	 /**
+	  *  校区负责人查看店长列表
+	  */
+	 @Before(Ring1Interceptor.class)
+	 public void getSellers()
+	 {
+		 Managers manager=getSessionAttr(GlobalVar.BEUSER);
+		 List<Managers> managers=new ArrayList<Managers>();
+		 if(manager.getInt("ring")==1)
+		 {
+			 Areas area=Areas.dao.findById(manager.getInt("location"));
+			 List<Areas> areaList=Areas.dao.find("select * from areas where city=? and college=? and building!=?",area.getStr("city"),area.getStr("college"),"");
+			 for(int i=0;i<areaList.size();i++)
+			 {
+				 Managers temp=Managers.dao.findFirst("select * from managers where location=?",areaList.get(i).getInt("aid"));
+				 if(temp!=null)
+				     managers.add(temp);
+			 }
+		 }
+		 setAttr("Managers", manager);
+		 render(".html");	
+	 }
+	 /**
 	  *    添加地区
 	  */
 	 @Before(Ring0Interceptor.class)
