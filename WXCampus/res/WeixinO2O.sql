@@ -119,7 +119,7 @@ DROP TABLE IF EXISTS `informs`;
 CREATE TABLE `informs` (
   `iid` int(10) NOT NULL AUTO_INCREMENT,
   `type` varchar(255) NOT NULL,
-  `to` int(10) not null,
+  `tos` int(10) not null,
   `addedDT` timestamp not null,
   PRIMARY KEY (`iid`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
@@ -138,8 +138,8 @@ DROP TABLE IF EXISTS `ingoods`;
 CREATE TABLE `ingoods` (
   `iid` int(10) NOT NULL AUTO_INCREMENT,
   `rid` int(10) not null,
-  `from` int(10) NOT NULL,
-  `to` int(10) not null,
+  `froms` int(10) NOT NULL,
+  `tos` int(10) not null,
   `item` int(10) not null,
   `num` int(5) not null,
   `state` int(1) not null,

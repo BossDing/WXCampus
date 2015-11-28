@@ -6,6 +6,7 @@
     <link href="/bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css">
     <script type="text/javascript" src="/jquery/jquery-2.1.4.min.js"></script>
     <script type="text/javascript" src="/bootstrap/js/bootstrap.js"></script>
+    <script type="text/javascript" src="/mgradmin/js/ingoods.js"></script>
     <title>店长管理</title>
 </head>
 <body>
@@ -21,7 +22,7 @@
                         <li><a href="/mgradmin">订单处理</a></li>
                         <li><a  href="/mgradmin/itemnum">商品管理</a></li>
                         <li><a href="/mgradmin/datainfo">数据统计</a></li>
-                        <li><a>进货管理</a></li>
+                        <li><a href="/mgradmin/ingoods">进货管理</a></li>
                         <li><a>退出登录</a></li>
                     </ul>
                 </div>
@@ -29,7 +30,7 @@
         </div>
         <div class="center">
             <div class="center_left">
-                <p><span onclick="submitTrade()" style="width: 100px;height: 34px;margin-left: 15px">提交订单</span>
+                <p><span onclick="submitTrade()" style="cursor:pointer;width: 100px;height: 34px;margin-left: 15px">提交订单</span>
                 </p>
             </div>
         </div>
@@ -41,30 +42,20 @@
                     <thead>
                     <tr>
                         <th style="text-align: center">状态</th>
-                        <th style="text-align: center">总价</th>
                         <th style="text-align: center">下单日期</th>
-                        <th style="text-align: center">收获地址</th>
-                        <th style="text-align: center">显示详情</th>
-                        <th style="text-align: center"></th>
                     </tr>
                     </thead>
                     <tbody>
-                    <#list tradeList as x>
-                    <tr>
-                    <#if x.state==0>
-                        <td>待送货</td>
+                    <#list igList as x>
+                    <tr onclick="disInfo('${x.rid}')">
+                    <#if x.state==1>
+                        <td>已提交</td>
+                    <#elseif x.state==2>
+                       <td>正在派送</td>
                     <#else>
-                    	<td>已完成</td>
-                    </#if>	
-                        <td>${x.money}</td>
-                        <td>${x.addedDate}&nbsp;${x.addedTime}</td>
-                        <td>${x.room}</td>
-                        <td>
-                        <#list x.items as y>
-                        ${y.iname}&nbsp;x${y.orderNum}</br>
-                        </#list>
-                        </td>
-                        <td><a style="cursor: pointer">处理订单</a></td>
+                       <td>已完成</td>
+                    </#if>
+                        <td>${x.addedDT}</td>
                     </tr>
                     </#list>
                     </tbody>
@@ -82,32 +73,5 @@
         </div>
     </div>
 </div>
-
-<script>
-var state=${flag};
-var currdate='${date_info}';
-
-</script>
-<script type="text/javascript" src="/mgradmin/js/ingoods.js"></script>
-<script>
-    //var date=new Date();
-    //var str=date.getFullYear()+"-"+(date.getMonth()+1)+"-"+date.getDate();
-    document.getElementById("upDate").value=currdate;
-    if(state==0){
-    document.getElementById("all_manage").style.backgroundColor="#FEE02A";
-    }
-    else if(state==1){
-    	document.getElementById("new_manage").style.backgroundColor="#FEE02A";
-    }
-    else{
-    document.getElementById("old_manage").style.backgroundColor="#FEE02A";
-    }
-    var status=${state?string("true","false")};
-    if(status=="false"){
-    	document.getElementById("working").style.backgroundColor="#9d9d9d";
-        document.getElementById("rest").style.backgroundColor="#F6EB13";
-    }
-    sendDateInfo(currdate,state);
-</script>
 </body>
 </html>

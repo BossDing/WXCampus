@@ -18,11 +18,11 @@
             <div class="top_right">
                 <div class="top_right_list">
                     <ul>
-                        <li><a href="/mgradmin">订单处理</a></li>
+                       <li><a href="/mgradmin">订单处理</a></li>
                         <li><a  href="/mgradmin/itemnum">商品管理</a></li>
                         <li><a href="/mgradmin/datainfo">数据统计</a></li>
-                        <li><a>进货管理</a></li>
-                        <li><a>退出登录</a></li>
+                        <li><a href="/mgradmin/seeInGoods">进货管理</a></li>
+                        <li><a href="/mgradmin/quit">退出登录</a></li>
                     </ul>
                 </div>
             </div>
@@ -70,7 +70,11 @@
                         ${y.iname}&nbsp;x${y.orderNum}</br>
                         </#list>
                         </td>
-                        <td><a style="cursor: pointer">处理订单</a></td>
+                       <#if x.state==0>
+                        <td><a style="cursor: pointer" onclick="dealTrade('${x.rid}')">处理订单</a></td>
+                    	<#else>
+                    	<td></td>
+                    	</#if>	
                     </tr>
                     </#list>
                     </tbody>

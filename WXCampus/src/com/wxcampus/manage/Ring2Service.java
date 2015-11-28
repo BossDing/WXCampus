@@ -87,10 +87,11 @@ public class Ring2Service {
 	public void confirmTrade()
 	{
 		int rid=c.getParaToInt("rid");
-		List<Trades> trades=Trades.dao.find("select state,seller from trades where rid=?", rid);
+		List<Trades> trades=Trades.dao.find("select tid,state,seller from trades where rid=?", rid);
 		if(trades!=null)
 		{
-			if(trades.get(0).getInt("seller")!=manager.getInt("mid"))
+			int t=trades.get(0).getInt("seller");
+			if(t!=manager.getInt("mid"))
 			{
 				c.redirect("/404/error");
 				return;

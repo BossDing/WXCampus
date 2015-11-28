@@ -9,3 +9,11 @@ function confirmTrade(){
 		
 	}
 }
+
+function disInfo(rid){
+	
+}
+
+function submitTrade(){
+	
+}

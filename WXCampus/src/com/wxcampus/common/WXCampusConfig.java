@@ -20,6 +20,7 @@ import com.wxcampus.items.Coupons_use;
 import com.wxcampus.items.Coupons_user;
 import com.wxcampus.items.Incomes;
 import com.wxcampus.items.Informs;
+import com.wxcampus.items.Ingoods;
 import com.wxcampus.items.Items;
 import com.wxcampus.items.Items_on_sale;
 import com.wxcampus.items.Promotion;
@@ -83,6 +84,7 @@ public class WXCampusConfig extends JFinalConfig{
 		arp.addMapping("promotion", "pid",Promotion.class);
 		arp.addMapping("incomes", "iid",Incomes.class);
 		arp.addMapping("informs", "iid",Informs.class);
+		arp.addMapping("ingoods", "iid",Ingoods.class);
 		arp.addMapping("areasales", "asid",Areasales.class);
 		arp.addMapping("applyfor", "aid",Applyfor.class);
 	}

@@ -117,3 +117,24 @@ function nextPage(){
 		window.location='/mgradmin/'+page+'?state=1&date='+cuDate;
 	}
 }
+//处理订单
+function dealTrade(rid){
+	var url='/mgradmin/confirmTrade';
+	var dataInfo='rid='+rid;
+    $.ajax(
+        {
+            url:url,
+            dataType: "json",
+            type: 'POST',
+            data:dataInfo,
+            success:function(json){
+            	if(json.Msg=="OK"){
+            		window.location.reload();
+            	}
+            },
+            error: function () {
+                alert("error");
+            }
+        }
+    );
+}

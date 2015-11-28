@@ -2,11 +2,12 @@
 <html>
 <head lang="en">
     <meta charset="UTF-8">
-    <link href="/mgradmin/css/manage_food.css" rel="stylesheet" type="text/css">
+    <link href="/mgradmin/css/ingoods.css" rel="stylesheet" type="text/css">
     <link href="/bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css">
     <script type="text/javascript" src="/jquery/jquery-2.1.4.min.js"></script>
     <script type="text/javascript" src="/bootstrap/js/bootstrap.js"></script>
-    <title>数据统计</title>
+    <script type="text/javascript" src="/mgradmin/js/ingoods.js"></script>
+    <title>订单详情</title>
 </head>
 <body>
 <div class="main">
@@ -18,7 +19,7 @@
             <div class="top_right">
                 <div class="top_right_list">
                     <ul>
-                       <li><a href="/mgradmin">订单处理</a></li>
+                        <li><a href="/mgradmin">订单处理</a></li>
                         <li><a  href="/mgradmin/itemnum">商品管理</a></li>
                         <li><a href="/mgradmin/datainfo">数据统计</a></li>
                         <li><a href="/mgradmin/ingoods">进货管理</a></li>
@@ -29,47 +30,38 @@
         </div>
         <div class="center">
             <div class="center_left">
-            <p>
-                    <span><input type="date" id="upDate"></span>
+                <p><span onclick="backIngoods()" style="cursor:pointer;width: 100px;height: 34px;margin-left: 15px">返回</span>
                 </p>
             </div>
-            <div class="center_right">
-            </div>
         </div>
+        <div style="width:100%;height:auto;float:left" id="insertFood"></div>
         <div class="floor">
             <div class="floor_content">
                 <table class="table table-striped" id="list" style="text-align: center">
-                    <caption style="text-align: center">数据列表</caption>
+                    <caption style="text-align: center">订单列表</caption>
                     <thead>
                     <tr>
-                        <th style="text-align: center">编号</th>
-                        <th style="text-align: center">名称</th>
-                        <th style="text-align: center">总销量</th>
-                        <th style="text-align: center">总销售额</th>
+                        <th style="text-align: center">商品名称</th>
+                        <th style="text-align: center">单价</th>
+                        <th style="text-align: center">数量</th>
+                        <th style="text-align: center">分类</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <script>var i=1;</script>
-                    <#list dataList as x>
+                    <#list igList as x>
                     <tr>
-                    <script>document.write('<td>'+i+'</td>');
-                    i++;
-                    </script>
                         <td>${x.iname}</td>
-                        <td>${x.num}</td>
-                        <td>${x.money}</td>
+                         <td>${x.realPrice}</td>
+                         <td>${x.num}</td>
+                         <td>${x.category}</td>
                     </tr>
                     </#list>
                     </tbody>
                 </table>
             </div>
+           
         </div>
     </div>
 </div>
-<script type="text/javascript" src="/mgradmin/js/datainfo.js"></script>
-<script type="text/javascript">
-var currdate='${date_info}';
- document.getElementById("upDate").value=currdate+'-01';
-</script>
 </body>
 </html>

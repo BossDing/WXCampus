@@ -19,6 +19,7 @@ import com.jfinal.aop.Before;
 import com.jfinal.aop.Clear;
 import com.jfinal.core.Controller;
 import com.jfinal.plugin.activerecord.Db;
+import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
 import com.jfinal.plugin.activerecord.tx.Tx;
 import com.jfinal.upload.UploadFile;
@@ -123,7 +124,14 @@ public class ManageController extends Controller{
 		 
 	        }
 	 }
-	 
+	 /**
+	  *  退出登录
+	  */
+	 public void quit()
+	 {
+		 removeSessionAttr(GlobalVar.BEUSER);
+		 redirect("/mgradmin/login");
+	 }
 	 /**
 	  *          修改密码
 	  */
@@ -262,12 +270,12 @@ public class ManageController extends Controller{
 		 Managers manager=getSessionAttr(GlobalVar.BEUSER);
 		 int rid=getParaToInt("rid");
 		 List<Ingoods> igList=Ingoods.dao.find("select * from ingoods where rid=?",rid);
-		 if(igList!=null && igList.get(0).getInt("from")!=manager.getInt("mid"))
+		 if(igList!=null && igList.get(0).getInt("froms")!=manager.getInt("mid"))
 		 {
 			 redirect("/404/error");
 			 return;
 		 }
-		 //Managers to=Managers.dao.findById(igList.get(0).getInt("to"));
+		 //Managers to=Managers.dao.findById(igList.get(0).getInt("tos"));
 		 for(int i=0;i<igList.size();i++)
 		 {
 			 igList.get(i).set("state", 3).update();  //3 已完成	 
@@ -307,12 +315,21 @@ public class ManageController extends Controller{
 	  */
 	 public void seeInGoods()
 	 {
+		 int page=1;
+		 if(getParaToInt(0)!=null)
+			 page=getParaToInt(0);
+		 System.out.println(page);
 		 Managers manager=getSessionAttr(GlobalVar.BEUSER);
-         List<Ingoods> igList=Ingoods.dao.find("select distinct rid,addedDT,state from ingoods where from=?",manager.getInt("mid"));
+		 Page<Ingoods> pages=Ingoods.dao.paginate(page,10,"select distinct rid,addedDT,state","from ingoods where froms=? order by addedDT desc",manager.getInt("mid"));
+		 List<Ingoods> igList=null;
+		 if(pages!=null)
+			 igList=pages.getList();
 		 setAttr("igList", igList);
-		 List<Informs> informs=Informs.dao.find("select * from informs where to=?",manager.getInt("mid"));
+		 List<Informs> informs=Informs.dao.find("select * from informs where tos=?",manager.getInt("mid"));
 		 for(int i=0;i<informs.size();i++)
 			 informs.get(i).delete();
+		 setAttr("page", page);
+		 render("ingoods.html");
 	 }
 	 /**
 	  *  管理,校区负责人处理提交的进货订单
@@ -325,9 +342,9 @@ public class ManageController extends Controller{
 			 redirect("/404/error?Msg="+Util.getEncodeText("无权操作"));
 			 return;
 		 }
-         List<Ingoods> igList=Ingoods.dao.find("select distinct rid,addedDT,state from ingoods where to=?",manager.getInt("mid"));
+         List<Ingoods> igList=Ingoods.dao.find("select distinct rid,addedDT,state from ingoods where tos=?",manager.getInt("mid"));
 		 setAttr("igList", igList);
-		 List<Informs> informs=Informs.dao.find("select * from informs where to=?",manager.getInt("mid"));
+		 List<Informs> informs=Informs.dao.find("select * from informs where tos=?",manager.getInt("mid"));
 		 for(int i=0;i<informs.size();i++)
 			 informs.get(i).delete();
 	 }
@@ -338,23 +355,29 @@ public class ManageController extends Controller{
 	 {
 		 int rid=getParaToInt("rid");
 		 Managers manager=getSessionAttr(GlobalVar.BEUSER);
-		 List<Record> records=Db.find("select a.num,b.iname,b.icon,b.realPrice,b.category,a.from,a.to from ingoods as a,items as b where a.item=b.iid and a.rid=?",rid);
+		 List<Record> records=Db.find("select a.num,b.iname,b.icon,b.realPrice,b.category,a.froms,a.tos from ingoods as a,items as b where a.item=b.iid and a.rid=? order by b.category",rid);
 	     if(manager.getInt("ring")==2)
 	     {
-	    	 if(records!=null && records.get(0).getInt("from")!=manager.getInt("mid"))
+	    	 int t=records.get(0).getInt("froms");
+	    	 if(records!=null && (t!=manager.getInt("mid")))
 	    	 {
 	    		 redirect("/404/error");
+//	    		 System.out.println(records.get(0).getInt("froms"));
+//	    		 System.out.println(manager.getInt("mid"));
+//	    		 System.out.println(2!=2);
+//	    		 System.out.println((records.get(0).getInt("froms"))==(manager.getInt("mid")));
 	    		 return;
 	    	 }
 	     }else if(manager.getInt("ring")==1)
 	     {
-	    	 if(records!=null && (records.get(0).getInt("from")!=manager.getInt("mid") && records.get(0).getInt("to")!=manager.getInt("mid")))
+	    	 if(records!=null && (records.get(0).getInt("froms")!=manager.getInt("mid") && records.get(0).getInt("tos")!=manager.getInt("mid")))
 	    	 {
 	    		 redirect("/404/error");
 	    		 return;
 	    	 }
 	     }
 	     setAttr("igList", records);
+	     render("tradeInfo.html");
 	 }
 	 /**
 	  * ajax返回商品详情
@@ -379,19 +402,27 @@ public class ManageController extends Controller{
 			 to=area.getInt("aid");
 		 }else if(manager.getInt("ring")==1)
 			 to=1;  //总管理员mid
-		 String content[]=getPara("content").split("-");
-		 int rid=Ingoods.dao.findFirst("select distinct rid from ingoods order by rid desc").getInt("rid")+1;
+		 String content[]=getPara("content").split(";");
+		 Ingoods tempig=Ingoods.dao.findFirst("select distinct rid from ingoods order by rid desc");
+		 int rid=1;
+		 if(tempig!=null)
+			 rid=tempig.getInt("rid")+1;
 		 for(int i=0;i<content.length;i++)
 		 {
 			 String temp[]=content[i].split(":");
+			 if(Integer.parseInt(temp[1])<0)
+			 {
+				 renderHtml(Util.getJsonText("商品数量不能为负"));
+				 return;
+			 }
 			 Ingoods ig=new Ingoods();
-			 ig.set("rid", rid).set("from", manager.getInt("mid")).set("to", to);
+			 ig.set("rid", rid).set("froms", manager.getInt("mid")).set("tos", to);
 			 ig.set("item", Integer.parseInt(temp[0])).set("num", Integer.parseInt(temp[1]));
 			 ig.set("state", 1);  //1 已提交
 			 ig.set("addedDT", new Timestamp(System.currentTimeMillis()));
 			 ig.save();
 		 }
-		 new Informs().set("type", "ingoods").set("to", to).set("addedDT", new Timestamp(System.currentTimeMillis())).save();
+		 new Informs().set("type", "ingoods").set("tos", to).set("addedDT", new Timestamp(System.currentTimeMillis())).save();
 		 renderHtml(Util.getJsonText("OK"));
 	 }
 	 /**
@@ -403,8 +434,8 @@ public class ManageController extends Controller{
 	 {
 		 int rid=getParaToInt("rid");
 		 Managers manager=getSessionAttr(GlobalVar.BEUSER);
-		 List<Ingoods> igList=Ingoods.dao.find("select state,to,item,num from ingoods where rid=?",rid);
-		 if(igList!=null && igList.get(0).getInt("to")!=manager.getInt("mid"))
+		 List<Ingoods> igList=Ingoods.dao.find("select state,tos,item,num from ingoods where rid=?",rid);
+		 if(igList!=null && igList.get(0).getInt("tos")!=manager.getInt("mid"))
 		 {
 			 redirect("/404/error");
 			 return;
@@ -420,7 +451,7 @@ public class ManageController extends Controller{
 			 ios.set("restNum", ios.getInt("restNum")-igList.get(i).getInt("num")).update();
 			 igList.get(i).set("state", 2).update();  // 2 处理中
 		 }
-		 new Informs().set("type", "ingoods").set("to", igList.get(0).getInt("from")).set("addedDT", new Timestamp(System.currentTimeMillis())).save();
+		 new Informs().set("type", "ingoods").set("tos", igList.get(0).getInt("froms")).set("addedDT", new Timestamp(System.currentTimeMillis())).save();
 		 renderHtml(Util.getJsonText("OK"));
 	 }
 	 /**
@@ -712,7 +743,7 @@ public class ManageController extends Controller{
 	 public void getinforms()
 	 {
 		 Managers manager=getSessionAttr(GlobalVar.BEUSER);
-		 List<Informs> informs=Informs.dao.find("select * from informs where to=?",manager.getInt("mid"));
+		 List<Informs> informs=Informs.dao.find("select * from informs where tos=?",manager.getInt("mid"));
 		 if(!informs.isEmpty())
 			 renderHtml(Util.getJsonText(informs.size()+""));
 		 else

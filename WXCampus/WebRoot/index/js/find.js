@@ -134,3 +134,8 @@ function gotoshop()
 	else
 	    window.location='/shop';
 }
+
+//返回首页
+function backIndex(){
+	window.location='/index'
+}
