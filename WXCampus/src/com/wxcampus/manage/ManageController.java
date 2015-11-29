@@ -135,18 +135,28 @@ public class ManageController extends Controller{
 	 /**
 	  *          修改密码
 	  */
-	 public void modifyPw()  //ajax
+	 public void modifypw()
+	 {
+		 render("change_password.html");
+	 }
+	 public void modifyPwA()  //ajax
 	 {
 		 String oldPass=getPara("oldPass");
-		 String newPass=getPara("newPass");
+		 String newPass1=getPara("newPass1");
+		 String newPass2=getPara("newPass2");
+		 if(!newPass1.equals(newPass2))
+		 {
+			 renderHtml("<script>alert('两次密码输入不一致!');window.location='/mgradmin/modifypw';</script>");
+			 return;
+		 }
 		 Managers manager=getSessionAttr(GlobalVar.BEUSER);
 		 if(oldPass.equals(manager.getStr("password")))
 		 {
-			 manager.set("password", Util.filterUserInputContent(newPass)).update();
+			 manager.set("password", Util.filterUserInputContent(newPass1)).update();
 			 logger.info(manager.getStr("name")+"---修改密码");
-			 renderHtml("<script>alert('修改成功!');window.location='/mgradmin/quit';");
+			 renderHtml("<script>alert('修改成功!');window.location='/mgradmin/quit';</script>");
 		 }else {
-			renderHtml("<script>alert('原始密码输入错误!');");
+			renderHtml("<script>alert('原始密码输入错误!');window.location='/mgradmin/modifypw';</script>");
 		}
 	 }
 	 
