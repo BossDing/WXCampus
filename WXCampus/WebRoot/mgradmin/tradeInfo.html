@@ -6,32 +6,31 @@
     <link href="/bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css">
     <script type="text/javascript" src="/jquery/jquery-2.1.4.min.js"></script>
     <script type="text/javascript" src="/bootstrap/js/bootstrap.js"></script>
-    <script type="text/javascript" src="/mgradmin/js/ingoods.js"></script>
-    <title>订单详情</title>
+    <#if ring==1>
+		<script type="text/javascript" src="/mgradmin/js/dealIngoods.js"></script>
+		<script type="text/javascript" src="/mgradmin/js/ingoods.js"></script>
+	<#elseif ring==2>
+		<script type="text/javascript" src="/mgradmin/js/ingoods.js"></script>
+	</#if>
+    <title>进货详情</title>
 </head>
 <body>
 <div class="main">
     <div class="main_info">
-        <div class="top">
-            <div class="top_left">
-                <img src="/mgradmin/images/LOGO(3).png" style="display:block;width: auto;height: 60px;margin: 20px auto">
-            </div>
-            <div class="top_right">
-                <div class="top_right_list">
-                    <ul>
-                        <li><a href="/mgradmin">订单处理</a></li>
-                        <li><a  href="/mgradmin/itemnum">商品管理</a></li>
-                        <li><a href="/mgradmin/datainfo">数据统计</a></li>
-                        <li><a href="/mgradmin/ingoods">进货管理</a></li>
-                        <li><a>退出登录</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
+        <#if ring==1>
+		<#include "_layout1.html" />
+	<#elseif ring==2>
+		<#include "_layout2.html" />
+	</#if>
         <div class="center">
             <div class="center_left">
-                <p><span onclick="backIngoods()" style="cursor:pointer;width: 100px;height: 34px;margin-left: 15px">返回</span>
+             <#if backType==0>
+				<p><span onclick="backIngoods()" style="cursor:pointer;width: 100px;height: 34px;margin-left: 15px">返回</span></p>
+			<#elseif backType==1>
+				 <p><span onclick="backDealIngoods()" style="cursor:pointer;width: 100px;height: 34px;margin-left: 15px">返回</span>
                 </p>
+			</#if>
+               
             </div>
         </div>
         <div style="width:100%;height:auto;float:left" id="insertFood"></div>

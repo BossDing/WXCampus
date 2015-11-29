@@ -12,7 +12,11 @@
 <body>
 <div class="main">
     <div class="main_info">
-        <#include "_layout.html" />
+        <#if ring==1>
+		<#include "_layout1.html" />
+	<#elseif ring==2>
+		<#include "_layout2.html" />
+	</#if>
         <div class="center">
             <div class="center_left">
                 <p><span onclick="submitTrade()" style="cursor:pointer;width: 100px;height: 34px;margin-left: 15px">提交订单</span>
@@ -28,11 +32,13 @@
                     <tr>
                         <th style="text-align: center">状态</th>
                         <th style="text-align: center">下单日期</th>
+                        <th style="text-align: center"></th>
+                        <th style="text-align: center">确认收货</th>
                     </tr>
                     </thead>
                     <tbody>
                     <#list igList as x>
-                    <tr onclick="disInfo('${x.rid}')">
+                    <tr>
                     <#if x.state==1>
                         <td>已提交</td>
                     <#elseif x.state==2>
@@ -41,6 +47,11 @@
                        <td>已完成</td>
                     </#if>
                         <td>${x.addedDT}</td>
+                        <td><a style="cursor: pointer" onclick="disInfo('${x.rid}')">查看详情</a></td>
+                    <#if x.state==2>
+                       <td><a style="cursor: pointer" onclick="ConfirmInfo('${x.rid}')">确认收货</a></td>
+                    </#if>
+                    
                     </tr>
                     </#list>
                     </tbody>

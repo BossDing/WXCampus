@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <link href="/mgradmin/css/moban.css" rel="stylesheet" type="text/css">
+    <link href="/mgradmin/css/speitem.css" rel="stylesheet" type="text/css">
+    <link href="/bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="/jquery/jquery-2.1.4.min.js"></script>
+    <script type="text/javascript" src="/bootstrap/js/bootstrap.js"></script>
+    <script type="text/javascript" src="/mgradmin/js/speitem.js"></script>
+    <title>商品管理</title>
+</head>
+<body>
+<div class="main">
+    <div class="main_info">
+		<#include "_layout0.html" />
+        <div class="center">
+            <div class="center_left">
+             <p><span style="width: 100px;height: 34px;margin-left: 15px">返回</span>
+                </p>
+            </div>
+            <div class="center_right">
+            </div>
+        </div>
+        <div class="floor">
+           <div class="floor_content">
+                <form action="/mgradmin/modifyItem" method="post">
+                    <div class="itemInfo">
+                        <p><span>商品名称:</span><input name="items.iname" type="text"></p>
+                        <p><span>商品图片:</span><input name="items.icon" type="file"></p>
+                        <p><span>商品成本:</span><input name="items.cost" type="text"></p>
+                        <p><span>建议售价:</span><input name="items.realPrice" type="text"></p>
+                        <p><span>分&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;类:</span><input name="items.category" type="text"></p>
+                        <p style="text-align: center"> <button type="submit" name="submit" value="添加" class="btn btn-success">添加</button>
+                            <button style="margin-left: 25px" type="reset" class="btn btn-default">重置</button></p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

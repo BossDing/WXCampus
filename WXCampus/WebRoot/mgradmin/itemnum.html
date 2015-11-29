@@ -12,13 +12,23 @@
 <body>
 <div class="main">
     <div class="main_info">
-        <#include "_layout.html" />
+        <#if ring==1>
+		<#include "_layout1.html" />
+	<#elseif ring==2>
+		<#include "_layout2.html" />
+	</#if>
         <div class="center">
             <div class="center_left">
-                <p>
-                <span>起送价</span><span><input id="startPrice" value=${startPrice} type="number" style="width:80px"></span>
+              <p>
+              <#if ring==1>
+              <span onclick="backGetSeller()" style="cursor:pointer;width: 100px;height: 34px;margin-left: 15px">返回</span>
+               <span>起送价</span><span>${startPrice}</span>
+              </#if>
+            <#if ring==2>
+             <span>起送价</span><span><input id="startPrice" value=${startPrice} type="number" style="width:80px"></span>
                 <span><a style="cursor:pointer" onclick="changeStartPrice()">修改</a></span>
-                </p>
+           </#if>
+            </p>
             </div>
             <div class="center_right">
             </div>
@@ -45,12 +55,20 @@
                     i++;
                     </script>
                         <td>${x.iname}</td>
-                        <td><span>${x.minPrice}~</span><input id=${x.iosid} value=${x.price} type="text" style="width:40px;height:20px;text-align:center">
+                        <#if ring==1>
+                         <td>${x.price}</td>
+                        <td><input id=${x.iosid} value=${x.restNum} type="number" style="width:60px;height:30px;text-align:center"></td>
+                        <td><a style="cursor:pointer" onclick="changeNum('${x.iosid}')">修改</a></td>
+                        <td id=${x.iosid}_msg></td>
+                        <#elseif ring==2>
+                         <td><span>${x.minPrice}~</span><input id=${x.iosid} value=${x.price} type="text" style="width:40px;height:20px;text-align:center">
                         <span>~${x.maxPrice}</span>
                         </td>
                         <td>${x.restNum}</td>
                         <td><a style="cursor:pointer" onclick="changePrice('${x.iosid}')">修改</a></td>
                         <td id=${x.iosid}_msg></td>
+                        </#if>
+                       
                     </tr>
                     </#list>
                     </tbody>

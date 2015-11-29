@@ -105,3 +105,25 @@ function disInfo(rid){
 function backIngoods(){
 	window.location='/mgradmin/seeInGoods';
 }
+
+function ConfirmInfo(rid){
+	var url='/mgradmin/confirmIngoods';
+	var dataInfo='rid='+rid;
+    $.ajax(
+        {
+            url:url,
+            dataType: "json",
+            type: 'POST',
+            data:dataInfo,
+            success:function(json){
+            	if(json.Msg=="OK"){
+            		alert("处理成功");
+            		window.location.reload();
+            	}
+            },
+            error: function () {
+                alert("error");
+            }
+        }
+    );
+}

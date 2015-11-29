@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <link href="/mgradmin/css/ingoods.css" rel="stylesheet" type="text/css">
+    <link href="/bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="/jquery/jquery-2.1.4.min.js"></script>
+    <script type="text/javascript" src="/bootstrap/js/bootstrap.js"></script>
+    <script type="text/javascript" src="/mgradmin/js/dealIngoods.js"></script>
+    <title>处理进货</title>
+</head>
+<body>
+<div class="main">
+    <div class="main_info">
+		<#include "_layout1.html" />
+        <div class="center">
+            <div class="center_left">
+            </div>
+        </div>
+        <div style="width:100%;height:auto;float:left" id="insertFood"></div>
+        <div class="floor">
+            <div class="floor_content">
+                <table class="table table-striped" id="list" style="text-align: center">
+                    <caption style="text-align: center">进货订单列表</caption>
+                    <thead>
+                    <tr>
+                        <th style="text-align: center">状态</th>
+                        <th style="text-align: center">下单日期</th>
+                         <th style="text-align: center">楼栋</th>
+                         <th style="text-align: center">显示详情</th>
+                         <th style="text-align: center"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <#list igList as x>
+                    <tr>
+                    <#if x.state==1>
+                        <td>已提交</td>
+                    <#elseif x.state==2>
+                       <td>正在派送</td>
+                    <#else>
+                       <td>已完成</td>
+                    </#if>
+                        <td>${x.addedDT}</td>
+                        <td>${x.building}</td>
+                        <td><a style="cursor: pointer" onclick="disInfo('${x.rid}')">查看详情</a></td>
+                      <#if x.state==1>
+                       <td><a style="cursor: pointer" onclick="dealIngoods('${x.rid}')">处理订单</a></td>
+                    </#if>
+                    </tr> 
+                    </#list>
+                    </tbody>
+                </table>
+            </div>
+            <div class="floor_bottom">
+                <p>
+                <#if page==1>
+                <span>上一页</span>
+                <#else>
+                <span><a onclick="lastPage()">上一页</a></span>
+                </#if>
+                <span><input id="page" value=${page} type="text" style="text-align:center;width: 60px;" disabled></span><span><a onclick="nextPage()">下一页</a></span></p>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

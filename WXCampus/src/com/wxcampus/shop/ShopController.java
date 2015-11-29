@@ -300,8 +300,8 @@ public class ShopController extends Controller{
 		income=Incomes.dao.findFirst("select * from incomes where mid=?",colleger.getInt("mid"));
 		if(income==null)
 		{
-			income=new Incomes();
-			income.set("mid", manager.getInt("mid")).set("sales", new BigDecimal(totalMoney));
+			income=new Incomes();  
+			income.set("mid", colleger.getInt("mid")).set("sales", new BigDecimal(totalMoney));
 			income.set("addedDT", new Timestamp(System.currentTimeMillis())).save();
 		}else {
 			income.set("sales", income.getBigDecimal("sales").add(new BigDecimal(totalMoney))).update();

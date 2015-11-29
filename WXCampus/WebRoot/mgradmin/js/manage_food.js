@@ -44,3 +44,31 @@ function changeStartPrice(){
 	        }
 	    );
 }
+
+function changeNum(iid){
+	var url='/mgradmin/modifyRestNum';
+	var dataInfo='iosid='+iid+'&restNum='+document.getElementById(iid).value;
+	$.ajax(
+	        {
+	            url:url,
+	            dataType: "json",
+	            type: 'POST',
+	            data:dataInfo,
+	            success:function(json){
+	            	if(json.Msg!="OK"){
+	            		document.getElementById(iid+"_msg").innerHTML=json.Msg;
+	            	}
+	            	else{
+	            		document.getElementById(iid+"_msg").innerHTML="修改成功";
+	            	}
+	            },
+	            error: function () {
+	                alert("error");
+	            }
+	        }
+	    );
+}
+
+function backGetSeller(){
+	window.location='/mgradmin/getSellers'
+}

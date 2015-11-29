@@ -11,7 +11,11 @@
 <body>
 <div class="main">
     <div class="main_info">
-		<#include "_layout.html" />
+    <#if ring==1>
+		<#include "_layout1.html" />
+	<#elseif ring==2>
+		<#include "_layout2.html" />
+	</#if>
 <div class="center">
             <div class="center_left">
                 <p><span style="width: 100px;height: 34px;margin-left: 15px">订单筛选:</span>
@@ -22,7 +26,16 @@
                 </p>
             </div>
             <div class="center_right">
+                <#if ring==2>
                 <p><span id="rest" onclick="rest()">休息</span><span onclick="Working()" id="working">营业</span></p>
+					<script>
+					var status=${state?string("true","false")};
+				    if(status=="false"){
+				    	document.getElementById("working").style.backgroundColor="#9d9d9d";
+				        document.getElementById("rest").style.backgroundColor="#F6EB13";
+    					}
+					</script>
+				</#if>
             </div>
         </div>
         <div class="floor">
@@ -98,10 +111,6 @@ var currdate='${date_info}';
     else{
     document.getElementById("old_manage").style.backgroundColor="#FEE02A";
     }
-    var status=${state?string("true","false")};
-    if(status=="false"){
-    	document.getElementById("working").style.backgroundColor="#9d9d9d";
-        document.getElementById("rest").style.backgroundColor="#F6EB13";
-    }
+    
     sendDateInfo(currdate,state);
 </script>

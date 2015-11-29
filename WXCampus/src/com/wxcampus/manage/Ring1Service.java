@@ -42,14 +42,14 @@ public class Ring1Service {
 		 for(int i=0;i<areaList.size();i++)
 		 {
 		 if(state==null)
-			 ridList.addAll(Trades.dao.paginate(page,10,"select distinct rid,state,addedDate,addedTime","from trades where location=? and addedDate=? order by addedTime desc",areaList.get(i).getInt("aid"),date).getList());
+			 ridList.addAll(Trades.dao.paginate(page,10,"select distinct rid,location,state,room,addedDate,addedTime","from trades where location=? and addedDate=? order by addedTime desc",areaList.get(i).getInt("aid"),date).getList());
 		 else {
 			if(state.equals("0"))
-				{ridList.addAll(Trades.dao.paginate(page,10,"select distinct rid,state,addedDate,addedTime","from trades where state=0 and location=? and addedDate=? order by addedTime desc",areaList.get(i).getInt("aid"),date).getList());
+				{ridList.addAll(Trades.dao.paginate(page,10,"select distinct rid,location,state,room,addedDate,addedTime","from trades where state=0 and location=? and addedDate=? order by addedTime desc",areaList.get(i).getInt("aid"),date).getList());
 				flag=1;
 				}
 				else if(state.equals("1"))
-				{ridList.addAll(Trades.dao.paginate(page,10,"select distinct rid,state,addedDate,addedTime","from trades where state=1 and location=? and addedDate=? order by addedTime desc",areaList.get(i).getInt("aid"),date).getList());
+				{ridList.addAll(Trades.dao.paginate(page,10,"select distinct rid,location,state,room,addedDate,addedTime","from trades where state=1 and location=? and addedDate=? order by addedTime desc",areaList.get(i).getInt("aid"),date).getList());
 			     flag=2;
 				}
 				else {
@@ -76,6 +76,8 @@ public class Ring1Service {
 				temp.set("addedDate", ridList.get(i).get("addedDate"));
 				temp.set("addedTime", ridList.get(i).get("addedTime"));
 				temp.set("money", money);
+				Areas t=Areas.dao.findById(ridList.get(i).getInt("location"));
+				temp.set("room", t.getStr("building")+ridList.get(i).get("room"));
 				temp.set("items", itemsRecords);
 				records.add(temp);
 			}
