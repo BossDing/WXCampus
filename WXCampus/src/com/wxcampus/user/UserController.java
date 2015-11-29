@@ -247,7 +247,8 @@ public class UserController extends Controller{
 			redirect("/404/error?Msg="+Util.getEncodeText("验证码超时,请重新获取")+"&backurl=/usr/registion");
 			return;
 		}
-		form.set("openid", "1123456");  //openid未加
+		String openid=getSessionAttr(GlobalVar.OPENID);
+		form.set("openid", openid);  //openid未加
 		form.set("password", Util.filterUserInputContent(form.getStr("password")));
 		form.set("registerDate", Util.getDate());
 		form.set("registerTime", Util.getTime());
@@ -255,8 +256,8 @@ public class UserController extends Controller{
 			form.set("location", 1);
 		else
 		    form.set("location", getSessionAttr("areaID"));
-		//form.set("headicon", getSessionAttr("headicon"));
-		form.set("headicon", "/imgs/aaa.png");
+		form.set("headicon", getSessionAttr("headicon"));
+		//form.set("headicon", "/imgs/aaa.png");
 		form.save();
 		form=User.me.findFirst("select * from user where tel=?",form.getStr("tel"));
 	    setSessionAttr(GlobalVar.WXUSER, form);

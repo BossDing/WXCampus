@@ -2,6 +2,8 @@ package com.wxcampus.manage;
 
 import java.awt.geom.Area;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -20,6 +22,7 @@ import com.jfinal.aop.Before;
 import com.jfinal.aop.Clear;
 import com.jfinal.core.Controller;
 import com.jfinal.plugin.activerecord.Db;
+import com.jfinal.plugin.activerecord.Model;
 import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
 import com.jfinal.plugin.activerecord.tx.Tx;
@@ -818,13 +821,54 @@ public class ManageController extends Controller{
 	  *    编辑商品      包括添加，修改
 	  */
 	 @Before(Ring0Interceptor.class)
+	 public void uploadImg()
+	 {
+		 String src=Util.getRandomString()+".jpg";
+		 File tofile=new File(Util.getImgPath()+src);
+		 while(tofile.exists())
+		 {
+			 src=Util.getRandomString()+".jpg";
+			 tofile=new File(Util.getImgPath()+src);
+		 }
+		 UploadFile file=getFile("icon", Util.getImgPath());
+		 if(file==null)
+		 {
+			 setAttr("isupload", false);
+			 setAttr("errorMsg", "图片未选择");
+			 render("speitem.html");
+			 return;
+		 }
+		 File f=file.getFile();
+		 f.renameTo(tofile);
+		 setAttr("isupload", true);
+		 setAttr("imgsrc", "/imgs/"+src);
+		 Items item=getSessionAttr("tempitem");
+		 if(item!=null)
+		 {
+		 setAttr("items", item);
+		 removeSessionAttr("tempitem");
+		 }
+		 render("speitem.html");
+		 
+	 }
+	 @Before(Ring0Interceptor.class)
 	 public void addItem()
 	 {
+		 setAttr("isupload", false);
 		 render("speitem.html");
 	 }
 	 @Before(Ring0Interceptor.class)
 	 public void modifyItem()     //表单提交
 	 {
+		if(getPara("items.icon")==null)
+			{
+				keepModel(Items.class);
+				setAttr("errorMsg", "图片未上传");
+				setAttr("isupload", false);
+				setSessionAttr("tempitem", getModel(Items.class));
+				render("speitem.html");
+				return;
+			}
 		 Items item=getModel(Items.class);
 		 item.set("iname", Util.filterUserInputContent(item.getStr("iname")));
 		 item.set("category", Util.filterUserInputContent(item.getStr("category")));
@@ -832,9 +876,7 @@ public class ManageController extends Controller{
 		 System.out.println(type);
 		 if(type.equals("添加"))
 		 {
-			 System.out.println(Util.getImgPath());
-			UploadFile file=getFile("items.icon", Util.getImgPath()+new Random().nextInt(999999)+".jpg", 2*1024*1024);
-			item.set("icon", file.getFileName()).set("addedDate", Util.getDate()).set("addedTime", Util.getTime());
+			item.set("addedDate", Util.getDate()).set("addedTime", Util.getTime());
 			item.save();
 			redirect("/mgradmin/items");
 			return;

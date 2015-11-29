@@ -24,13 +24,23 @@
         </div>
         <div class="floor">
            <div class="floor_content">
+              <form action="/mgradmin/uploadImg" method="post" enctype="multipart/form-data">
+                  <p><span>商品图片:</span><input name="icon" type="file"></p>
+                   <#if isupload==true>
+                   <img src=${imgsrc!}  />
+                   </#if>
+                  <p style="text-align: center"> <button type="submit" class="btn btn-success">上传</button>
+                </form>
                 <form action="/mgradmin/modifyItem" method="post">
                     <div class="itemInfo">
-                        <p><span>商品名称:</span><input name="items.iname" type="text"></p>
-                        <p><span>商品图片:</span><input name="items.icon" type="file"></p>
-                        <p><span>商品成本:</span><input name="items.cost" type="text"></p>
-                        <p><span>建议售价:</span><input name="items.realPrice" type="text"></p>
-                        <p><span>分&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;类:</span><input name="items.category" type="text"></p>
+                     <#if isupload==true>
+                    <input type="hidden" name="items.icon" value=${imgsrc!}> 
+                   </#if>
+                        ${errorMsg!}
+                        <p><span>商品名称:</span><input name="items.iname" value='${(items.iname)!}' type="text"></p>
+                        <p><span>商品成本:</span><input name="items.cost" value='${(items.cost)!}' type="text"></p>
+                        <p><span>建议售价:</span><input name="items.realPrice" value='${(items.realPrice)!}' type="text"></p>
+                        <p><span>分&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;类:</span><input name="items.category" value='${(items.category)!}' type="text"></p>
                         <p style="text-align: center"> <button type="submit" name="submit" value="添加" class="btn btn-success">添加</button>
                             <button style="margin-left: 25px" type="reset" class="btn btn-default">重置</button></p>
                     </div>
