@@ -144,9 +144,9 @@ public class ManageController extends Controller{
 		 {
 			 manager.set("password", Util.filterUserInputContent(newPass)).update();
 			 logger.info(manager.getStr("name")+"---修改密码");
-			 renderHtml(Util.getJsonText("OK"));
+			 renderHtml("<script>alert('修改成功!');window.location='/mgradmin/quit';");
 		 }else {
-			renderHtml("原始密码输入错误");
+			renderHtml("<script>alert('原始密码输入错误!');");
 		}
 	 }
 	 
