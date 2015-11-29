@@ -26,6 +26,7 @@ import com.jfinal.upload.UploadFile;
 import com.mchange.v2.c3p0.impl.NewPooledConnection;
 import com.wxcampus.common.GlobalVar;
 import com.wxcampus.common.NoUrlPara;
+import com.wxcampus.common.OpenidInterceptor;
 import com.wxcampus.index.Areas;
 import com.wxcampus.index.IndexService;
 import com.wxcampus.items.Applyfor;

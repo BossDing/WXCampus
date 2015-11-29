@@ -18,6 +18,7 @@ import com.jfinal.plugin.activerecord.Record;
 import com.jfinal.plugin.activerecord.tx.Tx;
 import com.wxcampus.common.GlobalVar;
 import com.wxcampus.common.NoUrlPara;
+import com.wxcampus.common.OpenidInterceptor;
 import com.wxcampus.index.Areas;
 import com.wxcampus.items.Areasales;
 import com.wxcampus.items.Coupons;
@@ -38,7 +39,7 @@ import com.wxcampus.util.Util;
  * @author Potato
  *
  */
-@Before(UserInterceptor.class)
+@Before({OpenidInterceptor.class,UserInterceptor.class})
 public class ShopController extends Controller{
 	
 	@Before({NoUrlPara.class,ShopInterceptor.class})

@@ -21,6 +21,7 @@ import com.jfinal.plugin.activerecord.Record;
 import com.mchange.v2.c3p0.impl.NewPooledConnection;
 import com.wxcampus.common.GlobalVar;
 import com.wxcampus.common.NoUrlPara;
+import com.wxcampus.common.OpenidInterceptor;
 import com.wxcampus.index.Areas;
 import com.wxcampus.items.Applyfor;
 import com.wxcampus.items.Coupons_user;
@@ -34,7 +35,7 @@ import com.wxcampus.util.Util;
  * @author Potato
  *
  */
-@Before(UserInterceptor.class)
+@Before({OpenidInterceptor.class,UserInterceptor.class})
 public class UserController extends Controller{
 	
 	@Before(NoUrlPara.class)
@@ -323,18 +324,18 @@ public class UserController extends Controller{
 	/**
 	 *   申请当店长
 	 */
-	@Clear(UserInterceptor.class)
+	@Clear({UserInterceptor.class,OpenidInterceptor.class})
 	public void wtsindex()
 	{
 		render("KTstore.html");
 	}
-	@Clear(UserInterceptor.class)
+	@Clear({UserInterceptor.class,OpenidInterceptor.class})
 	public void wantosell()
 	{
 		//验证码防bot待加
 		render("wantosell.html");
 	}
-	@Clear(UserInterceptor.class)
+	@Clear({UserInterceptor.class,OpenidInterceptor.class})
 	public void wantosellAction()
 	{
 		Applyfor af=getModel(Applyfor.class);
@@ -362,7 +363,7 @@ public class UserController extends Controller{
 		redirect("/usr/applysuccess");
 		//renderHtml("<script>alert('提交成功');this.location.href='/usr/wantosell';</script>");
 	}
-	@Clear(UserInterceptor.class)
+	@Clear({UserInterceptor.class,OpenidInterceptor.class})
 	public void applysuccess()
 	{
 		render("applysuccess.html");

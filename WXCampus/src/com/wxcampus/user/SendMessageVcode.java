@@ -10,10 +10,10 @@ public class SendMessageVcode {
 	
 	public static boolean send(String tel,String vcode)
 	{
-//		String url="http://apis.baidu.com/kingtto_media/106sms/106sms?";
-//		String para="mobile="+tel+"&content=【验证码】：您的验证码是"+vcode+"，5分钟内有效。";
-//        String result=getResponse(url+para);
-		String result="Success";
+		String url="http://apis.baidu.com/kingtto_media/106sms/106sms?";
+		String para="mobile="+tel+"&content=【验证码】：您的验证码是"+vcode+"，5分钟内有效。";
+        String result=getResponse(url+para);
+	//	String result="Success";
         if(result.contains("Success"))
         	return true;
         else

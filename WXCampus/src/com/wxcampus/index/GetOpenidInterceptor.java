@@ -10,15 +10,16 @@ import com.wxcampus.common.GlobalVar;
 
 public class GetOpenidInterceptor implements Interceptor{
 
-	public static String APPID="";
-	public static String APPSECRET="";
-	private String Redirect_URL="http://www.missjzp.cn/index/authorize";
+	public static String APPID="wx116ad715812ea4e7";
+	public static String APPSECRET="c9f55326f01963db32178214bcd11747";
+	private String Redirect_URL="http://wx.songquangui.com/index/authorize";
 	@Override
 	public void intercept(Invocation arg0) {
 		Controller c=arg0.getController();
 		try {
-			Redirect_URL=URLEncoder.encode(Redirect_URL, "utf-8");
-		} catch (UnsupportedEncodingException e) {
+			//Redirect_URL=URLEncoder.encode(Redirect_URL, "utf-8");
+			Redirect_URL="http%3A%2F%2Fwx.songquangui.com%2Findex%2Fauthorize";
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

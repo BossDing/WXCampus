@@ -8,6 +8,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
 import com.alibaba.fastjson.JSONObject;
 import com.jfinal.aop.Before;
 import com.jfinal.aop.Clear;
@@ -27,13 +29,14 @@ import com.wxcampus.util.Util;
 /**
  * 主页控制器
  */
+@Before(OpenidInterceptor.class)
 public class IndexController extends Controller {
 	
 	//IndexService isService=new IndexService();
-	
+	public static Logger logger = Util.getLogger();
 	@Clear(OpenidInterceptor.class)
 	//GetOpenidInterceptor.class,
-	@Before({NoUrlPara.class,LoginInterceptor.class,LocationInterceptor.class})
+	@Before({NoUrlPara.class,GetOpenidInterceptor.class,LoginInterceptor.class,LocationInterceptor.class})
 	public void index() {
 		User user=getSessionAttr(GlobalVar.WXUSER);
 		Areas areas;

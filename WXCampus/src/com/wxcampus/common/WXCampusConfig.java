@@ -51,6 +51,7 @@ public class WXCampusConfig extends JFinalConfig{
 	 * 路由映射
 	 */
 	public void configRoute(Routes me) {
+		me.add("/", RediectIndexController.class);
 		me.add("/index", IndexController.class, "/index");	// ���������Ϊ��Controller����ͼ���·��
 		me.add("/usr", UserController.class);			// ���������ʡ��ʱĬ�����һ������ֵ��ͬ���ڴ˼�Ϊ "/blog"
 	    me.add("/shop",ShopController.class);
