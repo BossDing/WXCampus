@@ -26,8 +26,7 @@
         	<img src="/index/images_shop/logo.jpg" style="height:60px;margin-top:10px;margin-left:25px;">
         </div>
         <div class="top_center">
-            <p style="margin-top: 5px" onclick="selectLocation()">选择地址></p>
-            <p>${Area.college}-${Area.building}</p>
+            <p  style="margin-top: 5px" onclick="selectLocation()">${Area.college}-${Area.building}</p>
         </div>
         <div class="top_right">
             <p><img src="/index/images_shop/gerenzhongxin.png" onclick="personInfo()">
@@ -48,7 +47,6 @@
     <div class="floor">
         <div class="floor_left" id="floor_left">
                 <p style="margin-top: 5px">${Area.startTime?string("HH:mm:ss")}--${Area.endTime?string("HH:mm:ss")}</p>
-                <p>营业时间</p>
         </div>
         <div class="floor_center" id="floor_center">
             <p style="margin-top: 5px">${Manager.say}</p>
