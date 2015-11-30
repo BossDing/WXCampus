@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <link href="/mgradmin/css/moban.css" rel="stylesheet" type="text/css">
+    <link href="/bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="/jquery/jquery-2.1.4.min.js"></script>
+    <script type="text/javascript" src="/bootstrap/js/bootstrap.js"></script>
+    <script type="text/javascript" src="/mgradmin/js/seeAdvice.js"></script>
+    <title>处理进货</title>
+</head>
+<body>
+<div class="main">
+    <div class="main_info">
+		<#include "_layout0.html" />
+        <div class="center">
+            <div class="center_left">
+            </div>
+        </div>
+        <div style="width:100%;height:auto;float:left" id="insertFood"></div>
+        <div class="floor">
+            <div class="floor_content">
+                <table class="table table-striped" id="list" style="text-align: center">
+                    <caption style="text-align: center">投诉列表</caption>
+                    <thead>
+                    <tr>
+                        <th style="text-align: center">投诉内容</th>
+                        <th style="text-align: center">地址</th>
+                         <th style="text-align: center">日期</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <#list Advices as x>
+                    <tr>
+                        <td>${x.content}</td>
+                        <td>${x.city}${x.college}${x.building}</td>
+                        <td>${x.addedDate}~${x.addedTime}</td>
+                    </tr> 
+                    </#list>
+                    </tbody>
+                </table>
+            </div>
+            <div class="floor_bottom">
+                <p>
+                <#if page==1>
+                <span>上一页</span>
+                <#else>
+                <span><a onclick="lastPage()">上一页</a></span>
+                </#if>
+                <span><input id="page" value=${page} type="text" style="text-align:center;width: 60px;" disabled></span><span><a onclick="nextPage()">下一页</a></span></p>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

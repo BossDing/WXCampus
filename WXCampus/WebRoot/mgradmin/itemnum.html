@@ -16,6 +16,8 @@
 		<#include "_layout1.html" />
 	<#elseif ring==2>
 		<#include "_layout2.html" />
+	<#elseif ring==0>
+		<#include "_layout0.html" />
 	</#if>
         <div class="center">
             <div class="center_left">
@@ -55,7 +57,7 @@
                     i++;
                     </script>
                         <td>${x.iname}</td>
-                        <#if ring==1>
+                        <#if ring==1 || ring==0>
                          <td>${x.price}</td>
                         <td><input id=${x.iosid} value=${x.restNum} type="number" style="width:60px;height:30px;text-align:center"></td>
                         <td><a style="cursor:pointer" onclick="changeNum('${x.iosid}')">修改</a></td>
@@ -67,6 +69,7 @@
                         <td>${x.restNum}</td>
                         <td><a style="cursor:pointer" onclick="changePrice('${x.iosid}')">修改</a></td>
                         <td id=${x.iosid}_msg></td>
+                        
                         </#if>
                        
                     </tr>

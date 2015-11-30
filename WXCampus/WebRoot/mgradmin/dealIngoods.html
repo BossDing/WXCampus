@@ -12,7 +12,11 @@
 <body>
 <div class="main">
     <div class="main_info">
+     <#if ring==1>
 		<#include "_layout1.html" />
+	<#elseif ring==0>
+		<#include "_layout0.html" />
+	</#if>
         <div class="center">
             <div class="center_left">
             </div>

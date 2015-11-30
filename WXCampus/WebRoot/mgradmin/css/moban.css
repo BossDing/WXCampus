@@ -121,3 +121,21 @@
 #rest{
     border-radius: 0px 8px 8px 0px;
 }
+.floor_content{
+    width: 95%;
+    height: 400px;
+    margin: 0px auto;
+    background-color: #ffffff;
+}
+.floor_bottom{
+    width: 95%;
+    height: 50px;
+    margin: 0px auto;
+}
+.floor_bottom p{
+    float: right;
+    margin-top: 25px;
+}
+.floor_bottom p span{
+    margin-right: 15px;
+}

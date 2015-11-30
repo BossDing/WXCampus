@@ -15,6 +15,8 @@
 		<#include "_layout1.html" />
 	<#elseif ring==2>
 		<#include "_layout2.html" />
+	<#elseif ring==0>
+		<#include "_layout0.html" />
 	</#if>
 <div class="center">
             <div class="center_left">
@@ -23,6 +25,7 @@
                     <span id="new_manage" onclick="newTrades()">未处理</span>
                     <span id="old_manage" onclick="oldTrades()">已处理</span>
                     <span><input type="date" id="upDate"></span>
+
                 </p>
             </div>
             <div class="center_right">

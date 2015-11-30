@@ -1,5 +1,5 @@
 function modifyItem(iid){
-	
+	window.location="/mgradmin/addItem/"+iid;
 }
 function deleteItem(iid){
 	if (confirm("确认要删除？")) {

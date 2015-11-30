@@ -70,6 +70,10 @@ public class ManageController extends Controller{
 			 Ring1Service ring1Service=new Ring1Service(this,manager);
 	         ring1Service.trades();
 	         setAttr("ring", 1);
+		 }else if(manager.getInt("ring")==0)
+		 {
+			 tradesALL();
+	         setAttr("ring", 0);
 		 }
 		 Incomes income=Incomes.dao.findFirst("select * from incomes where mid=?",manager.getInt("mid"));
 		 setAttr("Sales", income.getBigDecimal("sales").doubleValue());
@@ -158,6 +162,8 @@ public class ManageController extends Controller{
 			break;
 		case 2:  setAttr("ring", 2);
 			break;
+		case 0:  setAttr("ring", 0);
+		break;
 		}
 		 render("change_password.html");
 	 }
@@ -215,7 +221,11 @@ public class ManageController extends Controller{
 			break;
 		case 2:  setAttr("ring", 2);
 			break;
+		 case 0:  setAttr("ring", 0);
+			break;
 		}
+	
+	
 		 String month=getPara("month");
 		 if(month==null)
 			 month=Util.getMonth();
@@ -282,6 +292,11 @@ public class ManageController extends Controller{
 		 setAttr("iosList", iosList);
 		 Areas area=Areas.dao.findById(manager.getInt("location"));
 		 setAttr("startPrice",area.getBigDecimal("startPrice").doubleValue());
+			break;
+		case 0:
+			setAttr("ring", 0);
+			 iosList=Db.find("select a.iname,a.icon,a.category,b.iosid,b.restNum,b.price,b.minPrice,b.maxPrice from items as a,items_on_sale as b where a.iid=b.iid and b.location=?",manager.getInt("location"));
+			 setAttr("iosList", iosList);
 			break;
 		}
 		 render("itemnum.html");
@@ -412,6 +427,12 @@ public class ManageController extends Controller{
 	 public void dealInGoods()
 	 {
 		 Managers manager=getSessionAttr(GlobalVar.BEUSER);
+		 switch (manager.getInt("ring")) {
+			case 1:  setAttr("ring", 1);
+				break;
+			case 0:  setAttr("ring", 0);
+				break;
+			}
 		 if(manager.getInt("ring")!=0 &&manager.getInt("ring")!=1)
 		 {
 			 redirect("/mgradmin/error?Msg="+Util.getEncodeText("无权操作"));
@@ -423,7 +444,7 @@ public class ManageController extends Controller{
          List<Record> igList=Db.paginate(page,10,"select distinct rid,addedDT,state,froms","from ingoods where tos=? order by addedDT desc",manager.getInt("mid")).getList();
          for(int i=0;i<igList.size();i++)
          {
-        	 igList.get(i).set("building", Areas.dao.findById(Managers.dao.findById(igList.get(i).getInt("froms")).getInt("location")).getStr("building"));
+        	 igList.get(i).set("building", Areas.dao.findById(Managers.dao.findById(igList.get(i).getInt("froms")).getInt("location")).getStr("college"));
          }
 		 setAttr("igList", igList);
 		 List<Informs> informs=Informs.dao.find("select * from informs where tos=?",manager.getInt("mid"));
@@ -447,6 +468,8 @@ public class ManageController extends Controller{
 			break;
 		case 2:  setAttr("ring", 2);
 			break;
+		case 0:  setAttr("ring", 0);
+		break;
 		}
 		 List<Record> records=Db.find("select a.num,b.iname,b.icon,b.realPrice,b.category,a.froms,a.tos from ingoods as a,items as b where a.item=b.iid and a.rid=? order by b.category",rid);
 	     if(manager.getInt("ring")==2)
@@ -461,7 +484,7 @@ public class ManageController extends Controller{
 //	    		 System.out.println((records.get(0).getInt("froms"))==(manager.getInt("mid")));
 	    		 return;
 	    	 }
-	     }else if(manager.getInt("ring")==1)
+	     }else if(manager.getInt("ring")==1 || manager.getInt("ring")==0)
 	     {
 	    	 int t=manager.getInt("mid");
 	    	 if(records!=null && (records.get(0).getInt("froms")!=t && records.get(0).getInt("tos")!=t))
@@ -649,7 +672,7 @@ public class ManageController extends Controller{
 	 public void modifyRestNum()
 	 {
 		 Managers login=getSessionAttr(GlobalVar.BEUSER);
-		 if(login.getInt("ring")==0)
+		 if(login.getInt("ring")==666)
 		 {
 			 JSONArray jsonarr=JSONObject.parseArray(getPara("json"));
 			 for(int i=0;i<jsonarr.size();i++)
@@ -661,7 +684,7 @@ public class ManageController extends Controller{
 			 }
 			 renderHtml(Util.getJsonText("OK"));
 			 return;
-		 }else if(login.getInt("ring")==1)
+		 }else if(login.getInt("ring")==1 || login.getInt("ring")==0)
 		 {
 			 if(getPara("iosid")==null || getPara("restNum")==null)
 			 {
@@ -820,81 +843,113 @@ public class ManageController extends Controller{
 	 /**
 	  *    编辑商品      包括添加，修改
 	  */
-	 @Before(Ring0Interceptor.class)
-	 public void uploadImg()
-	 {
-		 String src=Util.getRandomString()+".jpg";
-		 File tofile=new File(Util.getImgPath()+src);
-		 while(tofile.exists())
-		 {
-			 src=Util.getRandomString()+".jpg";
-			 tofile=new File(Util.getImgPath()+src);
-		 }
-		 UploadFile file=getFile("icon", Util.getImgPath());
-		 if(file==null)
-		 {
-			 setAttr("isupload", false);
-			 setAttr("errorMsg", "图片未选择");
-			 render("speitem.html");
-			 return;
-		 }
-		 File f=file.getFile();
-		 f.renameTo(tofile);
-		 setAttr("isupload", true);
-		 setAttr("imgsrc", "/imgs/"+src);
-		 Items item=getSessionAttr("tempitem");
-		 if(item!=null)
-		 {
-		 setAttr("items", item);
-		 removeSessionAttr("tempitem");
-		 }
-		 render("speitem.html");
-		 
-	 }
+//	 @Before(Ring0Interceptor.class)
+//	 public void uploadImg()
+//	 {
+//		 String src=Util.getRandomString()+".jpg";
+//		 File tofile=new File(Util.getImgPath()+src);
+//		 while(tofile.exists())
+//		 {
+//			 src=Util.getRandomString()+".jpg";
+//			 tofile=new File(Util.getImgPath()+src);
+//		 }
+//		 UploadFile file=getFile("icon", Util.getImgPath());
+//		 if(file==null)
+//		 {
+//			 setAttr("isupload", false);
+//			 setAttr("errorMsg", "图片未选择");
+//			 render("speitem.html");
+//			 return;
+//		 }
+//		 File f=file.getFile();
+//		 f.renameTo(tofile);
+//		 setAttr("isupload", true);
+//		 setAttr("imgsrc", "/imgs/"+src);
+//		 Items item=getSessionAttr("tempitem");
+//		 if(item!=null)
+//		 {
+//		 setAttr("items", item);
+//		 removeSessionAttr("tempitem");
+//		 }
+//		 render("speitem.html");
+//		 
+//	 }
 	 @Before(Ring0Interceptor.class)
 	 public void addItem()
 	 {
-		 setAttr("isupload", false);
+		 if(getParaToInt(0)!=null)
+		 {
+			 int iid=getParaToInt(0);
+			 Items items=Items.dao.findById(iid);
+			 setAttr("items", items);
+			 setAttr("type", 1);   //1 编辑  0 添加
+		 }else {
+			 setAttr("type", 0);
+		}
 		 render("speitem.html");
 	 }
 	 @Before(Ring0Interceptor.class)
 	 public void modifyItem()     //表单提交
 	 {
-		if(getPara("items.icon")==null)
-			{
-				keepModel(Items.class);
-				setAttr("errorMsg", "图片未上传");
-				setAttr("isupload", false);
-				setSessionAttr("tempitem", getModel(Items.class));
-				render("speitem.html");
-				return;
-			}
-		 Items item=getModel(Items.class);
-		 item.set("iname", Util.filterUserInputContent(item.getStr("iname")));
-		 item.set("category", Util.filterUserInputContent(item.getStr("category")));
-		 String type=getPara("submit");
-		 System.out.println(type);
-		 if(type.equals("添加"))
+		
+		 String type=getPara("type");
+		 if(type.equals("0"))
 		 {
+			 String src=Util.getRandomString()+".jpg";
+			 File tofile=new File(Util.getImgPath()+src);
+			 while(tofile.exists())
+			 {
+				 src=Util.getRandomString()+".jpg";
+				 tofile=new File(Util.getImgPath()+src);
+			 }
+			 UploadFile file=getFile("icon", Util.getImgPath());
+			 if(file==null)
+				 {
+					 setAttr("errorMsg", "图片未选择");
+					 keepModel(Items.class);
+					 render("speitem.html");
+					 return;
+				 }
+			 File f=file.getFile();
+			 f.renameTo(tofile);
+			 //System.out.println(src);
+			 Items item=getModel(Items.class);
+			 item.set("icon", "/imgs/"+src);
+			 item.set("iname", Util.filterUserInputContent(item.getStr("iname")));
+			 item.set("category", Util.filterUserInputContent(item.getStr("category")));
 			item.set("addedDate", Util.getDate()).set("addedTime", Util.getTime());
 			item.save();
 			redirect("/mgradmin/items");
 			return;
-		 }else if(type.equals("修改"))  //须设隐藏表单域iid
+		 }else if(type.equals("1"))  //须设隐藏表单域iid
 		 {
 			 UploadFile file=getFile("icon", Util.getImgPath(), 2*1024*1024);
+			 Items item=getModel(Items.class);
+			 Items origin=Items.dao.findById(item.getInt("iid"));
 			 if(file!=null)
 			 {
-				 Items origin=Items.dao.findById(item.getInt("iid"));
+				 String src=Util.getRandomString()+".jpg";
+				 File tofile=new File(Util.getImgPath()+src);
+				 while(tofile.exists())
+				 {
+					 src=Util.getRandomString()+".jpg";
+					 tofile=new File(Util.getImgPath()+src);
+				 }
+				 File f=file.getFile();
+				 f.renameTo(tofile);
+				 
 				 File file2=new File(Util.getImgPath()+origin.getStr("icon"));
 				 if (file2.exists()) {
 					file2.delete();
 				      }
-				 item.set("icon", file.getFileName());
-			 }
-		    item.set("addedDate", Util.getDate()).set("addedTime", Util.getTime());				
-		    item.update();
-			
+				 item.set("icon", "/imgs/"+src);
+			 }	
+			 item.set("iname", Util.filterUserInputContent(item.getStr("iname")));
+			 item.set("category", Util.filterUserInputContent(item.getStr("category")));
+			 item.set("addedDate", Util.getDate()).set("addedTime", Util.getTime());				
+			 item.update();
+			 redirect("/mgradmin/items");
+			 return;
 		 }
 	 }
 	 /**
@@ -903,10 +958,17 @@ public class ManageController extends Controller{
 	 @Before(Ring0Interceptor.class)
 	 public void seeApplyfor()
 	 {
-		 int page=getParaToInt(0);
-		 List<Applyfor> afList=Applyfor.dao.paginate(page, 15, "select *","from applyfor").getList();
+		 int page=1;
+		 if(getParaToInt(0)!=null){
+				page=getParaToInt(0);
+			}
+		 List<Applyfor> afList=Applyfor.dao.paginate(page, 15, "select *","from applyfor order by addedDT desc").getList();
 		 setAttr("afList", afList);
-		 render(".html");
+		 setAttr("page", page);
+		 render("seeApplyfor.html");
+		 ApplyforThread aft=new ApplyforThread(afList);
+		 Thread t=new Thread(aft);
+		 t.start();
 	 }
 	 /**
 	  *  查看投诉建议
@@ -915,7 +977,10 @@ public class ManageController extends Controller{
 	 public void seeAdvices()
 	 {
 		 Managers manager=getSessionAttr(GlobalVar.BEUSER);
-		 
+		 int page=1;
+		 if(getParaToInt(0)!=null){
+				page=getParaToInt(0);
+			}
 		 if(manager.getInt("ring")==1)
 		 {
 			 Areas area=Areas.dao.findById(manager.getInt("location"));
@@ -934,11 +999,11 @@ public class ManageController extends Controller{
 			 }
 			 setAttr("Advices", records);
 		 }else {
-			 List<Record> records=Db.find("select a.content,a.addedDate,a.addedTime,b.city,b.college,b.building from advices as a,areas as b where a.location=b.aid");
+			 List<Record> records=Db.paginate(page,10,"select a.content,a.addedDate,a.addedTime,b.city,b.college,b.building","from advices as a,areas as b where a.location=b.aid order by addedDate,addedTime desc").getList();
 			 setAttr("Advices", records);
 		}
-		 
-		 render("advice.html");
+		 setAttr("page", page);
+		 render("seeAdvice.html");
 	 }
 	 /**
 	  *  订单提醒
@@ -983,13 +1048,13 @@ public class ManageController extends Controller{
 		 List<Trades> ridList;
 		 String state=getPara("state");
 		 if(state==null)
-			 ridList=Trades.dao.paginate(page,15,"select distinct rid,state,addedDate,addedTime","from trades order by addedDate,addedTime desc").getList();
+			 ridList=Trades.dao.paginate(page,15,"select distinct rid,state,location,room,addedDate,addedTime","from trades where addedDate=? order by addedDate,addedTime desc",date).getList();
 		 else {
 			if(state.equals("0"))
-				{ridList=Trades.dao.paginate(page,15,"select distinct rid,state,addedDate,addedTime","from trades where state=0  order by addedDate,addedTime desc").getList();
+				{ridList=Trades.dao.paginate(page,15,"select distinct rid,state,location,room,addedDate,addedTime","from trades where state=0 and addedDate=? order by addedDate,addedTime desc",date).getList();
 			     flag=1;}
 				else if(state.equals("1"))
-				{ridList=Trades.dao.paginate(page,15,"select distinct rid,state,addedDate,addedTime","from trades where state=1  order by addedDate,addedTime desc").getList();
+				{ridList=Trades.dao.paginate(page,15,"select distinct rid,state,location,room,addedDate,addedTime","from trades where state=1  and addedDate=? order by addedDate,addedTime desc",date).getList();
 			     flag=2; }
 				else {
 				redirect("/mgradmin/error");
@@ -1013,6 +1078,8 @@ public class ManageController extends Controller{
 				temp.set("addedDate", ridList.get(i).get("addedDate"));
 				temp.set("addedTime", ridList.get(i).get("addedTime"));
 				temp.set("money", money);
+				Areas t=Areas.dao.findById(ridList.get(i).getInt("location"));
+				temp.set("room", t.getStr("college")+t.getStr("building")+ridList.get(i).getStr("room"));
 				temp.set("items", itemsRecords);
 				records.add(temp);
 			}

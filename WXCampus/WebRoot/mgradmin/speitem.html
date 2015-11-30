@@ -7,7 +7,6 @@
     <link href="/bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css">
     <script type="text/javascript" src="/jquery/jquery-2.1.4.min.js"></script>
     <script type="text/javascript" src="/bootstrap/js/bootstrap.js"></script>
-    <script type="text/javascript" src="/mgradmin/js/speitem.js"></script>
     <title>商品管理</title>
 </head>
 <body>
@@ -24,24 +23,33 @@
         </div>
         <div class="floor">
            <div class="floor_content">
-              <form action="/mgradmin/uploadImg" method="post" enctype="multipart/form-data">
-                  <p><span>商品图片:</span><input name="icon" type="file"></p>
-                   <#if isupload==true>
-                   <img src=${imgsrc!}  />
-                   </#if>
-                  <p style="text-align: center"> <button type="submit" class="btn btn-success">上传</button>
-                </form>
-                <form action="/mgradmin/modifyItem" method="post">
+                       <#if type==0>
+                        	<form action="/mgradmin/modifyItem?type=0" method="post"  enctype="multipart/form-data">
+                        <#else>
+                            <form action="/mgradmin/modifyItem?type=1" method="post"  enctype="multipart/form-data">
+                        </#if>
+                
                     <div class="itemInfo">
-                     <#if isupload==true>
-                    <input type="hidden" name="items.icon" value=${imgsrc!}> 
-                   </#if>
                         ${errorMsg!}
+                        <#if type==1>
+                        	<input name="items.iid" value='${(items.iid)!}' type="hidden">
+                        </#if>
+                         <p><span>商品图片:</span><input name="icon" type="file" id="uploadImg"></p>
+                         <p id="insertImg">
+                         <#if type==1>
+                         	<img src=${items.icon} style="width:60px;height:60px;">
+                         </#if>
+                         </p>
                         <p><span>商品名称:</span><input name="items.iname" value='${(items.iname)!}' type="text"></p>
                         <p><span>商品成本:</span><input name="items.cost" value='${(items.cost)!}' type="text"></p>
                         <p><span>建议售价:</span><input name="items.realPrice" value='${(items.realPrice)!}' type="text"></p>
                         <p><span>分&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;类:</span><input name="items.category" value='${(items.category)!}' type="text"></p>
-                        <p style="text-align: center"> <button type="submit" name="submit" value="添加" class="btn btn-success">添加</button>
+                        <p style="text-align: center"> 
+                        <#if type==0>
+                        <button type="submit" name="submit"  class="btn btn-success">添加</button>
+                        <#else>
+                        <button type="submit" name="submit"  class="btn btn-success">修改</button>
+                        </#if>
                             <button style="margin-left: 25px" type="reset" class="btn btn-default">重置</button></p>
                     </div>
                 </form>
@@ -49,5 +57,6 @@
         </div>
     </div>
 </div>
+    <script type="text/javascript" src="/mgradmin/js/speitem.js"></script>
 </body>
 </html>

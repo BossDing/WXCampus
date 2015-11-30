@@ -11,6 +11,8 @@
 		<script type="text/javascript" src="/mgradmin/js/ingoods.js"></script>
 	<#elseif ring==2>
 		<script type="text/javascript" src="/mgradmin/js/ingoods.js"></script>
+	<#elseif ring==0>
+		<script type="text/javascript" src="/mgradmin/js/dealIngoods.js"></script>
 	</#if>
     <title>进货详情</title>
 </head>
@@ -21,6 +23,8 @@
 		<#include "_layout1.html" />
 	<#elseif ring==2>
 		<#include "_layout2.html" />
+	<#elseif ring==0>
+		<#include "_layout0.html" />
 	</#if>
         <div class="center">
             <div class="center_left">
