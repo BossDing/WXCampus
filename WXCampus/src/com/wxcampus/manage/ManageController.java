@@ -620,47 +620,96 @@ public class ManageController extends Controller{
 		 Ring0Service ring0Service=new Ring0Service(this, manager);
 		 ring0Service.addArea();
 	 }
-	 
+	 /**
+	  *    删除地区
+	  */
+	 @Before(Ring0Interceptor.class)
+	 public void delArea()    //ajax
+	 {
+		 Managers manager=getSessionAttr(GlobalVar.BEUSER);
+		 if(getPara("aid")==null)
+		 {
+			 redirect("/mgradmin/error");
+			 return;
+		 }
+		 int aid=getParaToInt("aid");
+		 Areas area=Areas.dao.findById(aid);
+		 if(area==null)
+		 {
+			 renderHtml(Util.getJsonText("参数错误"));
+			 return;
+		 }
+		 area.delete();
+		 renderHtml(Util.getJsonText("OK"));
+	 }
 	 /**
 	  *  查看地区
 	  */
-	 @Before(Ring1Interceptor.class)
+	 @Before(Ring0Interceptor.class)
 	 public void areas()
 	 {
 		 Managers login=getSessionAttr(GlobalVar.BEUSER);
 		 Areas areas=Areas.dao.findById(login.getInt("location"));
-		 String area=getPara(0);  //  areas?6  
-		 if(area==null)
+		 String city=getPara("city");  //  areas?6  
+		 if(city==null)
 		 {
 			 if(login.getInt("ring")==0)
 			 {
-		 List<Areas> areasList=Areas.dao.find("select * from areas order by city,college,building asc");
-		 setAttr("areasList", areasList);   //aid,city,college,building
+		 List<Areas> areasList=Areas.dao.find("select distinct city,aid from areas where college=? order by city asc","");
+		 setAttr("areaList", areasList);   //aid,city,college,building
+		 setAttr("type", 1);  //1 城市  2校区 3楼栋
 		 render("areas.html");
 			 }else {
 				List<Areas> areasList=Areas.dao.find("select * from areas where city=? and college=? order by building asc",areas.getStr("city"),areas.getStr("college"));
-				setAttr("areasList", areasList);   //aid,city,college,building
+				setAttr("areaList", areasList);   //aid,city,college,building
 				render("areas.html");
 			}
 		 }else
 		 {
-			 int areaID=Integer.parseInt(area);
 			 //显示某个地区的具体页面。内容待定
-			 if(login.getInt("ring")==1)
-			 {
-				 Areas building=Areas.dao.findById(areaID);
-				 if(!areas.getStr("city").equals(building.getStr("city")) ||  !areas.getStr("college").equals(building.getStr("college")))
-				 {
-					 redirect("/mgradmin/error?Msg="+Util.getJsonText("无权访问"));
-					 return;
-				 }
-			 }
-			 Managers manager=Managers.dao.findFirst("select * from managers where location=?",areaID);
-			 setAttr("Manager", manager);
-			 
-			 List<Record> iosList=Db.find("select a.iname,a.icon,a.category,b.iosid,b.restNum,b.price from items as a,items_on_sale as b where a.iid=b.iid and b.location=?",areaID);
-			 setAttr("iosList", iosList);
-			 render("spearea.html");
+             String college=getPara("college");
+             if(college==null)
+             {
+            	 List<Record> areasList=Db.find("select distinct college,aid from areas where college!=? and building=?  and city=? order by college asc","","",city);
+            	 System.out.println(areasList.size());
+            	 for(int i=0;i<areasList.size();i++)
+            	 {
+            		 Managers manager=Managers.dao.findFirst("select name,tel from managers where location=?",areasList.get(i).getInt("aid"));
+            		 if(manager==null)
+            		 {
+            			 areasList.get(i).set("name", "").set("tel", "");
+            		 }else {
+            			 areasList.get(i).set("name", manager.getStr("name")).set("tel", manager.getStr("tel"));
+					}
+            	 }
+        		 setAttr("areaList", areasList);
+        		 setAttr("city", city);
+        		 setAttr("type", 2); 
+        		 render("areas.html");
+             }else {
+            	 List<Record> areasList=Db.find("select distinct building,aid from areas where city=? and  college=? and building!=? order by building asc",city,college,"");
+            	 for(int i=0;i<areasList.size();i++)
+            	 {
+            		 Managers manager=Managers.dao.findFirst("select name,tel from managers where location=?",areasList.get(i).getInt("aid"));
+            		 if(manager==null)
+            		 {
+            			 areasList.get(i).set("name", "").set("tel", "");
+            		 }else {
+            			 areasList.get(i).set("name", manager.getStr("name")).set("tel", manager.getStr("tel"));
+					}
+            	 }
+            	 setAttr("areaList", areasList);
+        		 setAttr("city", city);
+        		 setAttr("college", college);
+        		 setAttr("type", 3); 
+        		 render("areas.html");
+			}
+//			 Managers manager=Managers.dao.findFirst("select * from managers where location=?",areaID);
+//			 setAttr("Manager", manager);
+//			 
+//			 List<Record> iosList=Db.find("select a.iname,a.icon,a.category,b.iosid,b.restNum,b.price from items as a,items_on_sale as b where a.iid=b.iid and b.location=?",areaID);
+//			 setAttr("iosList", iosList);
+//			 render("spearea.html");
 		 }
 	 }
 	 

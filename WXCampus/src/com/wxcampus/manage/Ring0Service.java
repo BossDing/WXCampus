@@ -105,6 +105,7 @@ public class Ring0Service {
 					area.set("addedDate", Util.getDate()).set("addedTime", Util.getTime());
 					area.save();		
 					ManageController.logger.info(manager.getStr("name")+"---添加了城市-"+city);
+					c.renderHtml(Util.getJsonText("OK"));
 				}else
 					c.renderHtml(Util.getJsonText("当前添加城市已存在！"));
 				return;
@@ -119,6 +120,7 @@ public class Ring0Service {
 					area.set("addedDate", Util.getDate()).set("addedTime", Util.getTime());
 					area.save();		
 					ManageController.logger.info(manager.getStr("name")+"---添加了学校-"+city+"-"+college);
+					c.renderHtml(Util.getJsonText("OK"));
 				}else
 					c.renderHtml(Util.getJsonText("当前添加学校已存在！"));
 				return;
@@ -131,6 +133,7 @@ public class Ring0Service {
 				area.set("addedDate", Util.getDate()).set("addedTime", Util.getTime());
 				area.save();		
 				ManageController.logger.info(manager.getStr("name")+"---添加了地区-"+city+"-"+college+"-"+building);
+				c.renderHtml(Util.getJsonText("OK"));
 			}else {
 				c.renderHtml(Util.getJsonText("当前添加地区已存在！"));
 			}
@@ -143,28 +146,55 @@ public class Ring0Service {
 		Managers manager=c.getModel(Managers.class);  //ring tel name password  ---location---
 		if(manager.getInt("ring")==1)
 		{
-			Areas area=Areas.dao.findById(manager.getInt("location"));
-			if(!area.getStr("building").equals(""))
-			{
-				c.redirect("/404/error");
-				return;
-			}
-		}
-		Managers oldManager=Managers.dao.findFirst("select * from managers where location=?",manager.getInt("location"));
+			Areas area=Areas.dao.findFirst("select * from areas where city=? and college=? and building=?",c.getPara("city"),c.getPara("college"),"");
+		    if(area==null)
+		    {
+		    	c.redirect("/mgradmin/error");
+		    	return;
+		    }
+		Managers oldManager=Managers.dao.findFirst("select * from managers where location=?",area.getInt("aid"));
 		if(oldManager!=null)
 		{
 			oldManager.set("name",Util.filterUserInputContent(manager.getStr("name")));
 			oldManager.set("tel",Util.filterUserInputContent(manager.getStr("tel")));
-			oldManager.set("password", manager.getStr("password")).set("say", "");
+			oldManager.set("password",manager.getStr("tel").substring(5)).set("say", "");
 			oldManager.set("addedDate", Util.getDate()).set("addedTime", Util.getTime());
 			oldManager.update();
 		}else {
 			manager.set("name",Util.filterUserInputContent(manager.getStr("name")));
 			manager.set("tel",Util.filterUserInputContent(manager.getStr("tel")));
+			manager.set("location", area.getInt("aid"));
+			manager.set("password", manager.getStr("tel").substring(5));
 			manager.set("addedDate", Util.getDate()).set("addedTime", Util.getTime());
 			manager.save();
 		}
-		c.redirect("/mgradmin/areas?"+manager.getInt("location"));	
+		c.redirect("/mgradmin/areas?city="+Util.getEncodeText(c.getPara("city")));	
+		}else if(manager.getInt("ring")==2)
+		{
+			Areas area=Areas.dao.findFirst("select * from areas where city=? and college=? and building=?",c.getPara("city"),c.getPara("college"),c.getPara("building"));
+		    if(area==null)
+		    {
+		    	c.redirect("/mgradmin/error");
+		    	return;
+		    }
+		Managers oldManager=Managers.dao.findFirst("select * from managers where location=?",area.getInt("aid"));
+		if(oldManager!=null)
+		{
+			oldManager.set("name",Util.filterUserInputContent(manager.getStr("name")));
+			oldManager.set("tel",Util.filterUserInputContent(manager.getStr("tel")));
+			oldManager.set("password",manager.getStr("tel").substring(5)).set("say", "");
+			oldManager.set("addedDate", Util.getDate()).set("addedTime", Util.getTime());
+			oldManager.update();
+		}else {
+			manager.set("name",Util.filterUserInputContent(manager.getStr("name")));
+			manager.set("tel",Util.filterUserInputContent(manager.getStr("tel")));
+			manager.set("location", area.getInt("aid"));
+			manager.set("password", manager.getStr("tel").substring(5));
+			manager.set("addedDate", Util.getDate()).set("addedTime", Util.getTime());
+			manager.save();
+		}
+		c.redirect("/mgradmin/areas?city="+Util.getEncodeText(c.getPara("city"))+"&college="+Util.getEncodeText(c.getPara("college")));	
+		}
 	}
 	
 }

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <link href="/mgradmin/css/manage_build.css" rel="stylesheet" type="text/css">
+    <link href="/bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="/jquery/jquery-2.1.4.min.js"></script>
+    <script type="text/javascript" src="/bootstrap/js/bootstrap.js"></script>
+    <script type="text/javascript" src="/mgradmin/js/addCollege.js"></script>
+    <title>地区管理</title>
+</head>
+<body>
+<div class="main">
+    <div class="main_info">
+		<#include "_layout0.html" />
+<div class="center">
+            <div class="center_left" id="center_left">
+                <p>
+                <#if type==1>
+                 <span style="width: 100px;height: 34px;margin-left: 25px">添加城市:</span>
+                <span style="display: block;width: 160px"><input id="city" type="text" id="upDate" style="width: 160px"></span>
+                    <span><button onclick="submitCity()">提交</button></span>
+                <#elseif type==2>
+                 <span style="display: block;"><button style="width:80px"  onclick="backCity()">&lt;返回</button></span>
+                 <span style="width: 100px;height: 34px;margin-left: 25px" >添加校区:</span>
+                <span style="display: block;width: 160px"><input id="college" type="text" id="upDate" style="width: 160px"></span>
+                    <span><button onclick="submitCollege('${city}')">提交</button></span>
+               	<#elseif type==3>
+               	 <span style="display: block;"><button style="width:80px"  onclick="backCollege('${city}')">&lt;返回</button></span>
+               	 <span style="width: 100px;height: 34px;margin-left: 25px">添加楼栋:</span>
+                <span style="display: block;width: 160px"><input id="building" type="text" id="upDate" style="width: 160px"></span>
+                    <span><button onclick="submitBuilding('${city}','${college}')">提交</button></span>
+                   </#if>
+                </p>
+            </div>
+            <div class="center_right">
+            </div>
+        </div>
+        <div class="floor" style="min-height:500px;">
+            <div class="floor_content" style="min-height:400px;">
+                <table class="table table-striped" id="list" style="text-align: center">
+                   <#if type==1>
+                    <caption style="text-align: center">城市列表</caption>
+                    <thead>
+                    <tr>
+                        <th style="text-align: center">名称</th>
+                        <th style="text-align: center"></th>
+                        <th style="text-align: center"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                     <#list areaList as x>
+                     <tr>
+                        <td>${x.city}</td>
+                        <td><a style="cursor:pointer" onclick="seeCollege('${x.city}')">查看校区</a></td>
+                        <td><a style="cursor:pointer" onclick="deleteCity('${x.aid}')">删除</a></td>
+                    </tr>
+                    </#list>
+                    </tbody>
+                    <#elseif type==2>
+                     <caption style="text-align: center">校区列表</caption>
+                    <thead>
+                    <tr>
+                        <th style="text-align: center">名称</th>
+                        <th style="text-align: center">负责人</th>
+                        <th style="text-align: center">联系电话</th>
+                        <th style="text-align: center"></th>
+                        <th style="text-align: center"></th>
+                        <th style="text-align: center"></th>
+                        <th style="text-align: center"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                     <#list areaList as x>
+                     <tr>
+                        <td>${x.college}</td>
+                        <td>${x.name}</td>
+                        <td>${x.tel}</td>
+                        <td><a style="cursor:pointer;" onclick="openNewDiv_college(1,'${city}','${x.college}')">设置负责人</a></td>
+                        <td><a style="cursor:pointer;" onclick="seeMore()">查看详情</a></td>
+                    	<td><a style="cursor:pointer;" onclick="seeNext('${city}','${x.college}')">查看楼栋</a></td>
+                    	<td><a style="cursor:pointer" onclick="deleteCollege('${x.aid}')">删除</a></td>
+                    </tr>
+                    </#list>
+                    </tbody>
+                    <#elseif type==3>
+                    <caption style="text-align: center">楼栋列表</caption>
+                    <thead>
+                    <tr>
+                        <th style="text-align: center">名称</th>
+                        <th style="text-align: center">负责人</th>
+                        <th style="text-align: center">联系电话</th>
+                        <th style="text-align: center"></th>
+                        <th style="text-align: center"></th>
+                        <th style="text-align: center"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                     <#list areaList as x>
+                     <tr>
+                        <td>${x.building}</td>
+                        <td>${x.name}</td>
+                        <td>${x.tel}</td>
+                        <td><a style="cursor:pointer;" onclick="openNewDiv_building(1,'${city}','${college}','${x.building}')">设置负责人</a></td>
+                        <td><a style="cursor:pointer;" onclick="seeMore()">查看详情</a></td>
+                        <td><a style="cursor:pointer" onclick="deleteBuilding('${x.aid}')">删除</a></td>
+                    </tr>
+                    
+                    </#list>
+                    </tbody>
+                    </#if>
+                </table>
+            </div>
+        </div>
+              	</div>
+</div>
+</body>
+</html>  
