@@ -76,7 +76,7 @@ CREATE TABLE `settings` (
   `addedDT` timestamp not null,
   PRIMARY KEY (`sid`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
-insert into settings(`key`,`value`,`addedDT`) values("promotionShowNum",3,"2015-11-25 00:00:00");
+--insert into settings(`key`,`value`,`addedDT`) values("promotionShowNum",3,"2015-11-25 00:00:00");
 
 DROP TABLE IF EXISTS `promotion`;
 CREATE TABLE `promotion` (

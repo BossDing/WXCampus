@@ -114,6 +114,7 @@ public class ShopController extends Controller{
 		setSessionAttr("Carts", map);
 		renderHtml(Util.getJsonText("OK"));
 	}
+	@Before(ShopInterceptor.class)
 	public void confirm()
 	{
 		HashMap<Integer, Integer> map=getSessionAttr("Carts");
@@ -173,6 +174,7 @@ public class ShopController extends Controller{
 		render("confirm.html");
 	}
 	
+	@Before(ShopInterceptor.class)
 	public void coupons() //ajax
 	{
 		User user=getSessionAttr(GlobalVar.WXUSER);
@@ -182,7 +184,7 @@ public class ShopController extends Controller{
 		renderJson();
 	}
 	
-	@Before(Tx.class)
+	@Before({ShopInterceptor.class,Tx.class})
 	public void pay()
 	{
 		String date=Util.getDate();

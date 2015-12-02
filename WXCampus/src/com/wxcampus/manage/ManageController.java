@@ -31,6 +31,7 @@ import com.mchange.v2.c3p0.impl.NewPooledConnection;
 import com.wxcampus.common.GlobalVar;
 import com.wxcampus.common.NoUrlPara;
 import com.wxcampus.common.OpenidInterceptor;
+import com.wxcampus.index.Advertisement;
 import com.wxcampus.index.Areas;
 import com.wxcampus.index.IndexService;
 import com.wxcampus.items.Applyfor;
@@ -175,6 +176,11 @@ public class ManageController extends Controller{
 		 if(!newPass1.equals(newPass2))
 		 {
 			 renderHtml("<script>alert('两次密码输入不一致!');window.location='/mgradmin/modifypw';</script>");
+			 return;
+		 }
+		 if(oldPass.equals(newPass1))
+		 {
+			 renderHtml("<script>alert('原始密码与新密码不能相同');window.location='/mgradmin/modifypw';</script>");
 			 return;
 		 }
 		 Managers manager=getSessionAttr(GlobalVar.BEUSER);
@@ -766,27 +772,12 @@ public class ManageController extends Controller{
 	 @Before(Ring0Interceptor.class)
 	 public void promotion()
 	 {
-		 int showNum=0;
-		 Settings set=Settings.dao.findFirst("select value from settings where key=?","promotionShowNum");
-		 if(set!=null)
-		 {
-			 showNum=set.getInt("value");
-		 }
-		 setAttr("showNum", showNum);
-		 
-		 List<Promotion> proList=Promotion.dao.find("select * from promotion where isshow=true order by addedDT desc");
-		 proList.addAll(Promotion.dao.find("select * from promotion where isshow=false order by addedDT desc"));
+		 List<Promotion> showList=Promotion.dao.find("select * from promotion where isshow=true order by addedDT desc");
+		 List<Promotion> proList=Promotion.dao.find("select * from promotion where isshow=false order by addedDT desc");
+		 setAttr("showList", showList);
 		 setAttr("proList", proList);
 		 
 		 render("promotion.html");
-	 }
-	 @Before(Ring0Interceptor.class)
-	 public void modifyShowNum()  //ajax
-	 {
-		 int showNum=getParaToInt("showNum");
-		 Settings set=Settings.dao.findFirst("select * from settings where key=?","promotionShowNum");
-         set.set("value", showNum).update();
-         renderHtml(Util.getJsonText("OK"));
 	 }
 	 @Before(Ring0Interceptor.class)
 	 public void delPromotion()  //ajax
@@ -813,28 +804,18 @@ public class ManageController extends Controller{
 	 @Before(Ring0Interceptor.class)
 	 public void adjustIsshow()   //ajax
 	 {
-		 String para=getPara("para");
-		 String []temp=para.split("-");
-		 int showNum=0;
-		 Settings set=Settings.dao.findFirst("select value from settings where key=?","promotionShowNum");
-		 if(set!=null)
-		 {
-			 showNum=set.getInt("value");
-		 }
-		 if(showNum!=temp.length)
-		 {
-			 renderHtml(Util.getJsonText("配置错误"));
-			 return;
-		 }
-		 List<Promotion> proList=Promotion.dao.find("select isshow from promotion where isshow=true");
-		 for(int i=0;i<proList.size();i++)
-		 {
-			 proList.get(i).set("isshow", false).update();
-		 }
-		 for(int i=0;i<showNum;i++)
-		 {
-			 Promotion.dao.findById(Integer.parseInt(temp[i])).set("isshow", true);
-		 }
+		 int type=getParaToInt("type");  // 0隐藏 1显示
+         int pid=getParaToInt("pid");
+         Promotion pro=Promotion.dao.findById(pid);
+         if(pro==null)
+         {
+        	 redirect("/mgradmin/error");
+        	 return;
+         }
+         if(type==0)
+        	 pro.set("isshow", false).update();
+         else if(type==1)
+             pro.set("isshow", true).update();
          renderHtml(Util.getJsonText("OK"));
 	 }
 	 
@@ -892,37 +873,6 @@ public class ManageController extends Controller{
 	 /**
 	  *    编辑商品      包括添加，修改
 	  */
-//	 @Before(Ring0Interceptor.class)
-//	 public void uploadImg()
-//	 {
-//		 String src=Util.getRandomString()+".jpg";
-//		 File tofile=new File(Util.getImgPath()+src);
-//		 while(tofile.exists())
-//		 {
-//			 src=Util.getRandomString()+".jpg";
-//			 tofile=new File(Util.getImgPath()+src);
-//		 }
-//		 UploadFile file=getFile("icon", Util.getImgPath());
-//		 if(file==null)
-//		 {
-//			 setAttr("isupload", false);
-//			 setAttr("errorMsg", "图片未选择");
-//			 render("speitem.html");
-//			 return;
-//		 }
-//		 File f=file.getFile();
-//		 f.renameTo(tofile);
-//		 setAttr("isupload", true);
-//		 setAttr("imgsrc", "/imgs/"+src);
-//		 Items item=getSessionAttr("tempitem");
-//		 if(item!=null)
-//		 {
-//		 setAttr("items", item);
-//		 removeSessionAttr("tempitem");
-//		 }
-//		 render("speitem.html");
-//		 
-//	 }
 	 @Before(Ring0Interceptor.class)
 	 public void addItem()
 	 {
@@ -944,11 +894,11 @@ public class ManageController extends Controller{
 		 String type=getPara("type");
 		 if(type.equals("0"))
 		 {
-			 String src=Util.getRandomString()+".jpg";
+			 String src=Util.getRandomString()+"-items.jpg";
 			 File tofile=new File(Util.getImgPath()+src);
 			 while(tofile.exists())
 			 {
-				 src=Util.getRandomString()+".jpg";
+				 src=Util.getRandomString()+"-items.jpg";
 				 tofile=new File(Util.getImgPath()+src);
 			 }
 			 UploadFile file=getFile("icon", Util.getImgPath());
@@ -968,6 +918,12 @@ public class ManageController extends Controller{
 			 item.set("category", Util.filterUserInputContent(item.getStr("category")));
 			item.set("addedDate", Util.getDate()).set("addedTime", Util.getTime());
 			item.save();
+			Items_on_sale ios=new Items_on_sale();
+			ios.set("iid", item.getInt("iid"));   //能否获取到？
+			ios.set("minPrice",new BigDecimal(0)).set("maxPrice", new BigDecimal(0)).set("price", item.getBigDecimal("realPrice"));
+			ios.set("restNum", 0).set("location", 0);
+			ios.set("addedDate", Util.getDate()).set("addedTime", Util.getTime());
+			ios.save();
 			redirect("/mgradmin/items");
 			return;
 		 }else if(type.equals("1"))  //须设隐藏表单域iid
@@ -977,11 +933,11 @@ public class ManageController extends Controller{
 			 Items origin=Items.dao.findById(item.getInt("iid"));
 			 if(file!=null)
 			 {
-				 String src=Util.getRandomString()+".jpg";
+				 String src=Util.getRandomString()+"-items.jpg";
 				 File tofile=new File(Util.getImgPath()+src);
 				 while(tofile.exists())
 				 {
-					 src=Util.getRandomString()+".jpg";
+					 src=Util.getRandomString()+"-items.jpg";
 					 tofile=new File(Util.getImgPath()+src);
 				 }
 				 File f=file.getFile();
@@ -1138,13 +1094,50 @@ public class ManageController extends Controller{
 		 setAttr("page", page);
 	 }
 	 /**
-	  *     进货管理  待定
+	  *    公告图片
 	  */
-	 public void addItemNum()
+	 @Before(Ring0Interceptor.class)
+	 public void annoncement()
 	 {
-		 
+		 List<Advertisement> adList=Advertisement.dao.find("select * from advertisement order by addedDate,addedTime desc");
+	     setAttr("adList", adList);
+	     render("annoncement.html");
 	 }
-	
+	 /**
+	  *  上传公告图片
+	  */
+	 @Before(Ring0Interceptor.class)
+	 public void uploadAd()
+	 {
+		 String src=Util.getRandomString()+"-ads.jpg";
+		 File tofile=new File(Util.getImgPath()+src);
+		 while(tofile.exists())
+		 {
+			 src=Util.getRandomString()+"-ads.jpg";
+			 tofile=new File(Util.getImgPath()+src);
+		 }
+		 UploadFile file=getFile("adimg", Util.getImgPath());
+		 if(file==null)
+			 {
+				 renderHtml("<script>alert('图片未选择'); window.location='/mgradmin/annoncement';</script>");
+				 return;
+			 }
+		 File f=file.getFile();
+		 f.renameTo(tofile);
+		 new Advertisement().set("img","/imgs/"+src).set("addedDate", Util.getDate()).set("addedTime", Util.getTime()).save();
+		 renderHtml("<script>alert('上传成功'); window.location='/mgradmin/annoncement';</script>");
+	 }
+	 /**
+	  *  删除公告图片
+	  */
+	 @Before(Ring0Interceptor.class)
+	 public void delAd()
+	 {
+		 int astid=getParaToInt("astid");
+		 Advertisement ad=Advertisement.dao.findById(astid);
+		 ad.delete();
+		 renderHtml(Util.getJsonText("OK"));
+	 }
 	 @Clear
 	 public void error()
 	 {
