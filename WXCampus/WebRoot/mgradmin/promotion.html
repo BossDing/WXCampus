@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <link href="/mgradmin/css/moban.css" rel="stylesheet" type="text/css">
+    <link href="/bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="/jquery/jquery-2.1.4.min.js"></script>
+    <script type="text/javascript" src="/bootstrap/js/bootstrap.js"></script>
+    <script type="text/javascript" src="/mgradmin/js/promotion.js"></script>
+    <title>促销活动</title>
+</head>
+<body>
+<div class="main">
+    <div class="main_info">
+		<#include "_layout0.html" />
+        <div class="center">
+            <div class="center_left">
+             <p><span style="width: 120px;height: 34px;margin-left: 25px">添加新活动:</span>
+                <span style="display: block;width: 160px"><input id="promotion" type="text" style="width: 160px"></span>
+                    <span><button onclick="submitPromotion()">添加</button></span>
+                </p>
+            </div>
+            <div class="center_right">
+            </div>
+        </div>
+        <div class="floor">
+            <div class="floor_content">
+                <table class="table table-striped" id="list" style="text-align: center">
+                    <caption style="text-align: center">活动列表</caption>
+                    <thead>
+                    <tr>
+                        <th style="text-align: center">编号</th>
+                         <th style="text-align: center">活动内容</th>
+                        <th style="text-align: center">操作</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                     <script>var i=1;</script>
+                    <#list proList as x>
+                   <tr>
+                   
+                    <#if x.isshow==true>
+                     <script>document.write('<td style="color:red">'+i+'</td>');
+                    i++;
+                    </script>
+                    <#else>
+                   <script>document.write('<td>'+i+'</td>');
+                    i++;
+                    </script>
+                    </#if>
+                    
+                    	  <td>
+                    	  <#if x.isshow==true>
+                    	  <input id=${x.pid} value='${x.content}' type="text" style="width:300px;color:red"></td>
+                       	<#else>
+                       	<input id=${x.pid} value='${x.content}' type="text" style="width:300px;"></td>
+                       	</#if>
+                        <td>
+                        <#if x.isshow==true>
+                        <a style="cursor:pointer" onclick="cancelDisplay('${x.pid}')">取消显示</a>
+                        <#else>
+                        <a style="cursor:pointer" onclick="Display('${x.pid}')">显示</a>
+                        </#if>
+                        </td>
+                        <td>
+                        <a style="cursor:pointer" onclick="changePro('${x.pid}')">修改</a>/
+                        <a style="cursor:pointer" onclick="deletePro('${x.pid}')">删除</a>
+                        </td>
+                    </tr>
+                    </#list>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

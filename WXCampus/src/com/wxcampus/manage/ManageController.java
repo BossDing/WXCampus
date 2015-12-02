@@ -247,7 +247,14 @@ public class ManageController extends Controller{
 	 {
 		 Managers manager=getSessionAttr(GlobalVar.BEUSER);
 		 boolean state=getParaToBoolean("state");  // 0关闭  1开启
-		 Areas area=Areas.dao.findById(manager.getInt("location"));
+		 Areas area;
+		 if(getPara("aid")!=null)
+		 {
+			 System.out.println(111111);
+			 area=Areas.dao.findById(getParaToInt("aid"));
+		 }else {
+			 area=Areas.dao.findById(manager.getInt("location"));
+		}	
 		 area.set("state", state).update();
 		 renderHtml(Util.getJsonText("OK"));
 	 }
@@ -601,7 +608,9 @@ public class ManageController extends Controller{
 		 if(manager.getInt("ring")==1)
 		 {
 			 Areas area=Areas.dao.findById(manager.getInt("location"));
-			 List<Areas> areaList=Areas.dao.find("select * from areas where city=? and college=? and building!=?",area.getStr("city"),area.getStr("college"),"");
+			 List<Areas> areaList=new ArrayList<Areas>();
+			 areaList.add(Areas.dao.findFirst("select * from areas where city=? and college=? and building=?",area.getStr("city"),area.getStr("college"),"").set("building", "本校区"));
+			 areaList.addAll(Areas.dao.find("select * from areas where city=? and college=? and building!=?",area.getStr("city"),area.getStr("college"),""));
 			 for(int i=0;i<areaList.size();i++)
 			 {
 				 Record temp=Db.findFirst("select * from managers where location=?",areaList.get(i).getInt("aid"));
@@ -772,9 +781,7 @@ public class ManageController extends Controller{
 	 @Before(Ring0Interceptor.class)
 	 public void promotion()
 	 {
-		 List<Promotion> showList=Promotion.dao.find("select * from promotion where isshow=true order by addedDT desc");
-		 List<Promotion> proList=Promotion.dao.find("select * from promotion where isshow=false order by addedDT desc");
-		 setAttr("showList", showList);
+		 List<Promotion> proList=Promotion.dao.find("select * from promotion order by addedDT desc");
 		 setAttr("proList", proList);
 		 
 		 render("promotion.html");
@@ -838,7 +845,133 @@ public class ManageController extends Controller{
 		 Ring0Service ring0Service=new Ring0Service(this, manager);
 		 ring0Service.setManager();
 	 }
-	 
+	 /**
+	  *  查看地区详情
+	  */
+	 public void seeAreaDetails()
+	 {
+		 int type=getParaToInt("type"); // 1 订单 2库存 3 数据统计
+		 int aid=getParaToInt("aid");
+		 Areas areas=Areas.dao.findById(aid);
+		 Managers manager=Managers.dao.findFirst("select * from managers where location=?",aid);
+		 if(manager==null)
+		 {
+			 redirect("/mgradmin/error?Msg="+Util.getEncodeText("该地区尚无信息"));
+			 return;
+		 }
+		 if(type==1)
+		 {
+			 int page=1;
+			if(getParaToInt(0)!=null){
+				page=getParaToInt(0);
+				}
+			 if(manager.getInt("ring")==1)
+			 {
+				 Areas area=Areas.dao.findById(aid);
+				 List<Areas> areaList=Areas.dao.find("select * from areas where city=? and college=?",area.getStr("city"),area.getStr("college"));	
+				 List<Trades> ridList=new ArrayList<Trades>();
+				 String state=getPara("state");
+				 for(int i=0;i<areaList.size();i++)
+				 {
+				 ridList.addAll(Trades.dao.paginate(page,10,"select distinct rid,location,state,room,addedDate,addedTime","from trades where location=? order by addedDate,addedTime desc",areaList.get(i).getInt("aid")).getList());
+				}
+                    List<Record> records=new ArrayList<Record>();
+					for(int i=0;i<ridList.size();i++)
+					{
+						int rid=ridList.get(i).getInt("rid");
+						List<Record> itemsRecords=Db.find("select b.iname,b.icon,a.price,a.orderNum from trades as a,items as b where a.item=b.iid and a.rid=?",rid);
+						//Record [] items=itemsRecords.toArray(new Record[itemsRecords.size()]);
+						double money=0;
+						for(int k=0;k<itemsRecords.size();k++)
+						{
+							money+=itemsRecords.get(k).getBigDecimal("price").doubleValue();
+						}
+						Record temp=new Record();
+						temp.set("rid", rid);
+						temp.set("state", ridList.get(i).getInt("state"));
+						temp.set("addedDate", ridList.get(i).get("addedDate"));
+						temp.set("addedTime", ridList.get(i).get("addedTime"));
+						temp.set("money", money);
+						Areas t=Areas.dao.findById(ridList.get(i).getInt("location"));
+						temp.set("room", t.getStr("building")+ridList.get(i).get("room"));
+						temp.set("items", itemsRecords);
+						records.add(temp);
+					}
+				 setAttr("tradeList", records);
+				 setAttr("page", page);
+			 }else if(manager.getInt("ring")==2)
+			 {
+					 List<Trades> ridList;
+					  ridList=Trades.dao.paginate(page, 10, "select distinct rid,room,state,addedDate,addedTime", "from trades where seller=? order by addedDate,addedTime desc",manager.getInt("mid")).getList();
+						List<Record> records=new ArrayList<Record>();
+						for(int i=0;i<ridList.size();i++)
+						{
+							int rid=ridList.get(i).getInt("rid");
+							List<Record> itemsRecords=Db.find("select b.iname,b.icon,a.price,a.orderNum from trades as a,items as b where a.item=b.iid and a.rid=?",rid);
+							//Record [] items=itemsRecords.toArray(new Record[itemsRecords.size()]);
+							double money=0;
+							for(int k=0;k<itemsRecords.size();k++)
+							{
+								money+=itemsRecords.get(k).getBigDecimal("price").doubleValue();
+							}
+							Record temp=new Record();
+							temp.set("rid", rid);
+							temp.set("state", ridList.get(i).getInt("state"));
+							temp.set("addedDate", ridList.get(i).get("addedDate"));
+							temp.set("addedTime", ridList.get(i).get("addedTime"));
+							temp.set("items", itemsRecords);
+							temp.set("money", money);
+							temp.set("room", ridList.get(i).get("room"));
+							records.add(temp);
+						}
+					 setAttr("tradeList", records);
+					 setAttr("page", page);
+			 }
+			 setAttr("type", 1);
+		 }else if(type==2)
+		 {
+			 List<Record> iosList=null;
+			 switch (manager.getInt("ring")) {
+			case 1:  setAttr("ring", 1);
+			    Areas college=Areas.dao.findById(aid);
+			    iosList=Db.find("select a.iname,a.icon,a.category,b.iosid,b.restNum,b.price,b.minPrice,b.maxPrice from items as a,items_on_sale as b where a.iid=b.iid and b.location=?",aid);
+				setAttr("iosList", iosList);
+				setAttr("startPrice",college.getBigDecimal("startPrice").doubleValue());
+				break;
+			case 2:  setAttr("ring", 2);
+			 iosList=Db.find("select a.iname,a.icon,a.category,b.iosid,b.restNum,b.price,b.minPrice,b.maxPrice from items as a,items_on_sale as b where a.iid=b.iid and b.location=?",manager.getInt("location"));
+			 setAttr("iosList", iosList);
+			 Areas area=Areas.dao.findById(manager.getInt("location"));
+			 setAttr("startPrice",area.getBigDecimal("startPrice").doubleValue());
+				break;
+			 }
+			 setAttr("type", 2);
+		 }else if(type==3)
+		 {
+			 switch (manager.getInt("ring")) {
+				case 1:  setAttr("ring", 1);
+					break;
+				case 2:  setAttr("ring", 2);
+					break;
+				}
+				 String month=getPara("month");
+				 if(month==null)
+					 month=Util.getMonth();
+				 List<Record> records=Db.find("select a.iname,b.num,b.money from items as a,areasales as b where a.iid=b.item and b.location=? and b.month=?",manager.getInt("location"),month);
+				 setAttr("dataList", records);
+				 setAttr("date_info", month);
+				 setAttr("type", 3);
+		 }
+		 setAttr("aid", aid);
+		 setAttr("state",areas.getBoolean("state"));
+		 setAttr("ring", manager.getInt("ring"));
+		 if(manager.getInt("ring")==1)
+			 setAttr("backurl", "/mgradmin/areas?city="+areas.getStr("city"));
+		 else {
+			 setAttr("backurl", "/mgradmin/areas?city="+areas.getStr("city")+"&college="+areas.getStr("college"));
+		}
+		 render("seeMoreInfo.html");
+	 }
 	 /**
 	  *  商品页
 	  */

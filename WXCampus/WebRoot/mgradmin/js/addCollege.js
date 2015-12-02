@@ -2,14 +2,11 @@
 function seeCollege(city){
 	window.location="/mgradmin/areas?city="+city;
 }
-function setManager(){
-	
-}
 function seeNext(city,college){
 	window.location="/mgradmin/areas?city="+city+"&college="+college;
 }
-function seeMore(){
-	
+function seeMore(aid){
+	window.location="/mgradmin/seeAreaDetails/1?aid="+aid+"&type=1";
 }
 function backCity(){
 	window.location="/mgradmin/areas";

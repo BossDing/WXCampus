@@ -74,7 +74,7 @@ public class WXCampusConfig extends JFinalConfig{
 		arp.addMapping("areas","aid", Areas.class);
 		arp.addMapping("items","iid", Items.class);
 		arp.addMapping("items_on_sale","iosid", Items_on_sale.class);
-		arp.addMapping("advertisement","aid", Advertisement.class);
+		arp.addMapping("advertisement","astid", Advertisement.class);
 		arp.addMapping("managers", "mid",Managers.class);
 		arp.addMapping("trades", "tid",Trades.class);
 		arp.addMapping("coupons", "cid",Coupons.class);
