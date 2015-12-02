@@ -26,6 +26,7 @@ import com.jfinal.plugin.activerecord.Model;
 import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
 import com.jfinal.plugin.activerecord.tx.Tx;
+import com.jfinal.plugin.activerecord.tx.TxConfig;
 import com.jfinal.upload.UploadFile;
 import com.mchange.v2.c3p0.impl.NewPooledConnection;
 import com.wxcampus.common.GlobalVar;
@@ -109,7 +110,7 @@ public class ManageController extends Controller{
 		 return;}   //已登录就跳转
 		 
 		 //防暴力检测
-		 if(ManageLoginSafe.isExist(""+getParaToInt("managers.tel")))
+		 if(ManageLoginSafe.isExist(""+getPara("managers.tel")))
 	        {
 			   redirect("/mgradmin/error?Msg="+Util.getEncodeText("密码输入错误次数过多，请十分钟后再试！"));
 			   return;
@@ -259,6 +260,19 @@ public class ManageController extends Controller{
 		 renderHtml(Util.getJsonText("OK"));
 	 }
 	 /**
+	  *   上下架商品
+	  */
+	 public void setisonsale()
+	 {
+		 int iosid=getParaToInt("iosid");
+		 int type=getParaToInt("type");  // 0 下架 1 上架
+		 if(type==0)
+		 Items_on_sale.dao.findById(iosid).set("isonsale", false).update();
+		 else if(type==1)
+			 Items_on_sale.dao.findById(iosid).set("isonsale", true).update();
+		 renderHtml(Util.getJsonText("OK"));
+	 }
+	 /**
 	  *   设定营业时间
 	  */
 	 public void setSellingTime()  //ajax
@@ -301,7 +315,7 @@ public class ManageController extends Controller{
 			setAttr("startPrice",building.getBigDecimal("startPrice").doubleValue());
 			break;
 		case 2:  setAttr("ring", 2);
-		 iosList=Db.find("select a.iname,a.icon,a.category,b.iosid,b.restNum,b.price,b.minPrice,b.maxPrice from items as a,items_on_sale as b where a.iid=b.iid and b.location=?",manager.getInt("location"));
+		 iosList=Db.find("select a.iname,a.icon,a.category,b.iosid,b.restNum,b.price,b.minPrice,b.maxPrice,b.isonsale from items as a,items_on_sale as b where a.iid=b.iid and b.location=?",manager.getInt("location"));
 		 setAttr("iosList", iosList);
 		 Areas area=Areas.dao.findById(manager.getInt("location"));
 		 setAttr("startPrice",area.getBigDecimal("startPrice").doubleValue());
@@ -397,7 +411,7 @@ public class ManageController extends Controller{
 				 ios=new Items_on_sale();
 				 ios.set("iid", igList.get(i).getInt("item"));
 				 ios.set("minPrice", new BigDecimal(cost.doubleValue()*1.2)).set("maxPrice", new BigDecimal(cost.doubleValue()*2));
-				 ios.set("price", price);
+				 ios.set("price", price).set("isonsale", true);
 				 ios.set("restNum", igList.get(i).getInt("num")).set("location", manager.getInt("location"));
 				 ios.set("addedDate", Util.getDate()).set("addedTime", Util.getTime());
 				 ios.save();
@@ -487,8 +501,10 @@ public class ManageController extends Controller{
 		 List<Record> records=Db.find("select a.num,b.iname,b.icon,b.realPrice,b.category,a.froms,a.tos from ingoods as a,items as b where a.item=b.iid and a.rid=? order by b.category",rid);
 	     if(manager.getInt("ring")==2)
 	     {
+	    	 if(records!=null)
+	    	 {  
 	    	 int t=records.get(0).getInt("froms");
-	    	 if(records!=null && (t!=manager.getInt("mid")))
+	    	 if(t!=manager.getInt("mid"))
 	    	 {
 	    		 redirect("/mgradmin/error");
 //	    		 System.out.println(records.get(0).getInt("froms"));
@@ -496,6 +512,7 @@ public class ManageController extends Controller{
 //	    		 System.out.println(2!=2);
 //	    		 System.out.println((records.get(0).getInt("froms"))==(manager.getInt("mid")));
 	    		 return;
+	    	 }
 	    	 }
 	     }else if(manager.getInt("ring")==1 || manager.getInt("ring")==0)
 	     {
@@ -515,24 +532,39 @@ public class ManageController extends Controller{
 	  */
 	 public void seeItems()
 	 {
-		 List<Items> itemList=Items.dao.find("select iid,iname,icon,realPrice,category from items order by category");
+		 Managers manager=getSessionAttr(GlobalVar.BEUSER);
+		 List<Record> itemList=null;
+		 if(manager.getInt("ring")==2)
+		 {
+			 Areas building=Areas.dao.findById(manager.getInt("location"));
+	         Areas area=Areas.dao.findFirst("select * from areas where city=? and college=? and building=?",building.getStr("city"),building.getStr("college"),"");
+			itemList=Db.find("select a.iid,a.iname,a.icon,a.realPrice,a.category,b.restNum from items as a,items_on_sale as b where b.location=? and a.iid=b.iid and b.restNum>0 order by category",area.getInt("aid"));  
+		 }else if(manager.getInt("ring")==1){
+			 itemList=Db.find("select a.iid,a.iname,a.icon,a.realPrice,a.category,b.restNum from items as a,items_on_sale as b where b.location=? and a.iid=b.iid and b.restNum>0 order by category",0);  
+		}
 		 setAttr("itemList", itemList);
 		 renderJson();
 	 }
 	 /**
 	  * 提交进货订单
+	 * @throws SQLException 
 	  */
-	 public void ingoods() //ajax
+	 @Before(Tx.class)
+	 public void ingoods() throws SQLException //ajax
 	 {
 		 Managers manager=getSessionAttr(GlobalVar.BEUSER);
 		 int to=1;
+		 int tolocation=0;
 		 if(manager.getInt("ring")==2)
 		 {
 			 Areas areas=Areas.dao.findById(manager.getInt("location"));
 			 Areas area=Areas.dao.findFirst("select aid from areas where city=? and college=? and building=?",areas.getStr("city"),areas.getStr("college"),"");
+			 tolocation=area.getInt("aid");
 			 to=Managers.dao.findFirst("select * from managers where location=?",area.getInt("aid")).getInt("mid");
 		 }else if(manager.getInt("ring")==1)
-			 to=1;  //总管理员mid
+			 {to=1;  //总管理员mid
+			  tolocation=0;
+			 }
 		 String content[]=getPara("content").split(";");
 		 Ingoods tempig=Ingoods.dao.findFirst("select distinct rid from ingoods order by rid desc");
 		 int rid=1;
@@ -544,7 +576,13 @@ public class ManageController extends Controller{
 			 if(Integer.parseInt(temp[1])<0)
 			 {
 				 renderHtml(Util.getJsonText("商品数量不能为负"));
-				 return;
+				 throw new SQLException();
+			 }
+			 Items_on_sale ios=Items_on_sale.dao.findFirst("select * from items_on_sale where location=? and iid=?",tolocation,Integer.parseInt(temp[0]));
+			 if(ios.getInt("restNum")<Integer.parseInt(temp[1]))
+			 {
+				 renderHtml(Util.getJsonText("货物不足"));
+				 throw new SQLException();
 			 }
 			 Ingoods ig=new Ingoods();
 			 ig.set("rid", rid).set("froms", manager.getInt("mid")).set("tos", to);
@@ -670,7 +708,7 @@ public class ManageController extends Controller{
 		 {
 			 if(login.getInt("ring")==0)
 			 {
-		 List<Areas> areasList=Areas.dao.find("select distinct city,aid from areas where college=? order by city asc","");
+		 List<Areas> areasList=Areas.dao.find("select distinct city,aid from areas where city!=? and college=? order by city asc","","");
 		 setAttr("areaList", areasList);   //aid,city,college,building
 		 setAttr("type", 1);  //1 城市  2校区 3楼栋
 		 render("areas.html");
@@ -1054,7 +1092,7 @@ public class ManageController extends Controller{
 			Items_on_sale ios=new Items_on_sale();
 			ios.set("iid", item.getInt("iid"));   //能否获取到？
 			ios.set("minPrice",new BigDecimal(0)).set("maxPrice", new BigDecimal(0)).set("price", item.getBigDecimal("realPrice"));
-			ios.set("restNum", 0).set("location", 0);
+			ios.set("restNum", 0).set("location", 0).set("isonsale", true);
 			ios.set("addedDate", Util.getDate()).set("addedTime", Util.getTime());
 			ios.save();
 			redirect("/mgradmin/items");

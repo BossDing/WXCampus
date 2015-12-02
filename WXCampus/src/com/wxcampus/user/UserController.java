@@ -188,7 +188,7 @@ public class UserController extends Controller{
 		for(int i=0;i<items.length;i++)
 		{
 			if(items[i].equals("")) continue;
-			Record item=Db.findFirst("select a.iid,a.iname,a.icon,b.restNum,b.price from items as a,items_on_sale as b where a.iid=b.iid and b.location=? and a.iid=?",areaID,Integer.parseInt(items[i]));
+			Record item=Db.findFirst("select a.iid,a.iname,a.icon,b.restNum,b.price from items as a,items_on_sale as b where b.isonsale=true and  a.iid=b.iid and b.location=? and a.iid=?",areaID,Integer.parseInt(items[i]));
 			//Items_on_sale items_on_sale=Items_on_sale.dao.findFirst("select * from items_on_sale where location=? and iid=?",areaID,Integer.parseInt(items[i]));
 			//item.set("restNum", items_on_sale.getInt("restNum"));
 			itemList.add(item);		

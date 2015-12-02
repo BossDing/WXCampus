@@ -145,10 +145,10 @@ public class IndexController extends Controller {
 		List<Record> itemList;
 		if(category!=null)
 		{
-			 itemList=Db.find("select a.iid,a.iname,a.icon,b.restNum,b.price from items as a,items_on_sale as b where a.iid=b.iid and b.location=? and a.category=?",aid,category);
+			 itemList=Db.find("select a.iid,a.iname,a.icon,b.restNum,b.price from items as a,items_on_sale as b where b.isonsale=true and a.iid=b.iid and b.location=? and a.category=?",aid,category);
 		}else
 		{
-			 itemList=Db.find("select a.iid,a.iname,a.icon,a.category,b.restNum,b.price from items as a,items_on_sale as b where a.iid=b.iid and b.location=?");
+			 itemList=Db.find("select a.iid,a.iname,a.icon,a.category,b.restNum,b.price from items as a,items_on_sale as b where b.isonsale=true and a.iid=b.iid and b.location=?");
 		}
 		setAttr("itemList", itemList); 
 		renderJson();
@@ -172,7 +172,7 @@ public class IndexController extends Controller {
 		int areaID=getSessionAttr("areaID");
 		if(getSessionAttr("Carts")==null)
 		    setSessionAttr("Carts", new HashMap<Integer,Integer>());
-		List<Record> itemList=Db.find("select a.iid,a.iname,a.icon,b.restNum,b.price from items as a,items_on_sale as b where b.location=? and a.iid=b.iid and a.iname regexp ?",areaID,".*"+itemName+".*");
+		List<Record> itemList=Db.find("select a.iid,a.iname,a.icon,b.restNum,b.price from items as a,items_on_sale as b where b.isonsale=true and b.location=? and a.iid=b.iid and a.iname regexp ?",areaID,".*"+itemName+".*");
 		setAttr("itemList", itemList);
 		renderJson();
 	}

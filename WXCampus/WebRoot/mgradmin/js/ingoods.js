@@ -44,6 +44,7 @@ function backInsertInfo(json){
     '<th style="text-align: center">编号</th>'+
     '<th style="text-align: center">名称</th>'+
    '<th style="text-align: center">价格</th>'+
+   '<th style="text-align: center">库存</th>'+
     '<th style="text-align: center">数量</th>'+
     '<th style="text-align: center">勾选</th>'+
     '</tr>'+
@@ -55,6 +56,7 @@ function backInsertInfo(json){
 	    '<td>'+json.itemList[i].iid+'</td>'+
 	    '<td>'+json.itemList[i].iname+'</td>'+
 	    '<td>'+json.itemList[i].realPrice+'</td>'+
+	    '<td>'+json.itemList[i].restNum+'</td>'+
 	    '<td><input id='+json.itemList[i].iid+' type="number" style="width: 60px"></td>'+
 	        '<td><input id='+json.itemList[i].iid+'_cbox type="checkbox"></td></tr>';
 	}
@@ -93,7 +95,7 @@ function confirmTrade(){
             		alert(json.Msg);
             },
             error: function () {
-                alert("error");
+                alert("货物不足");
             }
         }
     );

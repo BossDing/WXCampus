@@ -66,7 +66,7 @@ public class ShopController extends Controller{
 			//{
 			int iid=iterator.next();
 			Record item;
-			item=Db.findFirst("select a.iid,a.iname,a.icon,b.restNum,b.price from items as a,items_on_sale as b where a.iid=b.iid and b.location=? and a.iid=?",areaID,iid);
+			item=Db.findFirst("select a.iid,a.iname,a.icon,b.restNum,b.price from items as a,items_on_sale as b where b.isonsale=true and a.iid=b.iid and b.location=? and a.iid=?",areaID,iid);
 		    item.set("orderNum", map.get(iid));
 			itemList.add(item);
 		//	}else
@@ -134,9 +134,9 @@ public class ShopController extends Controller{
 			Record record=new Record();
 			int iid=iterator.next();
 			int num=map.get(iid);
-			Items_on_sale ios=Items_on_sale.dao.findFirst("select * from items_on_sale where location=? and iid=?",areaID,iid);
-			if(ios.getInt("restNum")<num)
-				{redirect("/404/error"); break;}
+			Items_on_sale ios=Items_on_sale.dao.findFirst("select * from items_on_sale where isonsale=true and location=? and iid=?",areaID,iid);
+			if(ios==null || ios.getInt("restNum")<num)
+				{redirect("/404/error"); return;}
 			Items item=Items.dao.findFirst("select * from items where iid=?",iid);
 			record.set("iid", item.getInt("iid"));
 			record.set("iname", item.getStr("iname"));

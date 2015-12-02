@@ -15,7 +15,7 @@ CREATE TABLE `areas` (
   `addedTime` time NOT NULL,
   PRIMARY KEY (`aid`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
-
+insert into areas(aid,city,college,building,addedDate,addedTime) values(0,"","","","2015-11-11","00:00:00");
 DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
   `uid` int(10) NOT NULL AUTO_INCREMENT,
@@ -31,7 +31,7 @@ CREATE TABLE `user` (
   `registerTime` time NOT NULL,
   PRIMARY KEY (`uid`),
   KEY `location` (`location`),
-  CONSTRAINT `user_area_fk1` FOREIGN KEY (`location`) REFERENCES `areas` (`aid`)
+  CONSTRAINT `user_area_fk1` FOREIGN KEY (`location`) REFERENCES `areas` (`aid`)  on delete cascade on update cascade
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 
@@ -59,6 +59,7 @@ CREATE TABLE `items_on_sale` (
   `price` decimal(10,2) not null,
   `restNum` int(5) not null,
   `location` int(10) not null,
+  `isonsale` tinyint(1) not null,
   `addedDate` date NOT NULL,
   `addedTime` time NOT NULL,
   PRIMARY KEY (`iosid`),
@@ -85,7 +86,9 @@ CREATE TABLE `promotion` (
   `location` int(10) default 0,
   `isshow` tinyint(1) not null,
   `addedDT` timestamp not null,
-  PRIMARY KEY (`pid`)
+  PRIMARY KEY (`pid`),
+  KEY `location` (`location`),
+  CONSTRAINT `pro_area_fk1` FOREIGN KEY (`location`) REFERENCES `areas` (`aid`)  on delete cascade on update cascade
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `advertisement`;
@@ -112,6 +115,8 @@ CREATE TABLE `managers` (
   `addedDate` date NOT NULL,
   `addedTime` time NOT NULL,
   PRIMARY KEY (`mid`),
+  KEY `location` (`location`),
+  CONSTRAINT `mana_area_fk1` FOREIGN KEY (`location`) REFERENCES `areas` (`aid`)  on delete cascade on update cascade
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 insert into managers(ring,tel,name,password,location,addedDate,addedTime) values(0,"","管理员","admin666",0,"2015-11-25","00:00:00");
 
@@ -121,7 +126,9 @@ CREATE TABLE `informs` (
   `type` varchar(255) NOT NULL,
   `tos` int(10) not null,
   `addedDT` timestamp not null,
-  PRIMARY KEY (`iid`)
+  PRIMARY KEY (`iid`),
+   KEY `tos` (`tos`),
+  CONSTRAINT `inform_area_fk1` FOREIGN KEY (`tos`) REFERENCES `managers` (`mid`)  on delete cascade on update cascade
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `incomes`;
@@ -130,7 +137,9 @@ CREATE TABLE `incomes` (
   `mid` int(10) NOT NULL,
   `sales` decimal(10,2) not null,
   `addedDT` timestamp not null,
-  PRIMARY KEY (`iid`)
+  PRIMARY KEY (`iid`),
+    KEY `mid` (`mid`),
+  CONSTRAINT `income_mana_fk1` FOREIGN KEY (`mid`) REFERENCES `managers` (`mid`)  on delete cascade on update cascade
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 insert into incomes(mid,sales,addedDT) values(1,0.00,"2015-11-25 00:00:00");
 
@@ -144,7 +153,13 @@ CREATE TABLE `ingoods` (
   `num` int(5) not null,
   `state` int(1) not null,
   `addedDT` timestamp not null,
-  PRIMARY KEY (`iid`)
+  PRIMARY KEY (`iid`),
+   KEY `froms` (`froms`),
+   KEY `tos` (`tos`),
+   KEY `item` (`item`),
+  CONSTRAINT `ingood_fk1` FOREIGN KEY (`froms`) REFERENCES `managers` (`mid`)  on delete cascade on update cascade,
+  CONSTRAINT `ingood_fk2` FOREIGN KEY (`tos`) REFERENCES `managers` (`mid`)  on delete cascade on update cascade,
+  CONSTRAINT `ingood_fk3` FOREIGN KEY (`item`) REFERENCES `items` (`iid`)  on delete cascade on update cascade
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 
@@ -164,7 +179,15 @@ CREATE TABLE `trades` (
   `addedTime` time not null,
   `finishedDate` date default NULL,
   `finishedTime` time default NULL,
-  PRIMARY KEY (`tid`)
+  PRIMARY KEY (`tid`),
+   KEY `customer` (`customer`),
+   KEY `seller` (`seller`),
+   KEY `location` (`location`),
+   KEY `item` (`item`),
+  CONSTRAINT `trade_fk1` FOREIGN KEY (`customer`) REFERENCES `user` (`uid`)  on delete cascade on update cascade,
+  CONSTRAINT `trade_fk2` FOREIGN KEY (`seller`) REFERENCES `managers` (`mid`)  on delete cascade on update cascade,
+  CONSTRAINT `trade_fk3` FOREIGN KEY (`location`) REFERENCES `areas` (`aid`)  on delete cascade on update cascade,
+  CONSTRAINT `trade_fk4` FOREIGN KEY (`item`) REFERENCES `items` (`iid`)  on delete cascade on update cascade
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `coupons`;
@@ -207,7 +230,11 @@ CREATE TABLE `advices` (
   `location` int(10) not null,
   `addedDate` date NOT NULL,
   `addedTime` time NOT NULL,
-  PRIMARY KEY (`aid`)
+  PRIMARY KEY (`aid`),
+    KEY `uid` (`uid`),
+   KEY `location` (`location`),
+  CONSTRAINT `advice_fk1` FOREIGN KEY (`uid`) REFERENCES `user` (`uid`)  on delete cascade on update cascade,
+  CONSTRAINT `advice_fk2` FOREIGN KEY (`location`) REFERENCES `areas` (`aid`)  on delete cascade on update cascade
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `areasales`;
@@ -219,7 +246,11 @@ CREATE TABLE `areasales` (
   `location` int(10) not null,
   `month` varchar(127) not null,
   `addedDT` timestamp NOT NULL,
-  PRIMARY KEY (`asid`)
+  PRIMARY KEY (`asid`),
+   KEY `item` (`item`),
+   KEY `location` (`location`),
+  CONSTRAINT `areasale_fk1` FOREIGN KEY (`item`) REFERENCES `items` (`iid`)  on delete cascade on update cascade,
+  CONSTRAINT `areasale_fk2` FOREIGN KEY (`location`) REFERENCES `areas` (`aid`)  on delete cascade on update cascade
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `applyfor`;

@@ -72,3 +72,44 @@ function changeNum(iid){
 function backGetSeller(){
 	window.location='/mgradmin/getSellers'
 }
+
+function onsale(id){
+	var dataInfo='iosid='+id+'&type=1';
+	var url='/mgradmin/setisonsale'
+	$.ajax(
+	        {
+	            url:url,
+	            dataType: "json",
+	            type: 'POST',
+	            data:dataInfo,
+	            success:function(json){
+	            	if(json.Msg=="OK"){
+	            		window.location.reload();
+	            	}
+	            },
+	            error: function () {
+	                alert("error");
+	            }
+	        }
+	    );
+}
+function downsale(id){
+	var dataInfo='iosid='+id+'&type=0';
+	var url='/mgradmin/setisonsale'
+	$.ajax(
+	        {
+	            url:url,
+	            dataType: "json",
+	            type: 'POST',
+	            data:dataInfo,
+	            success:function(json){
+	            	if(json.Msg=="OK"){
+	            		window.location.reload();
+	            	}
+	            },
+	            error: function () {
+	                alert("error");
+	            }
+	        }
+	    );
+}

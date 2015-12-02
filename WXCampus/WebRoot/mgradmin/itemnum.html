@@ -42,11 +42,12 @@
                     <thead>
                     <tr>
                         <th style="text-align: center">编号</th>
+                        <th style="text-align: center">状态</th>
                         <th style="text-align: center">名称</th>
                         <th style="text-align: center">售价</th>
                         <th style="text-align: center">库存量</th>
                         <th style="text-align: center">操作</th>
-                        <th></th>
+                        
                     </tr>
                     </thead>
                     <tbody>
@@ -56,6 +57,11 @@
                     <script>document.write('<td>'+i+'</td>');
                     i++;
                     </script>
+                    <#if x.isonsale==true>
+                        <td style="text-align:center;">已上架</td>
+                        <#else>
+                        <td style="text-align:center;">已下架</td>
+                        </#if>
                        <#if x.restNum < 10>
                          <td style="color:red">${x.iname}</td>
                        <#else>
@@ -91,7 +97,13 @@
                         <td>${x.restNum}</td>
                        </#if>
                         
-                        <td><a style="cursor:pointer" onclick="changePrice('${x.iosid}')">修改</a></td>
+                        <td><a style="cursor:pointer" onclick="changePrice('${x.iosid}')">修改</a>/
+                        <#if x.isonsale==true>
+                        <a style="cursor:pointer" onclick="downsale('${x.iosid}')">下架</a>
+                       <#else>
+                       <a style="cursor:pointer" onclick="onsale('${x.iosid}')">上架</a>
+                       </#if>
+                        </td>
                         <td id=${x.iosid}_msg></td>
                         
                         </#if>

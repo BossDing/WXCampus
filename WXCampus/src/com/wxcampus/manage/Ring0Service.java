@@ -1,5 +1,7 @@
 package com.wxcampus.manage;
 
+import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -7,9 +9,11 @@ import java.util.List;
 import com.jfinal.core.Controller;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Record;
+import com.mchange.v2.c3p0.impl.NewPooledConnection;
 import com.wxcampus.index.Areas;
 import com.wxcampus.index.IndexService;
 import com.wxcampus.items.Areasales;
+import com.wxcampus.items.Incomes;
 import com.wxcampus.items.Trades;
 import com.wxcampus.util.Util;
 
@@ -167,6 +171,7 @@ public class Ring0Service {
 			manager.set("password", manager.getStr("tel").substring(5));
 			manager.set("addedDate", Util.getDate()).set("addedTime", Util.getTime());
 			manager.save();
+			new Incomes().set("mid", manager.getInt("mid")).set("sales", new BigDecimal(0)).set("addedDT", new Timestamp(System.currentTimeMillis())).save();
 		}
 		c.redirect("/mgradmin/areas?city="+Util.getEncodeText(c.getPara("city")));	
 		}else if(manager.getInt("ring")==2)
@@ -192,6 +197,7 @@ public class Ring0Service {
 			manager.set("password", manager.getStr("tel").substring(5));
 			manager.set("addedDate", Util.getDate()).set("addedTime", Util.getTime());
 			manager.save();
+			new Incomes().set("mid", manager.getInt("mid")).set("sales", new BigDecimal(0)).set("addedDT", new Timestamp(System.currentTimeMillis())).save();
 		}
 		c.redirect("/mgradmin/areas?city="+Util.getEncodeText(c.getPara("city"))+"&college="+Util.getEncodeText(c.getPara("college")));	
 		}
