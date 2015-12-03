@@ -49,8 +49,11 @@
                 <p style="margin-top: 5px">${Area.startTime?string("HH:mm:ss")}--${Area.endTime?string("HH:mm:ss")}</p>
         </div>
         <div class="floor_center" id="floor_center">
-            <p style="margin-top: 5px">${Manager.say}</p>
-            <p>公告</p>
+        <div id="scroll_begin"><p style="margin-top: 5px">${Manager.say}</p></div>
+        <div id="scroll_end"></div>
+         <div>
+         <p>公告</p>
+         </div>
         </div>
         <div class="floor_right" id="floor_right">
                 <#if Area.state==true>
@@ -74,5 +77,24 @@
 <img src="/index/images_shop/car.png" onclick="gotoshop()" style="width: 80px;height: 80px;position: fixed;opacity: 0.5">
 <span id="totalNum" style="display:block;text-align:center;width:20px;height:20px;position: fixed;bottom: 170px;left: 130px;color:#ffffff;font-size:15px;border-radius:10px;background-color:red">${TotalNum}</span>
 </div>
+
+<script type="text/javascript">
+    function ScrollImgLeft(){
+        var speed=50;
+        var scroll_begin = document.getElementById("scroll_begin");
+        var scroll_end = document.getElementById("scroll_end");
+        var scroll_div = document.getElementById("floor_center");
+        scroll_end.innerHTML=scroll_begin.innerHTML;
+        function Marquee(){
+            if(scroll_end.offsetWidth-scroll_div.scrollLeft<=0)
+                scroll_div.scrollLeft-=scroll_begin.offsetWidth;
+            else
+                scroll_div.scrollLeft++;
+        }
+        var MyMar=setInterval(Marquee,speed);
+        scroll_div.onmouseover=function() {clearInterval(MyMar);}
+        scroll_div.onmouseout=function() {MyMar=setInterval(Marquee,speed);}
+    }
+</script>
 </body>
 </html>

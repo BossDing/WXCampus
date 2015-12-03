@@ -346,7 +346,7 @@ public class ShopController extends Controller{
 		String sign3=Util.getSign(elements3);
 		setAttr("appid", Util.APPID);
 		setAttr("timestamp", tempts);
-		setAttr("package", "prepay_id="+prepay_id);
+		setAttr("packages", "prepay_id="+prepay_id);
 		setAttr("nonceStr", tempRs);
 		setAttr("paySign", sign3);
 		renderJson();

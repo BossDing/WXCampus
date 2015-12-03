@@ -113,23 +113,23 @@
     font-size: 20px;
 }
 .span_input{
-    width: 45%;
-    height: 40px;
+    width: 50%;
+    height: 3em;
     float: left;
 }
 .span_select{
     width: 20%;
-    height: 40px;
+    height: 3em;
     float: left;
 }
 .span_confirm{
     width: 30%;
-    height: 40px;
+    height: 3em;
     float: left;
 }
 .button_send{
     width: 20%;
-    height: 40px;
+    height: 3em;
     float: left;
     text-align:center;
     padding-top:10px;

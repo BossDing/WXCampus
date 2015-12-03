@@ -133,9 +133,29 @@ public class IndexController extends Controller {
 			renderJson();
 		}
 	}
-	
+	public void getLocation()
+	{
+		render("getLocation.html");
+	}
 	public void area()
 	{
+		if(getPara("laititude")==null || getPara("longitude")==null)
+		{
+			render("area.html");
+			return;
+		}
+		double laititude=Double.parseDouble(getPara("laititude"));
+		double longitude=Double.parseDouble(getPara("longitude"));
+		String ak="73EEtGNvP9eWPfDazNkGywfD";
+		String url="http://api.map.baidu.com/geocoder/v2/";
+		url=url+"?output=json&ak="+ak+"&coordtype=wgs84ll&location="+laititude+","+longitude+"&pois=0";
+		String jsonStr=GeneralGet.getResponse(url);
+		JSONObject json=JSONObject.parseObject(jsonStr);
+		if(json.getString("status").equals("0"))
+		{
+			String address=json.getString("formatted_address");
+			logger.error("Address:--------------"+address);
+		}
 		render("area.html");
 	}
 	public void getItems()  //ajax获取商品信息

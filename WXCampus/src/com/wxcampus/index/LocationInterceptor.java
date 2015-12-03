@@ -26,7 +26,9 @@ public class LocationInterceptor implements Interceptor{
 		}else {
 			User user=c.getSessionAttr(GlobalVar.WXUSER);
 			if(user==null)
-				{arg0.getController().redirect("/index/area");
+				
+				{
+				arg0.getController().redirect("/index/getLocation");
 				return;
 				}
 		}
