@@ -1,14 +1,33 @@
 package com.wxcampus.index;
 
 
+import java.io.IOException;
+import java.io.Writer;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.dom4j.Attribute;
+import org.dom4j.Branch;
+import org.dom4j.CDATA;
+import org.dom4j.Comment;
+import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
+import org.dom4j.Entity;
+import org.dom4j.InvalidXPathException;
+import org.dom4j.Namespace;
+import org.dom4j.Node;
+import org.dom4j.ProcessingInstruction;
+import org.dom4j.QName;
+import org.dom4j.Text;
+import org.dom4j.Visitor;
+import org.dom4j.XPath;
 
 import com.alibaba.fastjson.JSONObject;
 import com.jfinal.aop.Before;
@@ -135,6 +154,25 @@ public class IndexController extends Controller {
 	}
 	public void getLocation()
 	{
+		logger.error("1111111111");
+		String tempts=System.currentTimeMillis()+"";
+		String tempRs=Util.getRandomString();
+		Document document4=DocumentHelper.createDocument();
+		Element root4=document4.addElement("xml");
+		root4.addElement("nonceStr").setText(Util.getRandomString());
+		root4.addElement("appId").setText(Util.APPID);
+		root4.addElement("timestamp").setText(tempts);
+		logger.error(document4.asXML());
+		//root3.addElement(arg0, arg1)
+		//root4.addElement("nonceStr").setText(Util.getRandomString());
+		List<Element> elements3=root4.elements();
+		logger.error("333333333");
+		String sign3=Util.getSign(elements3);
+		logger.error("2222222222222");
+		setAttr("appid", Util.APPID);
+		setAttr("timestamp", tempts);
+		setAttr("noncestr", tempRs);
+		setAttr("sign", sign3);
 		render("getLocation.html");
 	}
 	public void area()

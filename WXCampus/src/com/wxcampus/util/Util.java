@@ -6,6 +6,8 @@ import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -108,7 +110,8 @@ public class Util {
     }
 	public static String getSign(List<Element> elements)
 	{
-		elements.sort(new ElementComparator());
+		Collections.sort(elements, new ElementComparator());
+		//elements.sort();
 	    Iterator<Element> iterator11=elements.iterator();
 	    String sign="";
 		while(iterator11.hasNext())
