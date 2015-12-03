@@ -1,5 +1,7 @@
 package com.wxcampus.shop;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -11,6 +13,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
+import org.dom4j.io.SAXReader;
+
+import com.alibaba.fastjson.JSONObject;
 import com.jfinal.aop.Before;
 import com.jfinal.core.Controller;
 import com.jfinal.plugin.activerecord.Db;
@@ -32,6 +42,7 @@ import com.wxcampus.items.Trades;
 import com.wxcampus.manage.Managers;
 import com.wxcampus.user.User;
 import com.wxcampus.user.UserInterceptor;
+import com.wxcampus.util.GeneralPost;
 import com.wxcampus.util.Util;
 
 /**
@@ -41,6 +52,8 @@ import com.wxcampus.util.Util;
  */
 @Before({OpenidInterceptor.class,UserInterceptor.class})
 public class ShopController extends Controller{
+	
+	private Logger logger=Util.getLogger();
 	
 	@Before({NoUrlPara.class,ShopInterceptor.class})
 	public void index()
@@ -117,6 +130,12 @@ public class ShopController extends Controller{
 	@Before(ShopInterceptor.class)
 	public void confirm()
 	{
+		boolean yn=getSessionAttr("ConfirmPayOnce");
+		if(getSessionAttr("ConfirmPayOnce")!=null && yn==true)
+		{
+			redirect("/404/error?Msg="+Util.getEncodeText("网络繁忙,请稍后再试"));
+			return;
+		}
 		HashMap<Integer, Integer> map=getSessionAttr("Carts");
 		if(map==null || map.isEmpty())
 		{
@@ -171,6 +190,7 @@ public class ShopController extends Controller{
 			setAttr("userRoom", user.getStr("room"));
 		else
 			setAttr("userRoom", "");
+		setSessionAttr("ConfirmPayOnce", false);
 		render("confirm.html");
 	}
 	
@@ -183,13 +203,17 @@ public class ShopController extends Controller{
 		setAttr("cpList", cpList);
 		renderJson();
 	}
-	
 	@Before({ShopInterceptor.class,Tx.class})
 	public void pay()
 	{
+		if(getSessionAttr("ConfirmPayOnce")==null)
+			return;
+		boolean yn=getSessionAttr("ConfirmPayOnce");
+		if(yn)
+			return;
+		setSessionAttr("ConfirmPayOnce", true);
 		String date=Util.getDate();
 		String time=Util.getTime();
-	//	String tel=getPara("userTel");
 		String name=getPara("userName");
 		String room=getPara("userRoom");
 		User user=getSessionAttr("sessionUser");
@@ -213,32 +237,33 @@ public class ShopController extends Controller{
 			rid=1;
 		else
 			rid=temptrade.getInt("rid")+1;
+		String tn=Util.getTradeNo();
 		Managers manager=Managers.dao.findFirst("select * from managers where location=?",areaID);
-		String cuid=getPara("cuid");
-		if(cuid!=null)
-		{
-			
-			Record coupons=Db.findFirst("select a.money,a.cid from coupons as a,coupons_user as b where b.cuid=? and b.used=0 and b.endDate>=? and a.cid=b.cid",cuid,date);
-			if(cuid!=null)
-			{
-			  totalMoney-=coupons.getDouble("money");
-			  Coupons_user.dao.findById(cuid).set("used", 1).update();
-			  Coupons_use cu=new Coupons_use();
-			  cu.set("rid", rid);
-			  cu.set("cid",coupons.getInt("cid"));
-			  cu.set("realpay", totalMoney);
-			  cu.set("addedDate", date);
-			  cu.set("addedTime", time);
-			  cu.save();
-			}
-		}
-		
-		Areas area=Areas.dao.findById(areaID);
-		Areas college=Areas.dao.findFirst("select * from areas where city=? and college=? and building=?",area.getStr("city"),area.getStr("college"),"");
+//		String cuid=getPara("cuid");
+//		if(cuid!=null)
+//		{
+//			
+//			Record coupons=Db.findFirst("select a.money,a.cid from coupons as a,coupons_user as b where b.cuid=? and b.used=0 and b.endDate>=? and a.cid=b.cid",cuid,date);
+//			if(cuid!=null)
+//			{
+//			  totalMoney-=coupons.getDouble("money");
+//			  Coupons_user.dao.findById(cuid).set("used", 1).update();
+//			  Coupons_use cu=new Coupons_use();
+//			  cu.set("rid", rid);
+//			  cu.set("cid",coupons.getInt("cid"));
+//			  cu.set("realpay", totalMoney);
+//			  cu.set("addedDate", date);
+//			  cu.set("addedTime", time);
+//			  cu.save();
+//			}
+//		}	
+	
 		for(int i=0;i<itemList.size();i++)
 		{
 		  Trades trades=new Trades();
 		  trades.set("rid", rid);
+		  trades.set("tradeNo", tn);
+		  trades.set("totalmoney", new BigDecimal(totalMoney));
 		  trades.set("customer", user.getInt("uid"));
 		  trades.set("seller", manager.getInt("mid"));
 		  trades.set("location", areaID);
@@ -248,45 +273,168 @@ public class ShopController extends Controller{
 		  trades.set("price", itemList.get(i).getBigDecimal("price"));
 		  trades.set("orderNum", itemList.get(i).getInt("orderNum"));
 		  trades.set("room", room);
-		  trades.set("state", 0);  //0:正在派送  1:交易完成
+		  trades.set("state", 2);  //0:正在派送  1:交易完成  2: 等待支付
 		  trades.save();
-		  
-		  String month=Util.getMonth();
-		  Areasales as=Areasales.dao.findFirst("select * from areasales where item=? and location=? and month=?",itemList.get(i).getInt("iid"),areaID,month);
-		  if(as==null)
-		  {
-			  as=new Areasales();
-			  as.set("item", itemList.get(i).getInt("iid")).set("num", itemList.get(i).getInt("orderNum"));
-			  as.set("money", itemList.get(i).getBigDecimal("price")).set("location", areaID);
-			  as.set("addedDT", new Timestamp(System.currentTimeMillis())).set("month", month);
-			  as.save();
-		  }else
-			  as.set("num", as.getInt("num")+itemList.get(i).getInt("orderNum")).set("money", as.getBigDecimal("money").add(itemList.get(i).getBigDecimal("price"))).update();
-		  
-		  as=null;
-		  as=Areasales.dao.findFirst("select * from areasales where item=? and location=? and month=?",itemList.get(i).getInt("iid"),college.getInt("aid"),month);
-		  if(as==null)
-		  {
-			  as=new Areasales();
-			  as.set("item", itemList.get(i).getInt("iid")).set("num", itemList.get(i).getInt("orderNum"));
-			  as.set("money", itemList.get(i).getBigDecimal("price")).set("location", college.getInt("aid"));
-			  as.set("addedDT", new Timestamp(System.currentTimeMillis())).set("month", month);
-			  as.save();
-		  }else
-			  as.set("num", as.getInt("num")+itemList.get(i).getInt("orderNum")).set("money", as.getBigDecimal("money").add(itemList.get(i).getBigDecimal("price"))).update();
-		  
-		 as=null;
-		 as=Areasales.dao.findFirst("select * from areasales where item=? and location=? and month=?",itemList.get(i).getInt("iid"),0,month);
-		 if(as==null)
-		  {
-			  as=new Areasales();
-			  as.set("item", itemList.get(i).getInt("iid")).set("num", itemList.get(i).getInt("orderNum"));
-			  as.set("money", itemList.get(i).getBigDecimal("price")).set("location", 0);
-			  as.set("addedDT", new Timestamp(System.currentTimeMillis())).set("month", month);
-			  as.save();
-		  }else
-			  as.set("num", as.getInt("num")+itemList.get(i).getInt("orderNum")).set("money", as.getBigDecimal("money").add(itemList.get(i).getBigDecimal("price"))).update();
 		}
+		
+		
+		
+		Document document=DocumentHelper.createDocument();
+		Element root=document.addElement("xml");
+		root.addElement("appid").setText(Util.APPID);
+		root.addElement("mch_id").setText(Util.MCH_ID);
+		root.addElement("device_info").setText("WEB");
+		root.addElement("nonce_str").setText(Util.getRandomString());
+		root.addElement("body").setText("零食");   //商品概述
+		//root.addElement("detail").setText("");  //选填
+		//root.addElement("attach").setText("");  //选填
+		root.addElement("out_trade_no").setText(tn);  //订单号
+		root.addElement("fee_type").setText("CNY");
+		root.addElement("total_fee").setText(totalMoney+"");  //订单总金额
+		root.addElement("spbill_create_ip").setText(getRequest().getRemoteAddr());  //终端IP
+		root.addElement("time_start").setText(Util.getTimeStamp());     //订单起始时间
+		root.addElement("time_expire").setText(Util.getEndTimeStamp());    //订单结束时间
+		//root.addElement("goods_tag").setText("");
+		root.addElement("notify_url").setText("http://www.missjzp.cn/shop/paysuccess");
+		root.addElement("trade_type").setText("JSAPI");
+	//	root.addElement("product_id").setText("");
+	//	root.addElement("limit_pay").setText("");
+		root.addElement("openid").setText(user.getStr("openid"));
+		List<Element> elements=root.elements();
+	    String sign=Util.getSign(elements);
+		root.addElement("sign").setText(sign); ////****************
+		String resXML=GeneralPost.getResponseXML(document.asXML(),"https://api.mch.weixin.qq.com/pay/unifiedorder");
+		
+		String prepay_id="";
+		Document document2;
+		try {
+			document2 = DocumentHelper.parseText(resXML);
+			Element root2 = document2.getRootElement();
+			List<Element> elements2=root2.elements();
+			String sign2=Util.getSign(elements2);
+			if(!sign2.equals(root2.elementText("sign")))
+			{
+				redirect("/404/error");
+				return;
+			}
+		    if(!root2.elementText("return_code").equals("SUCCESS") ||  !root2.elementText("result_code").equals("SUCCESS"))
+		    {
+		    	logger.error("订单号："+tn+" 错误信息："+root2.elementText("return_msg")+" 错误代码："+root2.elementText("err_code")+" 描述："+root2.elementText("err_code_des"));
+		    	redirect("/404/error?Msg="+Util.getEncodeText("支付错误,请稍后再试"));
+				return;
+		    }
+		    prepay_id=root2.elementText("prepay_id");
+		} catch (DocumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		removeSessionAttr("Carts");
+		removeSessionAttr("itemList");
+		removeSessionAttr("totalMoney");
+		removeSessionAttr("ConfirmPayOnce");
+		String tempts=System.currentTimeMillis()+"";
+		String tempRs=Util.getRandomString();
+		Document document3=DocumentHelper.createDocument();
+		Element root3=document3.addElement("xml");
+		root3.addElement("appId").setText(Util.APPID);
+		root3.addElement("timeStamp").setText(tempts);
+		root3.addElement("package").setText("prepay_id="+prepay_id);
+		root3.addElement("nonceStr").setText(tempRs);
+		root3.addElement("signType").setText("MD5");
+		List<Element> elements3=root3.elements();
+		String sign3=Util.getSign(elements3);
+		setAttr("appid", Util.APPID);
+		setAttr("timestamp", tempts);
+		setAttr("package", "prepay_id="+prepay_id);
+		setAttr("nonceStr", tempRs);
+		setAttr("paySign", sign3);
+		renderJson();
+	}
+	@Before(Tx.class)
+	public void paysuccess()
+	{
+		InputStream inputStream=null;
+		Document document=null;
+		try {
+			inputStream = getRequest().getInputStream();
+		    // 读取输入流
+			SAXReader reader = new SAXReader();
+			 document= reader.read(inputStream);
+			    // 得到xml根元素
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		Element root = document.getRootElement();
+		List<Element> elements=root.elements();
+		String sign=Util.getSign(elements);
+		if(!sign.equals(root.elementText("sign")))
+		{
+			logger.error(" 错误信息：非法签名");
+			return;
+		}
+		 if(!root.elementText("return_code").equals("SUCCESS"))
+		    {
+		    	logger.error(" 错误信息："+root.elementText("return_msg"));
+				return;
+		    }
+		 String tn=root.elementText("out_trade_no");
+		 List<Trades> trades=Trades.dao.find("select * from trades where tradeNo=?",tn);
+		 if(trades.get(0).getInt("state")!=2)
+			 return;
+		 int areaID=trades.get(0).getInt("location");
+		 double totalMoney=trades.get(0).getBigDecimal("totalmoney").doubleValue();
+		 if(totalMoney!=Double.parseDouble(root.elementText("total_fee")))
+		 {
+			 logger.error(" 错误信息： 金额与实际订单不符");
+			 return;
+		 }
+		 Managers manager=Managers.dao.findFirst("select * from managers where location=?",areaID);
+		 Areas area=Areas.dao.findById(areaID);
+		 Areas college=Areas.dao.findFirst("select * from areas where city=? and college=? and building=?",area.getStr("city"),area.getStr("college"),"");
+		 String month=Util.getMonth();
+		 for(int i=0;i<trades.size();i++)
+         {
+			 trades.get(i).set("state", 0).set("wxtradeNo", root.elementText("transaction_id")).set("finishedTimeStamp", root.elementText("time_end")).update();  //支付成功
+			 
+			 Areasales as=Areasales.dao.findFirst("select * from areasales where item=? and location=? and month=?",trades.get(i).getInt("item"),areaID,month);
+			  if(as==null)
+			  {
+				  as=new Areasales();
+				  as.set("item", trades.get(i).getInt("item")).set("num", trades.get(i).getInt("orderNum"));
+				  as.set("money", trades.get(i).getBigDecimal("price")).set("location", areaID);
+				  as.set("addedDT", new Timestamp(System.currentTimeMillis())).set("month", month);
+				  as.save();
+			  }else
+				  as.set("num", as.getInt("num")+trades.get(i).getInt("orderNum")).set("money", as.getBigDecimal("money").add(trades.get(i).getBigDecimal("price"))).update();
+			  
+			  as=null;
+			  as=Areasales.dao.findFirst("select * from areasales where item=? and location=? and month=?",trades.get(i).getInt("item"),college.getInt("aid"),month);
+			  if(as==null)
+			  {
+				  as=new Areasales();
+				  as.set("item", trades.get(i).getInt("item")).set("num", trades.get(i).getInt("orderNum"));
+				  as.set("money", trades.get(i).getBigDecimal("price")).set("location", college.getInt("aid"));
+				  as.set("addedDT", new Timestamp(System.currentTimeMillis())).set("month", month);
+				  as.save();
+			  }else
+				  as.set("num", as.getInt("num")+trades.get(i).getInt("orderNum")).set("money", as.getBigDecimal("money").add(trades.get(i).getBigDecimal("price"))).update();
+			  
+			 as=null;
+			 as=Areasales.dao.findFirst("select * from areasales where item=? and location=? and month=?",trades.get(i).getInt("item"),0,month);
+			 if(as==null)
+			  {
+				  as=new Areasales();
+				  as.set("item", trades.get(i).getInt("item")).set("num", trades.get(i).getInt("orderNum"));
+				  as.set("money", trades.get(i).getBigDecimal("price")).set("location", 0);
+				  as.set("addedDT", new Timestamp(System.currentTimeMillis())).set("month", month);
+				  as.save();
+			  }else
+				  as.set("num", as.getInt("num")+trades.get(i).getInt("orderNum")).set("money", as.getBigDecimal("money").add(trades.get(i).getBigDecimal("price"))).update();
+         }
+	
 		Incomes income=Incomes.dao.findFirst("select * from incomes where mid=?",manager.getInt("mid"));
 		if(income==null)
 		{
@@ -310,10 +458,19 @@ public class ShopController extends Controller{
 		}
 		income=Incomes.dao.findFirst("select * from incomes where mid=?",1);
 		income.set("sales", income.getBigDecimal("sales").add(new BigDecimal(totalMoney))).update();
-		removeSessionAttr("itemList");
-		removeSessionAttr("Carts");
-		removeAttr("totalMoney");
-		redirect("/404/error?Msg="+Util.getEncodeText("支付成功！"));
+		
+		
+		Document resdoc=DocumentHelper.createDocument();
+		Element resroot=resdoc.addElement("xml");
+		resroot.addElement("return_code").setText("<![CDATA[SUCCESS]]>");
+		resroot.addElement("return_msg").setText("<![CDATA[OK]]>");
+		renderHtml(resdoc.asXML());
+		try {
+			inputStream.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }

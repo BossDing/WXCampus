@@ -51,6 +51,28 @@ public class GeneralPost
 	    return null;
 	   }
 	 
+	 public static String getResponseXML(String xml,String url)
+	   {
+		   HttpClient hc=new DefaultHttpClient();
+		   HttpPost hPost=new HttpPost(url);
+	   	   HttpResponse hResponse;
+	   	   hPost.addHeader("Content-Type", "text/xml;charset=utf-8");
+	    try
+	  		{
+		   	   StringEntity se=new StringEntity(xml,"UTF-8");
+		   	   se.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE, "text/xml")); 
+		   	   hPost.setEntity(se);
+		   	    
+	  			hResponse=hc.execute(hPost);
+	  			hPost.abort();
+	  			return EntityUtils.toString(hResponse.getEntity());
+	  		} catch (Exception e)
+	  		{
+	  			// TODO Auto-generated catch block
+	  			e.printStackTrace();
+	  		}
+	    return null;
+	   }
 	 public static String uploadFile(File file,String url)
 	 {
 		 FileBody bin=null;
