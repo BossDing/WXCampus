@@ -1,19 +1,45 @@
 package com.wxcampus.util;
 
+import java.io.IOException;
+import java.io.Writer;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
+import org.dom4j.Attribute;
+import org.dom4j.Branch;
+import org.dom4j.CDATA;
+import org.dom4j.Comment;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
-import org.eclipse.jetty.util.security.Credential.MD5;
+import org.dom4j.Entity;
+import org.dom4j.InvalidXPathException;
+import org.dom4j.Namespace;
+import org.dom4j.Node;
+import org.dom4j.ProcessingInstruction;
+import org.dom4j.QName;
+import org.dom4j.Text;
+import org.dom4j.Visitor;
+import org.dom4j.XPath;
 
 public class XmlParser {
 	
 	public static void main(String args[])
 	{
 	//	String arguments[]=
+		Document document4=DocumentHelper.createDocument();
+		Element root4=document4.addElement("nonceStr");
+		root4.setText(Util.getRandomString());
+		String tempts=System.currentTimeMillis()+"";
+		String tempRs=Util.getRandomString();
+		Document document3=DocumentHelper.createDocument();
+		Element root3=document3.addElement("test");
+		root3.addElement("appId").setText(Util.APPID);
+		root3.addElement("timestamp").setText(tempts);
+		root3.add((Element)root4.clone());
+		System.out.println(document3.asXML());
 		Document document=DocumentHelper.createDocument();
 		Element root=document.addElement("xml");
 		root.addElement("appid").setText(Util.APPID);
