@@ -117,6 +117,13 @@ public class ManageController extends Controller{
 	        }else{      
 		 Managers form=getModel(Managers.class);
 		 Managers manager=Managers.dao.findFirst("select * from managers where tel=?",form.getStr("tel"));
+		 if(manager==null)
+		 {
+			setAttr("errorMsg", "用户名或密码错误！");
+			keepModel(Managers.class);
+			render("login.html");
+			return;
+		 }
 		 if(form.getStr("password").equals(manager.getStr("password")))
 		 {
 			 setSessionAttr(GlobalVar.BEUSER, manager);
@@ -289,6 +296,20 @@ public class ManageController extends Controller{
 		}	
 	 }
 	 /**
+	  *  店长设置公告
+	  */
+	 public void setSay()
+	 {
+		 Managers manager=getSessionAttr(GlobalVar.BEUSER);
+		 String say=getPara("say");
+		 if(say==null)
+		 {
+			 return;
+		 }
+		 manager.set("say", say).update();
+		 renderHtml(Util.getJsonText("OK"));
+	 }
+	 /**
 	  *  店长查看商品存量
 	  */
 	 public void itemnum()
@@ -310,7 +331,7 @@ public class ManageController extends Controller{
 		    	redirect("/mgradmin/error?Msg="+Util.getEncodeText("无权访问"));
 				  return;
 		    }
-		    iosList=Db.find("select a.iname,a.icon,a.category,b.iosid,b.restNum,b.price,b.minPrice,b.maxPrice from items as a,items_on_sale as b where a.iid=b.iid and b.location=?",building.getInt("aid"));
+		    iosList=Db.find("select a.iname,a.icon,a.category,b.iosid,b.restNum,b.price,b.minPrice,b.maxPrice,b.isonsale from items as a,items_on_sale as b where a.iid=b.iid and b.location=?",building.getInt("aid"));
 			setAttr("iosList", iosList);
 			setAttr("startPrice",building.getBigDecimal("startPrice").doubleValue());
 			break;
@@ -319,10 +340,11 @@ public class ManageController extends Controller{
 		 setAttr("iosList", iosList);
 		 Areas area=Areas.dao.findById(manager.getInt("location"));
 		 setAttr("startPrice",area.getBigDecimal("startPrice").doubleValue());
+		 setAttr("say", manager.getStr("say"));
 			break;
 		case 0:
 			setAttr("ring", 0);
-			 iosList=Db.find("select a.iname,a.icon,a.category,b.iosid,b.restNum,b.price,b.minPrice,b.maxPrice from items as a,items_on_sale as b where a.iid=b.iid and b.location=?",manager.getInt("location"));
+			 iosList=Db.find("select a.iname,a.icon,a.category,b.iosid,b.restNum,b.price,b.minPrice,b.maxPrice,b.isonsale from items as a,items_on_sale as b where a.iid=b.iid and b.location=?",manager.getInt("location"));
 			 setAttr("iosList", iosList);
 			break;
 		}
@@ -692,6 +714,26 @@ public class ManageController extends Controller{
 			 renderHtml(Util.getJsonText("参数错误"));
 			 return;
 		 }
+		 if(area.getStr("college").equals(""))
+		 {
+			 List<Areas> areaList=Areas.dao.find("select * from areas where city=?",area.getStr("city"));
+			 for(int i=0;i<areaList.size();i++)
+			 {
+				 areaList.get(i).delete();
+			 }
+		 }else {
+			 if(area.getStr("building").equals(""))
+			 {
+			 List<Areas> areaList=Areas.dao.find("select * from areas where city=? and college=?",area.getStr("city"),area.getStr("college"));
+			 for(int i=0;i<areaList.size();i++)
+			 {
+				 areaList.get(i).delete();
+			 }
+			 }else {
+				area.delete();
+			}
+		}
+		
 		 area.delete();
 		 renderHtml(Util.getJsonText("OK"));
 	 }

@@ -62,7 +62,7 @@ public class XmlParser {
 	//	root.addElement("limit_pay").setText("");
 		//root.addElement("openid").setText("");
 		List<Element> elements=root.elements();
-	    String sign=Util.getSign(elements);
+	    String sign=Util.getSign(root);
 		root.addElement("sign").setText(sign); ////****************
 		System.out.println(document.asXML());
 		String text="<xml><appid><![CDATA[wxd930ea5d5a258f4f]]></appid><mch_id><![CDATA[10000100]]></mch_id><device_info>1000</device_info><body>test</body><nonce_str><![CDATA[ibuaiVcKdpRxkhJA]]></nonce_str><sign><![CDATA[9A0A8659F005D6984697E2CA0A9CF3B7]]></sign></xml>";
@@ -70,7 +70,7 @@ public class XmlParser {
 			Document document2=DocumentHelper.parseText(text);
 			Element root2 = document2.getRootElement();
 			List<Element> elements2=root2.elements();
-			String sign2=Util.getSign(elements2);
+			String sign2=Util.getSign(root2);
 			System.out.println(sign2);
 			Iterator<Element> iterator=root2.elementIterator();
 			System.out.println(root2.elements().size());

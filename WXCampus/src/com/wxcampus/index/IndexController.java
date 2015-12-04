@@ -33,6 +33,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.jfinal.aop.Before;
 import com.jfinal.aop.Clear;
 import com.jfinal.core.Controller;
+import com.jfinal.kit.PropKit;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Record;
 import com.wxcampus.common.GlobalVar;
@@ -123,6 +124,7 @@ public class IndexController extends Controller {
 		render("index.html");
 	}
 	
+	@Clear
 	public void location()   //ajax
 	{
 		String city=getPara("city");
@@ -152,47 +154,71 @@ public class IndexController extends Controller {
 			renderJson();
 		}
 	}
+	@Clear
 	public void getLocation()
 	{
-		logger.error("1111111111");
-		String tempts=System.currentTimeMillis()+"";
+		if(Util.ACCESSTOKEN==null || System.currentTimeMillis()>Util.ATEXPIRES_IN)
+		{
+			String url="https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid="+Util.APPID+"&secret="+Util.APPSECRET;
+			String jsonStr=GeneralGet.getResponse(url);
+			JSONObject json=JSONObject.parseObject(jsonStr);
+			Util.ACCESSTOKEN=json.getString("access_token");
+			Util.ATEXPIRES_IN=System.currentTimeMillis()+Long.parseLong(json.getString("expires_in"))*1000;
+		}
+		if(Util.JSAPI_TICKET==null || System.currentTimeMillis()>Util.JTEXPIRES_IN)
+		{
+			String url="https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token="+Util.ACCESSTOKEN+"&type=jsapi";
+			String jsonStr=GeneralGet.getResponse(url);
+			JSONObject json=JSONObject.parseObject(jsonStr);
+			if(json.getIntValue("errcode")==0)
+			{
+			Util.JSAPI_TICKET=json.getString("ticket");
+			Util.JTEXPIRES_IN=System.currentTimeMillis()+Long.parseLong(json.getString("expires_in"))*1000;
+			}
+		}
+		String tempts=System.currentTimeMillis()/1000+"";
 		String tempRs=Util.getRandomString();
 		Document document4=DocumentHelper.createDocument();
 		Element root4=document4.addElement("xml");
-		root4.addElement("nonceStr").setText(Util.getRandomString());
-		root4.addElement("appId").setText(Util.APPID);
+		root4.addElement("jsapi_ticket").setText(Util.JSAPI_TICKET);
+		root4.addElement("noncestr").setText(tempRs);
+		root4.addElement("url").setText("http://www.missjzp.cn/index/getLocation");
 		root4.addElement("timestamp").setText(tempts);
-		logger.error(document4.asXML());
-		//root3.addElement(arg0, arg1)
-		//root4.addElement("nonceStr").setText(Util.getRandomString());
-		List<Element> elements3=root4.elements();
-		logger.error("333333333");
-		String sign3=Util.getSign(elements3);
-		logger.error("2222222222222");
+		String sign3=Util.getJsSign(root4);
+		System.out.println(sign3);
 		setAttr("appid", Util.APPID);
 		setAttr("timestamp", tempts);
 		setAttr("noncestr", tempRs);
 		setAttr("sign", sign3);
 		render("getLocation.html");
 	}
+	@Clear
 	public void area()
 	{
-		if(getPara("laititude")==null || getPara("longitude")==null)
+		if(getPara("latitude")==null || getPara("longitude")==null)
 		{
+			setAttr("locationFlag", 0);
 			render("area.html");
 			return;
 		}
-		double laititude=Double.parseDouble(getPara("laititude"));
+		double laititude=Double.parseDouble(getPara("latitude"));
 		double longitude=Double.parseDouble(getPara("longitude"));
 		String ak="73EEtGNvP9eWPfDazNkGywfD";
 		String url="http://api.map.baidu.com/geocoder/v2/";
 		url=url+"?output=json&ak="+ak+"&coordtype=wgs84ll&location="+laititude+","+longitude+"&pois=0";
 		String jsonStr=GeneralGet.getResponse(url);
 		JSONObject json=JSONObject.parseObject(jsonStr);
-		if(json.getString("status").equals("0"))
+		if(json.getIntValue("status")==0)
 		{
-			String address=json.getString("formatted_address");
-			logger.error("Address:--------------"+address);
+			JSONObject res=JSONObject.parseObject(json.getString("result"));
+			String college=res.getString("sematic_description");
+			college=college.substring(0,college.indexOf("内"));
+			setAttr("locationFlag", 1);
+			setAttr("college", college);
+			logger.error("Address:--------------"+res.getString("sematic_description"));
+			logger.error("College:--------------"+college);
+		}else {
+			logger.error("errorcode:--------------"+json.getIntValue("status"));
 		}
 		render("area.html");
 	}

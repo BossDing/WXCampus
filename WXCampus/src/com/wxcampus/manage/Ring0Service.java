@@ -120,7 +120,7 @@ public class Ring0Service {
 				if(areas==null)
 				{
 					Areas area=new Areas();
-					area.set("city", Util.filterUserInputContent(city)).set("college", Util.filterUserInputContent(college)).set("building", "");
+					area.set("city", Util.filterUserInputContent(city)).set("college", Util.filterUserInputContent(college).replaceAll("（", "(").replaceAll("）", ")")).set("building", "");
 					area.set("addedDate", Util.getDate()).set("addedTime", Util.getTime());
 					area.save();		
 					ManageController.logger.info(manager.getStr("name")+"---添加了学校-"+city+"-"+college);

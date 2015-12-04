@@ -35,6 +35,10 @@ public class Util {
 	public static String APPSECRET="c9f55326f01963db32178214bcd11747";
 	public static String MCH_ID="1290419701";
 	public static String MCH_KEY="Missu251abcdefghijklmnopqrstuvwx";
+	public static String ACCESSTOKEN=null;
+	public static long ATEXPIRES_IN=0;
+	public static String JSAPI_TICKET=null;
+	public static long JTEXPIRES_IN=0;
 	private final static String[] hexDigits = { "0", "1", "2", "3", "4", "5",
         "6", "7", "8", "9", "a", "b", "c", "d", "e", "f" };
 
@@ -108,18 +112,97 @@ public class Util {
 		}
 		return null;    
     }
-	public static String getSign(List<Element> elements)
+	public static String SHA1(String decript) {
+        try {
+            MessageDigest digest = java.security.MessageDigest
+                    .getInstance("SHA-1");
+            digest.update(decript.getBytes());
+            byte messageDigest[] = digest.digest();
+            // Create Hex String
+            StringBuffer hexString = new StringBuffer();
+            // 字节数组转换为 十六进制 数
+            for (int i = 0; i < messageDigest.length; i++) {
+                String shaHex = Integer.toHexString(messageDigest[i] & 0xFF);
+                if (shaHex.length() < 2) {
+                    hexString.append(0);
+                }
+                hexString.append(shaHex);
+            }
+            return hexString.toString();
+ 
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+	public static String getJsSign(Element root)
 	{
-		Collections.sort(elements, new ElementComparator());
-		//elements.sort();
-	    Iterator<Element> iterator11=elements.iterator();
-	    String sign="";
-		while(iterator11.hasNext())
+		List<Element> elements=root.elements();
+		String strs[]=new String[elements.size()];
+		for(int i=0;i<strs.length;i++)
 		{
-			Element ele=iterator11.next();
-			if(ele.getName().equals("sign") || ele.getText().equals(""))
+			strs[i]=elements.get(i).getName();
+		}
+		for (int i = 1; i < strs.length; i++)
+		{
+			for (int j = 0; j < strs.length - i; j++)
+			{
+				if (strs[j].compareTo(strs[j + 1])>0)
+				{
+					String temp=strs[j];
+					strs[j]=strs[j+1];
+					strs[j+1]=temp;
+				}
+
+			}
+		}
+		
+	    
+	    String sign="";
+		for(int i=0;i<strs.length;i++)
+		{
+			if(strs[i].equals("sign") || root.elementText(strs[i]).equals(""))
 				continue;
-			sign+=(ele.getName()+"="+ele.getText()+"&");
+			if(i!=strs.length-1)
+			sign+=(strs[i]+"="+root.elementText(strs[i])+"&");
+			else
+			sign+=(strs[i]+"="+root.elementText(strs[i]));
+		}
+		System.out.println(sign);
+		sign=Util.SHA1(sign);
+		return sign;
+	}
+	public static String getSign(Element root)
+	{
+		//Collections.sort(elements, new ElementComparator());
+		//elements.sort();
+		List<Element> elements=root.elements();
+		String strs[]=new String[elements.size()];
+		for(int i=0;i<strs.length;i++)
+		{
+			strs[i]=elements.get(i).getName();
+		}
+		for (int i = 1; i < strs.length; i++)
+		{
+			for (int j = 0; j < strs.length - i; j++)
+			{
+				if (strs[j].compareTo(strs[j + 1])>0)
+				{
+					String temp=strs[j];
+					strs[j]=strs[j+1];
+					strs[j+1]=temp;
+				}
+
+			}
+		}
+		
+	    
+	    String sign="";
+		for(int i=0;i<strs.length;i++)
+		{
+			if(strs[i].equals("sign") || root.elementText(strs[i]).equals(""))
+				continue;
+			sign+=(strs[i]+"="+root.elementText(strs[i])+"&");
 		}
 		sign+=("key="+Util.MCH_KEY);
 		System.out.println(sign);

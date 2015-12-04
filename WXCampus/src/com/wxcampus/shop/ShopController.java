@@ -301,7 +301,7 @@ public class ShopController extends Controller{
 	//	root.addElement("limit_pay").setText("");
 		root.addElement("openid").setText(user.getStr("openid"));
 		List<Element> elements=root.elements();
-	    String sign=Util.getSign(elements);
+	    String sign=Util.getSign(root);
 		root.addElement("sign").setText(sign); ////****************
 		String resXML=GeneralPost.getResponseXML(document.asXML(),"https://api.mch.weixin.qq.com/pay/unifiedorder");
 		
@@ -311,7 +311,7 @@ public class ShopController extends Controller{
 			document2 = DocumentHelper.parseText(resXML);
 			Element root2 = document2.getRootElement();
 			List<Element> elements2=root2.elements();
-			String sign2=Util.getSign(elements2);
+			String sign2=Util.getSign(root2);
 			if(!sign2.equals(root2.elementText("sign")))
 			{
 				redirect("/404/error");
@@ -343,7 +343,7 @@ public class ShopController extends Controller{
 		root3.addElement("nonceStr").setText(tempRs);
 		root3.addElement("signType").setText("MD5");
 		List<Element> elements3=root3.elements();
-		String sign3=Util.getSign(elements3);
+		String sign3=Util.getSign(root3);
 		setAttr("appid", Util.APPID);
 		setAttr("timestamp", tempts);
 		setAttr("packages", "prepay_id="+prepay_id);
@@ -369,7 +369,7 @@ public class ShopController extends Controller{
 		
 		Element root = document.getRootElement();
 		List<Element> elements=root.elements();
-		String sign=Util.getSign(elements);
+		String sign=Util.getSign(root);
 		if(!sign.equals(root.elementText("sign")))
 		{
 			logger.error(" 错误信息：非法签名");
@@ -464,7 +464,7 @@ public class ShopController extends Controller{
 		Element resroot=resdoc.addElement("xml");
 		resroot.addElement("return_code").setText("<![CDATA[SUCCESS]]>");
 		resroot.addElement("return_msg").setText("<![CDATA[OK]]>");
-		renderHtml(resdoc.asXML());
+		renderText(resdoc.asXML());
 		try {
 			inputStream.close();
 		} catch (IOException e) {

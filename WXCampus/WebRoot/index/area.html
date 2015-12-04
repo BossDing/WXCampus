@@ -40,6 +40,9 @@
 </div>
 <script type="text/javascript">
 window.onload=inialCollege();
+<#if locationFlag==1>
+   inialBuildings('${college}');
+</#if>
 </script>
 </body>
 </html>
