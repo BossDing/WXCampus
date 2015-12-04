@@ -130,11 +130,14 @@ public class ShopController extends Controller{
 	@Before(ShopInterceptor.class)
 	public void confirm()
 	{
+		if(getSessionAttr("ConfirmPayOnce")!=null)
+		{
 		boolean yn=getSessionAttr("ConfirmPayOnce");
-		if(getSessionAttr("ConfirmPayOnce")!=null && yn==true)
+		if(yn==true)
 		{
 			redirect("/404/error?Msg="+Util.getEncodeText("网络繁忙,请稍后再试"));
 			return;
+		}
 		}
 		HashMap<Integer, Integer> map=getSessionAttr("Carts");
 		if(map==null || map.isEmpty())
@@ -206,11 +209,13 @@ public class ShopController extends Controller{
 	@Before({ShopInterceptor.class,Tx.class})
 	public void pay()
 	{
+		logger.error("enterPay");
 		if(getSessionAttr("ConfirmPayOnce")==null)
 			return;
 		boolean yn=getSessionAttr("ConfirmPayOnce");
 		if(yn)
 			return;
+		logger.error("enterPay2");
 		setSessionAttr("ConfirmPayOnce", true);
 		String date=Util.getDate();
 		String time=Util.getTime();
@@ -257,7 +262,7 @@ public class ShopController extends Controller{
 //			  cu.save();
 //			}
 //		}	
-	
+		logger.error("enterPay3");
 		for(int i=0;i<itemList.size();i++)
 		{
 		  Trades trades=new Trades();
@@ -328,7 +333,7 @@ public class ShopController extends Controller{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+		logger.error(prepay_id);
 		removeSessionAttr("Carts");
 		removeSessionAttr("itemList");
 		removeSessionAttr("totalMoney");

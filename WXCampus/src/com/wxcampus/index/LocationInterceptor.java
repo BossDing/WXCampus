@@ -28,7 +28,7 @@ public class LocationInterceptor implements Interceptor{
 			if(user==null)
 				
 				{
-				arg0.getController().redirect("/index/area");
+				arg0.getController().redirect("/index/getLocation");
 				return;
 				}
 		}

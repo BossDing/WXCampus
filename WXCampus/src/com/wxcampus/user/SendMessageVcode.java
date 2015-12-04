@@ -25,7 +25,7 @@ public class SendMessageVcode {
 		   HttpClient hc=new DefaultHttpClient();
 			HttpGet hGet=new HttpGet(url);
 			hGet.addHeader("Content-Type","application/json;charset=utf-8");
-			hGet.addHeader("apikey", "12585821319993fbfa592c59bfed8769");
+			hGet.addHeader("apikey", "a780c4726558b15f9d0bf5a0c992b3a8");
 	   	HttpResponse hResponse;
 	    try
 	  		{

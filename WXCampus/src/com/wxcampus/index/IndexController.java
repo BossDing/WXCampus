@@ -29,6 +29,7 @@ import org.dom4j.Text;
 import org.dom4j.Visitor;
 import org.dom4j.XPath;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.jfinal.aop.Before;
 import com.jfinal.aop.Clear;
@@ -205,16 +206,52 @@ public class IndexController extends Controller {
 		double longitude=Double.parseDouble(getPara("longitude"));
 		String ak="73EEtGNvP9eWPfDazNkGywfD";
 		String url="http://api.map.baidu.com/geocoder/v2/";
-		url=url+"?output=json&ak="+ak+"&coordtype=wgs84ll&location="+laititude+","+longitude+"&pois=0";
+		url=url+"?output=json&ak="+ak+"&coordtype=wgs84ll&location="+laititude+","+longitude+"&pois=1";
+		logger.error(url);
 		String jsonStr=GeneralGet.getResponse(url);
 		JSONObject json=JSONObject.parseObject(jsonStr);
 		if(json.getIntValue("status")==0)
 		{
 			JSONObject res=JSONObject.parseObject(json.getString("result"));
 			String college=res.getString("sematic_description");
-			college=college.substring(0,college.indexOf("内"));
-			setAttr("locationFlag", 1);
-			setAttr("college", college);
+			if(college.indexOf("校区")!=-1)
+			{
+				int index=college.indexOf("内");
+				if(index!=-1)
+				   college=college.substring(0,index);
+				else {
+				   college=college.substring(0,college.indexOf("校区")+2);
+				}
+			}else {
+				JSONObject addressComponent=res.getJSONObject("addressComponent");
+				String city=addressComponent.getString("city").replace("市", "");
+				JSONArray pois=res.getJSONArray("pois");
+				for(int i=0;i<pois.size();i++)
+				{
+					JSONObject temp=pois.getJSONObject(i);
+					if(temp.getString("addr").endsWith("校区"))
+					{
+						college=temp.getString("addr");
+						List<Areas> colleges=Areas.dao.find("select * from areas where city=?",city);
+						for(int k=0;k<colleges.size();k++)
+						{
+							if(college.contains(colleges.get(k).getStr("college")))
+							{
+								college=colleges.get(k).getStr("college");
+								break;
+							}
+						}
+						break;
+					}
+				}
+			}
+			Areas areaCollege=Areas.dao.findFirst("select * from areas where college=?",college);
+			if(areaCollege!=null)
+			{
+				setAttr("locationFlag", 1);
+				setAttr("college", college);
+			}else
+				setAttr("locationFlag", 0);	
 			logger.error("Address:--------------"+res.getString("sematic_description"));
 			logger.error("College:--------------"+college);
 		}else {

@@ -29,6 +29,7 @@ import com.jfinal.plugin.activerecord.tx.Tx;
 import com.jfinal.plugin.activerecord.tx.TxConfig;
 import com.jfinal.upload.UploadFile;
 import com.mchange.v2.c3p0.impl.NewPooledConnection;
+import com.sun.org.apache.bcel.internal.generic.NEW;
 import com.wxcampus.common.GlobalVar;
 import com.wxcampus.common.NoUrlPara;
 import com.wxcampus.common.OpenidInterceptor;
@@ -56,7 +57,8 @@ import com.wxcampus.util.Util;
 public class ManageController extends Controller{
 
 	 public static Logger logger = Util.getLogger();
-	 
+	 private final double lowLimit=1.2;
+	 private final double highLimit=2.0;
 	 //@Before(NoUrlPara.class)
 	 public void index()
 	 {
@@ -432,7 +434,7 @@ public class ManageController extends Controller{
 				 BigDecimal price=item.getBigDecimal("realPrice");
 				 ios=new Items_on_sale();
 				 ios.set("iid", igList.get(i).getInt("item"));
-				 ios.set("minPrice", new BigDecimal(cost.doubleValue()*1.2)).set("maxPrice", new BigDecimal(cost.doubleValue()*2));
+				 ios.set("minPrice", new BigDecimal(cost.doubleValue()*lowLimit)).set("maxPrice", new BigDecimal(cost.doubleValue()*highLimit));
 				 ios.set("price", price).set("isonsale", true);
 				 ios.set("restNum", igList.get(i).getInt("num")).set("location", manager.getInt("location"));
 				 ios.set("addedDate", Util.getDate()).set("addedTime", Util.getTime());
@@ -1162,6 +1164,15 @@ public class ManageController extends Controller{
 				      }
 				 item.set("icon", "/imgs/"+src);
 			 }	
+			 double cost=item.getBigDecimal("cost").doubleValue();
+			 if(cost!=origin.getBigDecimal("cost").doubleValue())
+			 {
+				 List<Items_on_sale> iosList=Items_on_sale.dao.find("select * from items_on_sale where iid=?",item.getInt("iid"));
+				 for(int i=0;i<iosList.size();i++)
+				 {
+					 iosList.get(i).set("minPrice", new BigDecimal(cost*lowLimit)).set("maxPrice", new BigDecimal(cost*highLimit)).set("price", item.getBigDecimal("realPrice")).update();
+				 }
+			 }
 			 item.set("iname", Util.filterUserInputContent(item.getStr("iname")));
 			 item.set("category", Util.filterUserInputContent(item.getStr("category")));
 			 item.set("addedDate", Util.getDate()).set("addedTime", Util.getTime());				
