@@ -95,6 +95,7 @@
         </div>
               	</div>
 </div>
+<div id="div1"></div>
 </body>
 </html>  
 <script>
@@ -118,4 +119,36 @@ var currdate='${date_info}';
     }
     
     sendDateInfo(currdate,state);
+    
+    function play_wav(){
+        var div = document.getElementById('div1');
+        div.innerHTML = '<audio id="bgsound" src="/audio/inform.mp3" autoplay="autoplay" hidden="true" controls="controls"></audio>';
+        //setTimeout(function(){div.innerHTML='';},2000);
+    }
+    
+    function showUnreadNews()
+    {
+    	var url='/mgradmin/inform';
+        $.ajax(
+            {
+                url:url,
+                dataType: "json",
+                type: 'POST',
+                data: '',
+                success:function(json){
+                	if(json.Msg=="YES"){
+                		play_wav();
+                		//'http://www.missjzp.cn/audio/inform.wav'
+                		setTimeout(function(){window.location='/mgradmin';},2500);
+                	}
+                },
+                error: function () {
+                    alert("error");
+                }
+            }
+        );
+    }
+    <#if ring==2>
+    setInterval('showUnreadNews()',20000);
+    </#if>
 </script>

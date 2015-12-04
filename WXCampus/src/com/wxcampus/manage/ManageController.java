@@ -955,7 +955,7 @@ public class ManageController extends Controller{
 				 String state=getPara("state");
 				 for(int i=0;i<areaList.size();i++)
 				 {
-				 ridList.addAll(Trades.dao.paginate(page,10,"select distinct rid,location,state,room,addedDate,addedTime","from trades where location=? order by addedDate,addedTime desc",areaList.get(i).getInt("aid")).getList());
+				 ridList.addAll(Trades.dao.paginate(page,10,"select distinct rid,location,state,room,addedDate,addedTime","from trades where location=? order by addedDate desc,addedTime desc",areaList.get(i).getInt("aid")).getList());
 				}
                     List<Record> records=new ArrayList<Record>();
 					for(int i=0;i<ridList.size();i++)
@@ -984,7 +984,7 @@ public class ManageController extends Controller{
 			 }else if(manager.getInt("ring")==2)
 			 {
 					 List<Trades> ridList;
-					  ridList=Trades.dao.paginate(page, 10, "select distinct rid,room,state,addedDate,addedTime", "from trades where seller=? order by addedDate,addedTime desc",manager.getInt("mid")).getList();
+					  ridList=Trades.dao.paginate(page, 10, "select distinct rid,room,state,addedDate,addedTime", "from trades where seller=? order by addedDate desc,addedTime desc",manager.getInt("mid")).getList();
 						List<Record> records=new ArrayList<Record>();
 						for(int i=0;i<ridList.size();i++)
 						{
@@ -1228,7 +1228,7 @@ public class ManageController extends Controller{
 			 }
 			 setAttr("Advices", records);
 		 }else {
-			 List<Record> records=Db.paginate(page,10,"select a.content,a.addedDate,a.addedTime,b.city,b.college,b.building","from advices as a,areas as b where a.location=b.aid order by addedDate,addedTime desc").getList();
+			 List<Record> records=Db.paginate(page,10,"select a.content,a.addedDate,a.addedTime,b.city,b.college,b.building","from advices as a,areas as b where a.location=b.aid order by addedDate desc,addedTime desc").getList();
 			 setAttr("Advices", records);
 		}
 		 setAttr("page", page);
@@ -1240,9 +1240,20 @@ public class ManageController extends Controller{
 	 public void inform()  //ajax
 	 {
 		 Managers manager=getSessionAttr(GlobalVar.BEUSER);
-		 Trades trades=Trades.dao.findFirst("select state from trades where location=? order by addedDate,addedTime desc",manager.getInt("location"));
+		 Trades trades=Trades.dao.findFirst("select rid,state from trades where location=? order by addedDate desc,addedTime desc",manager.getInt("location"));
+		 int rid=0;
+		 if(getSessionAttr("LatestTradeNo")!=null)
+		   rid=getSessionAttr("LatestTradeNo");
+		 if(rid==trades.getInt("rid"))
+		 {
+			 renderHtml(Util.getJsonText("NO"));
+			 return;
+		 }
 		 if(trades.getInt("state")==0)
+		 {
+			 setSessionAttr("LatestTradeNo", trades.getInt("rid"));
 			 renderHtml(Util.getJsonText("YES"));
+		 }
 		 else {
 			renderHtml(Util.getJsonText("NO"));
 		}
@@ -1277,13 +1288,13 @@ public class ManageController extends Controller{
 		 List<Trades> ridList;
 		 String state=getPara("state");
 		 if(state==null)
-			 ridList=Trades.dao.paginate(page,15,"select distinct rid,state,location,room,addedDate,addedTime","from trades where addedDate=? order by addedDate,addedTime desc",date).getList();
+			 ridList=Trades.dao.paginate(page,15,"select distinct rid,state,location,room,addedDate,addedTime","from trades where addedDate=? order by addedDate desc,addedTime desc",date).getList();
 		 else {
 			if(state.equals("0"))
-				{ridList=Trades.dao.paginate(page,15,"select distinct rid,state,location,room,addedDate,addedTime","from trades where state=0 and addedDate=? order by addedDate,addedTime desc",date).getList();
+				{ridList=Trades.dao.paginate(page,15,"select distinct rid,state,location,room,addedDate,addedTime","from trades where state=0 and addedDate=? order by addedDate desc,addedTime desc",date).getList();
 			     flag=1;}
 				else if(state.equals("1"))
-				{ridList=Trades.dao.paginate(page,15,"select distinct rid,state,location,room,addedDate,addedTime","from trades where state=1  and addedDate=? order by addedDate,addedTime desc",date).getList();
+				{ridList=Trades.dao.paginate(page,15,"select distinct rid,state,location,room,addedDate,addedTime","from trades where state=1  and addedDate=? order by addedDate desc,addedTime desc",date).getList();
 			     flag=2; }
 				else {
 				redirect("/mgradmin/error");
@@ -1323,7 +1334,7 @@ public class ManageController extends Controller{
 	 @Before(Ring0Interceptor.class)
 	 public void annoncement()
 	 {
-		 List<Advertisement> adList=Advertisement.dao.find("select * from advertisement order by addedDate,addedTime desc");
+		 List<Advertisement> adList=Advertisement.dao.find("select * from advertisement order by addedDate desc,addedTime desc");
 	     setAttr("adList", adList);
 	     render("annoncement.html");
 	 }

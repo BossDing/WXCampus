@@ -12,6 +12,8 @@ import java.util.Locale;
 import java.util.Random;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
 import com.alibaba.fastjson.JSONObject;
 import com.jfinal.aop.Before;
 import com.jfinal.aop.Clear;
@@ -38,6 +40,7 @@ import com.wxcampus.util.Util;
 @Before({OpenidInterceptor.class,UserInterceptor.class})
 public class UserController extends Controller{
 	
+	private Logger logger=Util.getLogger();
 	@Before(NoUrlPara.class)
 	public void index() {
 		
@@ -57,13 +60,13 @@ public class UserController extends Controller{
 		int page=getParaToInt(0);
 		List<Trades> ridList;
 		if(getPara("state")==null)
-			ridList=Trades.dao.paginate(page, 10, "select distinct rid,state,addedDate,addedTime","from trades where state!=2 and customer=? order by addedDate,addedTime desc",user.getInt("uid")).getList();
+			ridList=Trades.dao.paginate(page, 10, "select distinct rid,state,addedDate,addedTime","from trades where state!=2 and customer=? order by addedDate desc,addedTime desc",user.getInt("uid")).getList();
 		else{
 			int state=getParaToInt("state");
-			ridList=Trades.dao.paginate(page, 10, "select distinct rid,state,addedDate,addedTime","from trades where customer=? and state=? order by addedDate,addedTime desc",user.getInt("uid"),state).getList();
+			ridList=Trades.dao.paginate(page, 10, "select distinct rid,state,addedDate,addedTime","from trades where customer=? and state=? order by addedDate desc,addedTime desc",user.getInt("uid"),state).getList();
 		}
 		
-		//List<Trades> ridList=Trades.dao.find("select distinct rid,state,addedDate,addedTime from trades where customer=? order by addedDate,addedTime desc",user.getInt("uid"));
+		//List<Trades> ridList=Trades.dao.find("select distinct rid,state,addedDate,addedTime from trades where customer=? order by addedDate desc,addedTime desc",user.getInt("uid"));
 		List<Record> records=new ArrayList<Record>();
 		for(int i=0;i<ridList.size();i++)
 		{
@@ -88,7 +91,7 @@ public class UserController extends Controller{
 		setAttr("tradeList", records);
 		render("trades.html");
 		
-		/******************************************/  //定时清楚状态2订单。待写
+		/******************************************/  //定时清楚状态2订单
 		String time=Util.getTime();
 		if(!time.startsWith("23") && !time.startsWith("00"))
 		{
@@ -96,7 +99,8 @@ public class UserController extends Controller{
 		String date=Util.getDate();
 		for(int i=0;i<delTrades.size();i++)
 		{
-			if(delTrades.get(i).getStr("addedDate").compareTo(date)<0)
+			
+			if(delTrades.get(i).get("addedDate").toString().compareTo(date)<0)
 				delTrades.get(i).delete();
 		}
 		}
