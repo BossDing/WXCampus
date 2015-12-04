@@ -125,7 +125,7 @@ public class IndexController extends Controller {
 		render("index.html");
 	}
 	
-	@Clear
+
 	public void location()   //ajax
 	{
 		String city=getPara("city");
@@ -155,7 +155,7 @@ public class IndexController extends Controller {
 			renderJson();
 		}
 	}
-	@Clear
+
 	public void getLocation()
 	{
 		if(Util.ACCESSTOKEN==null || System.currentTimeMillis()>Util.ATEXPIRES_IN)
@@ -193,7 +193,7 @@ public class IndexController extends Controller {
 		setAttr("sign", sign3);
 		render("getLocation.html");
 	}
-	@Clear
+
 	public void area()
 	{
 		if(getPara("latitude")==null || getPara("longitude")==null)

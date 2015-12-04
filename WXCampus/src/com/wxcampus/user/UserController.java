@@ -87,6 +87,19 @@ public class UserController extends Controller{
 		//List<Trades> tradeList=Trades.dao.find("select * from trades where customer=?",user.getInt("uid"));
 		setAttr("tradeList", records);
 		render("trades.html");
+		
+		/******************************************/  //定时清楚状态2订单。待写
+		String time=Util.getTime();
+		if(!time.startsWith("23") && !time.startsWith("00"))
+		{
+		List<Trades> delTrades=Trades.dao.find("select * from trades where state=2 and customer=?",user.getInt("uid"));
+		String date=Util.getDate();
+		for(int i=0;i<delTrades.size();i++)
+		{
+			if(delTrades.get(i).getStr("addedDate").compareTo(date)<0)
+				delTrades.get(i).delete();
+		}
+		}
 	}
 	
 	public void spetrade()  //订单详情页

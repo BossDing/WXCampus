@@ -137,8 +137,8 @@ public class ShopController extends Controller{
 		boolean yn=getSessionAttr("ConfirmPayOnce");
 		if(yn==true)
 		{
-//			redirect("/404/error?Msg="+Util.getEncodeText("网络繁忙,请稍后再试"));
-//			return;
+			redirect("/404/error?Msg="+Util.getEncodeText("网络繁忙,请稍后再试"));
+			return;
 		}
 		}
 		HashMap<Integer, Integer> map=getSessionAttr("Carts");
@@ -299,6 +299,7 @@ public class ShopController extends Controller{
 //			}
 //		}	
 		
+		String itemInfo="";
 		for(int i=0;i<itemList.size();i++)
 		{
 		  Trades trades=new Trades();
@@ -316,6 +317,7 @@ public class ShopController extends Controller{
 		  trades.set("room", room);
 		  trades.set("state", 2);  //0:正在派送  1:交易完成  2: 等待支付
 		  trades.save();
+		  itemInfo+=itemList.get(i).getStr("iname")+" x"+itemList.get(i).getInt("orderNum")+"\n";
 		}
 		
 		
@@ -326,7 +328,7 @@ public class ShopController extends Controller{
 		root.addElement("mch_id").setText(Util.MCH_ID);
 		root.addElement("device_info").setText("WEB");
 		root.addElement("nonce_str").setText(Util.getRandomString());
-		root.addElement("body").setText("零食");   //商品概述
+		root.addElement("body").setText(itemInfo);   //商品概述
 		//root.addElement("detail").setText("");  //选填
 		//root.addElement("attach").setText("");  //选填
 		root.addElement("out_trade_no").setText(tn);  //订单号
