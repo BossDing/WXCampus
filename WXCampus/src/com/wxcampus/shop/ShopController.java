@@ -22,6 +22,7 @@ import org.dom4j.io.SAXReader;
 
 import com.alibaba.fastjson.JSONObject;
 import com.jfinal.aop.Before;
+import com.jfinal.aop.Clear;
 import com.jfinal.core.Controller;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Record;
@@ -42,6 +43,7 @@ import com.wxcampus.items.Trades;
 import com.wxcampus.manage.Managers;
 import com.wxcampus.user.User;
 import com.wxcampus.user.UserInterceptor;
+import com.wxcampus.util.GeneralGet;
 import com.wxcampus.util.GeneralPost;
 import com.wxcampus.util.Util;
 
@@ -135,8 +137,8 @@ public class ShopController extends Controller{
 		boolean yn=getSessionAttr("ConfirmPayOnce");
 		if(yn==true)
 		{
-			redirect("/404/error?Msg="+Util.getEncodeText("网络繁忙,请稍后再试"));
-			return;
+//			redirect("/404/error?Msg="+Util.getEncodeText("网络繁忙,请稍后再试"));
+//			return;
 		}
 		}
 		HashMap<Integer, Integer> map=getSessionAttr("Carts");
@@ -194,6 +196,42 @@ public class ShopController extends Controller{
 		else
 			setAttr("userRoom", "");
 		setSessionAttr("ConfirmPayOnce", false);
+		
+		
+		
+		if(Util.ACCESSTOKEN==null || System.currentTimeMillis()>Util.ATEXPIRES_IN)
+		{
+			String url="https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid="+Util.APPID+"&secret="+Util.APPSECRET;
+			String jsonStr=GeneralGet.getResponse(url);
+			JSONObject json=JSONObject.parseObject(jsonStr);
+			Util.ACCESSTOKEN=json.getString("access_token");
+			Util.ATEXPIRES_IN=System.currentTimeMillis()+Long.parseLong(json.getString("expires_in"))*1000;
+		}
+		if(Util.JSAPI_TICKET==null || System.currentTimeMillis()>Util.JTEXPIRES_IN)
+		{
+			String url="https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token="+Util.ACCESSTOKEN+"&type=jsapi";
+			String jsonStr=GeneralGet.getResponse(url);
+			JSONObject json=JSONObject.parseObject(jsonStr);
+			if(json.getIntValue("errcode")==0)
+			{
+			Util.JSAPI_TICKET=json.getString("ticket");
+			Util.JTEXPIRES_IN=System.currentTimeMillis()+Long.parseLong(json.getString("expires_in"))*1000;
+			}
+		}
+		String tempts=System.currentTimeMillis()/1000+"";
+		String tempRs=Util.getRandomString();
+		Document document4=DocumentHelper.createDocument();
+		Element root4=document4.addElement("xml");
+		root4.addElement("jsapi_ticket").setText(Util.JSAPI_TICKET);
+		root4.addElement("noncestr").setText(tempRs);
+		root4.addElement("url").setText("http://www.missjzp.cn/shop/confirm");
+		root4.addElement("timestamp").setText(tempts);
+		String sign3=Util.getJsSign(root4);
+		setAttr("appid", Util.APPID);
+		setAttr("timestamp", tempts);
+		setAttr("noncestr", tempRs);
+		setAttr("sign", sign3);
+		
 		render("confirm.html");
 	}
 	
@@ -209,13 +247,11 @@ public class ShopController extends Controller{
 	@Before({ShopInterceptor.class,Tx.class})
 	public void pay()
 	{
-		logger.error("enterPay");
 		if(getSessionAttr("ConfirmPayOnce")==null)
 			return;
 		boolean yn=getSessionAttr("ConfirmPayOnce");
 		if(yn)
 			return;
-		logger.error("enterPay2");
 		setSessionAttr("ConfirmPayOnce", true);
 		String date=Util.getDate();
 		String time=Util.getTime();
@@ -262,7 +298,7 @@ public class ShopController extends Controller{
 //			  cu.save();
 //			}
 //		}	
-		logger.error("enterPay3");
+		
 		for(int i=0;i<itemList.size();i++)
 		{
 		  Trades trades=new Trades();
@@ -295,7 +331,7 @@ public class ShopController extends Controller{
 		//root.addElement("attach").setText("");  //选填
 		root.addElement("out_trade_no").setText(tn);  //订单号
 		root.addElement("fee_type").setText("CNY");
-		root.addElement("total_fee").setText(totalMoney+"");  //订单总金额
+		root.addElement("total_fee").setText((int)(totalMoney*100)+"");  //订单总金额
 		root.addElement("spbill_create_ip").setText(getRequest().getRemoteAddr());  //终端IP
 		root.addElement("time_start").setText(Util.getTimeStamp());     //订单起始时间
 		root.addElement("time_expire").setText(Util.getEndTimeStamp());    //订单结束时间
@@ -305,17 +341,14 @@ public class ShopController extends Controller{
 	//	root.addElement("product_id").setText("");
 	//	root.addElement("limit_pay").setText("");
 		root.addElement("openid").setText(user.getStr("openid"));
-		List<Element> elements=root.elements();
 	    String sign=Util.getSign(root);
 		root.addElement("sign").setText(sign); ////****************
 		String resXML=GeneralPost.getResponseXML(document.asXML(),"https://api.mch.weixin.qq.com/pay/unifiedorder");
-		
 		String prepay_id="";
 		Document document2;
 		try {
 			document2 = DocumentHelper.parseText(resXML);
 			Element root2 = document2.getRootElement();
-			List<Element> elements2=root2.elements();
 			String sign2=Util.getSign(root2);
 			if(!sign2.equals(root2.elementText("sign")))
 			{
@@ -333,7 +366,6 @@ public class ShopController extends Controller{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		logger.error(prepay_id);
 		removeSessionAttr("Carts");
 		removeSessionAttr("itemList");
 		removeSessionAttr("totalMoney");
@@ -347,7 +379,6 @@ public class ShopController extends Controller{
 		root3.addElement("package").setText("prepay_id="+prepay_id);
 		root3.addElement("nonceStr").setText(tempRs);
 		root3.addElement("signType").setText("MD5");
-		List<Element> elements3=root3.elements();
 		String sign3=Util.getSign(root3);
 		setAttr("appid", Util.APPID);
 		setAttr("timestamp", tempts);
@@ -356,9 +387,11 @@ public class ShopController extends Controller{
 		setAttr("paySign", sign3);
 		renderJson();
 	}
+	@Clear
 	@Before(Tx.class)
 	public void paysuccess()
 	{
+		logger.error("支付成功推送通知-------");
 		InputStream inputStream=null;
 		Document document=null;
 		try {
@@ -373,7 +406,6 @@ public class ShopController extends Controller{
 		}
 		
 		Element root = document.getRootElement();
-		List<Element> elements=root.elements();
 		String sign=Util.getSign(root);
 		if(!sign.equals(root.elementText("sign")))
 		{
@@ -391,7 +423,7 @@ public class ShopController extends Controller{
 			 return;
 		 int areaID=trades.get(0).getInt("location");
 		 double totalMoney=trades.get(0).getBigDecimal("totalmoney").doubleValue();
-		 if(totalMoney!=Double.parseDouble(root.elementText("total_fee")))
+		 if((int)(totalMoney*100)!=Integer.parseInt(root.elementText("total_fee")))
 		 {
 			 logger.error(" 错误信息： 金额与实际订单不符");
 			 return;
@@ -467,9 +499,9 @@ public class ShopController extends Controller{
 		
 		Document resdoc=DocumentHelper.createDocument();
 		Element resroot=resdoc.addElement("xml");
-		resroot.addElement("return_code").setText("<![CDATA[SUCCESS]]>");
-		resroot.addElement("return_msg").setText("<![CDATA[OK]]>");
-		renderText(resdoc.asXML());
+		resroot.addElement("return_code").setText("SUCCESS");
+		//resroot.addElement("return_msg").setText("<![CDATA[OK]]>");
+		renderHtml(resdoc.asXML());
 		try {
 			inputStream.close();
 		} catch (IOException e) {

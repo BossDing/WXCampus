@@ -40,6 +40,10 @@ public class UserController extends Controller{
 	
 	@Before(NoUrlPara.class)
 	public void index() {
+		
+		User user=getSessionAttr(GlobalVar.WXUSER);
+		setAttr("headicon", user.getStr("headicon"));
+		setAttr("usertel", user.getStr("tel"));
 		render("index.html");
 	}
 	
