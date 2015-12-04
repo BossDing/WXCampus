@@ -34,7 +34,19 @@ function gotoCar(){
 //}
 //
 
-
+//function onbackCall(data)
+//{
+//	if (typeof WeixinJSBridge == "undefined"){
+//	   if( document.addEventListener ){
+//	       document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
+//	   }else if (document.attachEvent){
+//	       document.attachEvent('WeixinJSBridgeReady', onBridgeReady); 
+//	       document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
+//	   }
+//	}else{
+//	   onBridgeReady(data);
+//	}
+//}
 function onBridgeReady(data){
 	   WeixinJSBridge.invoke(
 	       'getBrandWCPayRequest', {
@@ -52,16 +64,7 @@ function onBridgeReady(data){
 	       }
 	   ); 
 	}
-	if (typeof WeixinJSBridge == "undefined"){
-	   if( document.addEventListener ){
-	       document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
-	   }else if (document.attachEvent){
-	       document.attachEvent('WeixinJSBridgeReady', onBridgeReady); 
-	       document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
-	   }
-	}else{
-	   onBridgeReady();
-	}
+
 	
 	
 //function randomString(len) {

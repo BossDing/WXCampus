@@ -338,7 +338,7 @@ public class ShopController extends Controller{
 		removeSessionAttr("itemList");
 		removeSessionAttr("totalMoney");
 		removeSessionAttr("ConfirmPayOnce");
-		String tempts=System.currentTimeMillis()+"";
+		String tempts=System.currentTimeMillis()/1000+"";
 		String tempRs=Util.getRandomString();
 		Document document3=DocumentHelper.createDocument();
 		Element root3=document3.addElement("xml");
