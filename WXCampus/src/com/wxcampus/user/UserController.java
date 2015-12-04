@@ -57,7 +57,7 @@ public class UserController extends Controller{
 		int page=getParaToInt(0);
 		List<Trades> ridList;
 		if(getPara("state")==null)
-			ridList=Trades.dao.paginate(page, 10, "select distinct rid,state,addedDate,addedTime","from trades where customer=? order by addedDate,addedTime desc",user.getInt("uid")).getList();
+			ridList=Trades.dao.paginate(page, 10, "select distinct rid,state,addedDate,addedTime","from trades where state!=2 and customer=? order by addedDate,addedTime desc",user.getInt("uid")).getList();
 		else{
 			int state=getParaToInt("state");
 			ridList=Trades.dao.paginate(page, 10, "select distinct rid,state,addedDate,addedTime","from trades where customer=? and state=? order by addedDate,addedTime desc",user.getInt("uid"),state).getList();
