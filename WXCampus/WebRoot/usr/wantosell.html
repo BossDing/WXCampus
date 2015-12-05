@@ -2,7 +2,7 @@
 <html>
 <head lang="en">
     <meta charset="UTF-8">
-    <meta id="viewport" name="viewport" content="width=device-width; initial-scale=0.5; minimum-scale=0.5; maximum-scale=2.0;" />
+    <meta id="viewport" name="viewport" content="width=device-width; initial-scale=0.5; minimum-scale=0.5; maximum-scale=0.5;" />
     <link rel=stylesheet href="/bootstrap/css/bootstrap.css">
     <link rel=stylesheet href="/usr/css/KTstore.css">
     <script src="/jquery/jquery-2.1.4.min.js"></script>
@@ -13,7 +13,7 @@
 <body>
 <div class="main">
     <div class="top">
-        <p><span class="span_image"><img src="/usr/image_personInfo/back.png"></span><span class="span_person">我要开店</span></p>
+        <p><span class="span_image"><img  onclick="backlatest_1()"  src="/usr/image_personInfo/back.png"></span><span class="span_person">我要开店</span></p>
     </div>
     <div class="center">
         <div class="center_left">
@@ -36,16 +36,16 @@
  
     <form action="wantosellAction" method="post">
          <div class="floor_content">    
-         <p><span class="span_name">城市</span><input value="${(applyfor.city)!}" type="text" class="span_input" name="applyfor.city"></p>    
-         <p><span class="span_name">学校</span><input value="${(applyfor.college)!}" type="text" class="span_input" name="applyfor.college"></p>  
-         <p><span class="span_name">楼栋</span><input value="${(applyfor.building)!}" type="text" class="span_input" name="applyfor.building"></p>   
-         <p><span class="span_name">姓名</span><input value="${(applyfor.name)!}" type="text" class="span_input" name="applyfor.name"></p>      
-         <p><span class="span_name">手机</span><input id="tel" value="${(applyfor.tel)!}" type="text" class="span_input" name="applyfor.tel"></p>    
-         <p><span class="span_name">验证码</span><input type="text" class="span_confirm" name="vcode"><a onclick="sendConfirm()" class="button_send">发送验证码</a></p>    
+	         <p><span class="span_name">城市</span><input value="${(applyfor.city)!}" type="text" class="span_input" name="applyfor.city"></p>    
+	         <p><span class="span_name">学校</span><input value="${(applyfor.college)!}" type="text" class="span_input" name="applyfor.college"></p>  
+	         <p><span class="span_name">楼栋</span><input value="${(applyfor.building)!}" type="text" class="span_input" name="applyfor.building"></p>   
+	         <p><span class="span_name">姓名</span><input value="${(applyfor.name)!}" type="text" class="span_input" name="applyfor.name"></p>      
+	         <p><span class="span_name">手机</span><input id="tel" value="${(applyfor.tel)!}" type="text" class="span_input" name="applyfor.tel"></p>    
+	         <p><span class="span_name" >验证码</span><input type="text" class="span_confirm" name="vcode"><a onclick="sendConfirm()" class="button_send">发送验证码</a></p>    
          </div> 
-          <div class="bottom">
-        <button style="width: 120px;height: 50px " type="submit"></button>
-    </div>
+          	<div class="bottom_1">
+        		<button  type="submit">下一步</button>
+    		</div>
          </form>
     </div>
 </div>

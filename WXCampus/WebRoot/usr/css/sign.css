@@ -3,72 +3,64 @@
     height: 100%;
     min-width: 565px;
     position: absolute;
+	background-color: #f5f5f5;
 }
 .top{
     width: 100%;
-    height: 120px;
+    height: 320px;
     float: left;
-    background: url("../image_sign/top.png") no-repeat;
-    background-size: 100% 120px;
+    background: url("../image_sign/topIcon.png") no-repeat;
+    background-size: 100% 320px;
 }
 .center{
     width: 100%;
     height: 60px;
     float: left;
     text-align: center;
-    background-color: #b9def0;
+    background-color: #ffffff;
 }
 .floor{
     width: 100%;
-    height: auto;
+    min-height: 300px;
     float: left;
-    margin-bottom:80px;
     text-align: center;
 }
-.bottom{
-    width: 100%;
-    height: 60px;
-    float: left;
-    position: fixed;
-    bottom: 0px;
-    background: url("../image_sign/top.png") no-repeat;
-    background-size: 100% 80px;
-}
+
 .input_p{
     width: 80%;
-    height: 60px;
-    margin-top: 20px;
+    height: 6em;
+    margin-top: 2em;
     margin-left: auto;
     margin-right: auto;
 }
 .input_name{
-    width: 90%;
-    height: 4em;
+    width: 85%;
+    height: 6em;
     float: left;
 }
 .span_name{
-    width: 10%;
-    height: 4em;
+    width: 15%;
+    height: 6em;
     float: left;
 }
 .input_password{
-    width: 90%;
-    height: 4em;
+    width: 85%;
+    height: 6em;
     float: left;
 }
 .span_password{
-    width: 10%;
-    height: 4em;
+    width: 15%;
+    height: 6em;
     float: left;
 }
 .input_confirm{
     width: 50%;
-    height: 4em;
+    height: 6em;
     float: left;
 }
 .span_confirm{
     width: 40%;
-    height:4em;
+    height:6em;
     float: left;
     margin-left: 10%;
 }
@@ -77,22 +69,26 @@
     width: 100%;
     height: 4em;
     text-align: center;
-    font-size: 20px;
-    padding-top: 10px;
+	color:#ffffff;
+    font-size: 1.5em;
+    padding-top: 1.5em;
     background: url("/usr/image_sign/top.png") no-repeat;
-    background-size: 100% 60px;
+    background-size: 100% 4em;
     border-radius: 4px;
 }
 
 .floor p img{
     width: 80%;
-    height: 2em;
-    margin-top: 5px;
+    height: 4em;
+    margin-top: 0.5em;
 }
 .button_sign{
+	display:block;
     width: 100%;
-    height: 4em;
+    height: 96px;
     background: url("../image_sign/top.png") no-repeat;
-    background-size: 100% 50px;
-    margin-top: 20px;
+    background-size: 100% 6em;
+    margin-top:1.2em;
+	font-size:30px;
+	color:#ffffff;
 }

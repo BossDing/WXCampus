@@ -37,17 +37,17 @@ function backFoodList(data){
 	            '</div>'+
 	            '<div class="food_info_center">'+
 	            '<p style="color: #843534;font-size: 2em;margin-left: 10px">'+data.itemList[i].iname+'</p>'+
-	            '<p style="color: #843534;font-size: 2em;margin-left: 10px">'+data.itemList[i].restNum+'</p>'+
+	            '<p style="color: #843534;font-size: 2em;margin-left: 10px">库存：'+data.itemList[i].restNum+'</p>'+
 	            '<p style="color: #843534;font-size: 2em;margin-left: 10px">'+data.itemList[i].price+'￥</p>'+
 	            '</div>'+
 	            '<div class="food_info_right" style="text-align: right">'+
-	            '<p style="margin-top: 1em"><img src="/index/image_find/save.png" style="width:3em;height: 3em;margin-right: 1em " onclick=save("'+data.itemList[i].iid+'")></p>'+
-	            '<p style="margin-top: 3em"><span onclick=addNum("'+data.itemList[i].iid+'")><img  src="/index/image_find/add.png" style="width: 2.5em;height: 2.5em;float: right;margin-right: 1em"></span>'+
+	            '<p style="margin-top: 1em"><img src="/index/image_find/save.png" style="width:4em;height: 4em;margin-right: 1em " onclick=save("'+data.itemList[i].iid+'")></p>'+
+	            '<p style="margin-top: 3em"><span onclick=addNum("'+data.itemList[i].iid+'")><img  src="/index/image_find/add.png" style="width: 3.5em;height: 3.5em;float: right;margin-right: 1em"></span>'+
 	            ' <span id="'+data.itemList[i].iid+'" class="kuankuan">0</span>'+
-	            '<span id="'+data.itemList[i].iid+'_span"><img id="'+data.itemList[i].iid+'_reduce" src="/index/image_find/reduce.png" style="width: 2.5em;height: 2.5em;margin-right: 1em;float: right "></span></p>'+
+	            '<span id="'+data.itemList[i].iid+'_span"><img id="'+data.itemList[i].iid+'_reduce" src="/index/image_find/reduce.png" style="width: 3.5em;height: 3.5em;margin-right: 1em;float: right "></span></p>'+
 	            '</div>'+
-	            '</div>'+
-	            '<HR style="float: left;width: 100%;height: 2px;color: #080808">';
+	            '</div>'
+	           ;
 	    
 	    }
 	    $("#"+category).append(foodList);
@@ -63,7 +63,7 @@ function backFoodList(data){
 
 //选择地区
 function selectLocation(){
-	window.location="/index/area.html";
+	window.location="/index/getCity";
 }
 //收藏
 function save(iid){

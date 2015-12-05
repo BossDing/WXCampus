@@ -113,3 +113,26 @@ function downsale(id){
 	        }
 	    );
 }
+
+function sendsay(){
+	var say=document.getElementById("say").value;
+	var dataInfo='say='+say;
+	var url='/mgradmin/setSay'
+	$.ajax(
+	        {
+	            url:url,
+	            dataType: "json",
+	            type: 'POST',
+	            data:dataInfo,
+	            success:function(json){
+	            	if(json.Msg=="OK"){
+						alert("修改成功")
+	            		window.location.reload();
+	            	}
+	            },
+	            error: function () {
+	                alert("error");
+	            }
+	        }
+	    );
+}

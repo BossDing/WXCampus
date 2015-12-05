@@ -29,6 +29,9 @@
             <#if ring==2>
              <span>起送价</span><span><input id="startPrice" value=${startPrice} type="number" style="width:80px"></span>
                 <span><a style="cursor:pointer" onclick="changeStartPrice()">修改</a></span>
+                <span  style="width: 100px；margin-left: 25px"">店长公告：</span>
+					<span style="width: 250px"><input value=${say!} type="text" id="say" style="width: 250px"></span>
+					 <span><a style="cursor:pointer" onclick="sendsay()">修改</a></span>
            </#if>
             </p>
             </div>

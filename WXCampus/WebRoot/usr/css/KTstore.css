@@ -1,6 +1,7 @@
 .main{
     width: 100%;
     height: 100%;
+    min-width:400px;
     position: absolute;
     background-color: #ffffff;
 }
@@ -20,9 +21,9 @@
 }
 .floor{
     width: 100%;
-    height: auto;
+    height:auto;
     float: left;
-    margin-bottom:140px;
+    margin-bottom:200px;
     background-color: #ffffff;
 }
 
@@ -36,6 +37,14 @@
     background: url("/usr/image_KTstore/bottom.png") no-repeat;
     background-size: 100% 120px;
 }
+.bottom_1{
+    width: 100%;
+    height: 120px;
+    float: left;
+    margin-top:3em;
+    text-align: center;
+}
+
 
 .top p{
     width: 100%;
@@ -57,12 +66,13 @@
     font-size: 40px;
     color: #ffffff;
 }
-.bottom button{
-    width: 120px;
-    height: 50px;
-    margin-top: 35px;
-    background: url("/usr/image_KTstore/next.png") no-repeat;
-    background-size: 120px 50px;
+.bottom_1 button{
+    width: 15em;
+    height: 5em;
+    color:#ffffff;
+    margin-top: 3em;
+    background: url("/usr/image_KTstore/top.png") no-repeat;
+    background-size: 15em 5em;
 }
 .center_left{
     width: 33.33%;
@@ -96,24 +106,25 @@
 }
 .floor_content{
     width: 80%;
-    min-height: 220px;
-    overflow-y: auto;
+    height: auto;
     margin-left: auto;
     margin-right: auto;
 }
 .floor_content p{
     width: 100%;
-    height: 40px;
+    height: 3em;
     margin-top: 15px;
+    font-size:25px;
 }
 .span_name{
-    width: 10%;
-    height: 40px;
+	display:block;
+    width: 20%;
+    height: 3em;
     float: left;
-    font-size: 20px;
+    padding-top:0.8em;
 }
 .span_input{
-    width: 50%;
+    width: 70%;
     height: 3em;
     float: left;
 }
@@ -128,14 +139,15 @@
     float: left;
 }
 .button_send{
-    width: 20%;
+	display:block;
+    width: 35%;
     height: 3em;
     float: left;
     text-align:center;
     padding-top:10px;
     margin-left: 15px;
-    background: url("../image_KTstore/top.png") no-repeat;
-    background-size: 100% 40px;
+    background: url("/usr/image_KTstore/top.png") no-repeat;
+    background-size: 100% 3em;
 }
 .simpleInfo{
     width: 80%;

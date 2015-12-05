@@ -23,6 +23,14 @@
     </div>
     <form action="/usr/submitAdvice" method="post">
         <div class="floor">
+	         <div class="floor_top">
+                    <p><span class="span_class">类型</span>
+                        <select name="advices.type" style="width:90%;height: 4.5em;border-radius: 8px ">
+                            <option value ="意见建议">意见建议</option>
+                            <option value ="投诉店长">投诉店长</option>
+                        </select>
+                    </p>
+                </div>
             <div class="floor_center">
                 <p><span class="span_class">内容</span>
                     <textarea class="textarea_input" id="textarea" name="advices.content"></textarea>
@@ -30,7 +38,7 @@
             </div>
         </div>
         <div class="bottom">
-            <p  class="input_p"><input type="submit" class="btn btn-default button_submit"></p>
+            <p  class="input_p"><input type="submit"  value="提交" class="btn btn-default button_submit"></p>
         </div>
     </form>
 </div>

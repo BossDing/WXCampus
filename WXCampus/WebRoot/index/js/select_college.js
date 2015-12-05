@@ -51,11 +51,10 @@ function inialCollege(){
 }
 //返回校区列表
 function backCollList(data){
-	console.log(data);
     document.getElementById("floor_left").innerHTML="";
     var collegeList='';
     for(var i=0;i<data.colleges.length;i++){
-       collegeList+='<div class="floor_left_content"  onclick=inialBuildings("'+data.colleges[i].college+'")>'+
+       collegeList+='<div id='+data.colleges[i].college+' class="floor_left_content"  onclick=inialBuildings("'+data.colleges[i].college+'")>'+
            '<p>'+data.colleges[i].college+'</p>'+
            '</div>';
     }
@@ -63,11 +62,15 @@ function backCollList(data){
 }
 
 //点击返回宿舍楼列表
+var currentSelect="";
 var collInfo;
-function inialBuildings(data){
-	collInfo=data;
+var cityinfo;
+function inialBuildings(city,college){
+	
+collInfo=college;
+cityinfo=city;
  var url='/index/location';
-    var dataInfo="city=济南&college="+data;
+    var dataInfo="city="+city+"&college="+college;
     $.ajax(
         {
             url:url,
@@ -86,18 +89,22 @@ function backBuilList(data){
     document.getElementById("floor_right").innerHTML="";
     var buildList='';
     for(var i=0;i<data.buildings.length;i++){
-        buildList+='<div class="floor_right_content" onclick=tiaozhuan("'+collInfo+'","'+data.buildings[i].building+'")>'+
+        buildList+='<div class="floor_right_content" onclick=tiaozhuan("'+data.buildings[i].building+'")>'+
             '<p>'+data.buildings[i].building+'</p>'+
             '</div>';
     }
     $("#floor_right").append(buildList);
 }
 
-function tiaozhuan(college,build){
-	window.location='/index?city=济南&college='+college+'&building='+build;
+function tiaozhuan(build){
+	window.location='/index?city='+cityinfo+'&college='+collInfo+'&building='+build;
+}
+
+function backshang(){
+	window.location='/index/getCity';
 }
 
 //刷新界面
 function refresh(){
-	window.location.reload();
+	window.location='/index/area';
 }

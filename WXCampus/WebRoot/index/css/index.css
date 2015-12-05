@@ -3,96 +3,110 @@
     height: 100%;
     min-width: 600px;
     position: absolute;
+    background-color: #f5f5f5;
+    
 }
 .top{
     width: 100%;
-    height: 80px;
+    height: 100px;
     float: left;
     background: url("../images_shop/top.png") no-repeat;
-    background-size: 100% 80px;
+    background-size: 100% 120px;
 }
 .center{
     width: 100%;
-    height: 200px;
+    height: 280px;
     float: left;
 }
 .floor{
     width: 100%;
-    height: 80px;
+    height: 100px;
     float: left;
     margin-top:10px;
-    background-color: #1b6d85;
+    background-color: #ffffff;
 }
 .bottom{
     width: 100%;
     height: auto;
+  	margin-top:10px;
     float: left;
 }
 .top_left{
     width: 30%;
-    height: 80px;
+    height: 100px;
     float: left;
 }
 .top_center{
     width: 40%;
-    height: 80px;
+    height: 100px;
     float: left;
     text-align: center;
-    background-color: #1b6d85;
 }
 .top_center p{
-    font-size: 20px;
+    font-size: 25px;
     color: #ffffff;
 }
 .top_right{
     width: 30%;
-    height: 80px;
+    height: 100px;
     float: left;
 }
 .floor_left{
     width: 33.33%;
-    height: 80px;
+    height:100px;
     float: left;
     text-align: center;
 }
 .floor_center{
     width: 33.33%;
-    height: 80px;
+    height: 100px;
     float: left;
     text-align: center;
-    border-left:1px solid #000;
-    border-right:1px solid #000;
+    border-left:1px solid #D5D5D5;
+    border-right:1px solid #D5D5D5;
 }
 .floor_right{
     width: 33.33%;
-    height: 80px;
+    height: 100px;
     float: left;
     text-align: center;
 }
 .top_right img{
-    width: 3.8em;
-    height: 3.8em;
-    max-width:60px;
-    max-height: 60px;
-    margin-top: 12.5px;
+    width: 4em;
+    height: 4em;
+    max-width:80px;
+    max-height: 80px;
+    margin-top: 15px;
     margin-right: 15px;
     float: right
 }
 .floor_left p{
-    font-size: 20px;
-    color: #ffffff;
+    font-size: 25px;
+   color: #449d44;
 }
 .floor_center p{
-    font-size: 20px;
-    color: #ffffff;
+    font-size: 25px;
+    color: #000000;
 }
-.floor_right p{
+.floor_center marquee{
+	font-size:25px;
+	color:#E8AC95;
+}
+.top_center p{
     font-size: 25px;
     color: #ffffff;
 }
+.top_center marquee{
+	font-size:25px;
+	color:#ffffff;
+}
+.floor_right p{
+    font-size: 28px;
+    color: #000000;
+}
 .floor_right p img{
-   width: 40px;
-    height: 40px;
+   width: 60px;
+    height: 60px;
 }
 
 .bottom_content{
@@ -104,13 +118,13 @@
     width: 100%;
     height: 80px;
     float: left;
-    background-color: #9d9d9d;
+    background-color: #ffffff;
 }
 .span_title{
     font-size: 35px;
     float: left;
     margin-left: 20px;
-    margin-top: 5px;
+    margin-top: 15px;
 }
 .span_next{
     float: right;
@@ -124,15 +138,18 @@
 .span_img{
     float: left;
     margin-left: 20px;
+	margin-top: 10px;
 }
 .span_img img{
-    width: 35px;
-    height: 35px;
+    width: 55px;
+    height: 55px;
 }
 .food_info{
     width:100%;
     height:auto ;
     float: left;
+    margin-top:8px;
+    background-color: #ffffff;
 }
 .food_info_left{
     width:30%;
@@ -140,23 +157,24 @@
     float: left;
 }
 .food_info_center{
-    width:40%;
+    width:30%;
     height:auto ;
     float: left;
 }
 .food_info_right{
-    width:30%;
+    width:40%;
     height:auto ;
     float: left;
 }
 .kuankuan{
     width: 4em;
-    height: 2.5em;
+    height: 3.5em;
     margin-right: 1em ;
     display:block;
     float:right;
     background: url('../image_find/kuan.png') no-repeat;
     background-size: 4em 2.5em;
     text-align: center;
+    padding-top:0.7em;
 }
 

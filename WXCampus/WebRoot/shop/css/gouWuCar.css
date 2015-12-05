@@ -49,24 +49,25 @@
     float: left;
 }
 .food_info_center{
-    width:40%;
+    width:30%;
     height:auto ;
     float: left;
 }
 .food_info_right{
-    width:30%;
+    width:40%;
     height:auto ;
     float: left;
 }
 .kuankuan{
     width: 4em;
-    height: 2.5em;
+    height: 3em;
     margin-right: 1em ;
     display:block;
     float:right;
     background: url('/index/image_find/kuan.png') no-repeat;
-    background-size: 4em 2.5em;
+    background-size: 4em 3em;
     text-align: center;
+    padding-top:0.7em;
 }
 .bottom{
     width: 100%;
@@ -87,7 +88,7 @@
     height: 80px;
     float: left;
     text-align: center;
-    background: url("/shop/image_confirm/juxin.png") no-repeat;
+    background: url("/shop/image_confirm/top.png") no-repeat;
     background-size: 100% 80px;
 }
 .bottom_left p{

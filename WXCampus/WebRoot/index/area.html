@@ -14,13 +14,13 @@
 <div class="main">
     <div class="top">
         <div class="top_left">
-            <span class="span_image"><img src="image_find/back.png"></span>
+            <span class="span_image"><img onclick="backshang()" src="image_find/back.png"></span>
         </div>
         <div class="top_center">
             <p style="margin-top: 15px">选择学校</p>
         </div>
         <div class="top_right">
-            <p><img src="image_college/refresh.png" onclick="refresh()"></p>
+            <p><img src="image_college/refresh.png"></p>
         </div>
     </div>
     <div class="center">
@@ -31,18 +31,18 @@
     </div>
     <div class="floor">
         <div class="floor_left" id="floor_left">
-            
+            <div class="floor_left_content"  style="background-color:#FD033E">
+           		<p style="color:#ffffff">${college}</p>
+           	</div>
         </div>
+          <script type="text/javascript">
+				 inialBuildings('${city}','${college}');	
+        </script>
         <div class="floor_right" id="floor_right">
             
         </div>
     </div>
 </div>
-<script type="text/javascript">
-window.onload=inialCollege();
-<#if locationFlag==1>
-   inialBuildings('${college}');
-</#if>
-</script>
+
 </body>
 </html>

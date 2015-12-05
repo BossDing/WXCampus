@@ -16,3 +16,14 @@ function selectNew(){
 function trade_info(rid){
 	window.location='/usr/spetrade?rid='+rid;
 }
+
+function nextPage(page){
+	var page_1=parseInt(page);
+	page_1++;
+	window.location='/usr/trades/'+page_1;
+}
+function lastPage(page){
+	var page_1=parseInt(page);
+	page_1--;
+	window.location='/usr/trades/'+page_1;
+}

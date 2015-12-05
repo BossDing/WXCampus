@@ -45,15 +45,20 @@ function onbackCall(json)
 	    'success': function (res) {
 	        // 支付成功后的回调函数
 	    	if(res.errMsg == "chooseWXPay:ok")
-	    	    window.location="/usr/trades/1";
-	    	else
-	    		alert(res.errMsg);
+	    		isSussPay(true);
+	    	else{
+	    		alert("支付失败");
+	    		isSussPay(false);
+	    		window.location="/index";
+	    	}
 	    },
 	    'cancel': function(res){
-	    	alert(res.errMsg);
+	    	isSussPay(false);
 	    },
 	    'fail': function(res){
-	    	alert(res.errMsg);
+	    	alert("支付失败");
+	    	isSussPay(false);
+	    	window.location="/index";
 	    }
 	});
 //    if (typeof(WeixinJSBridge) == "undefined"){
@@ -87,7 +92,29 @@ function onbackCall(json)
 //	   ); 
 //	}
 
-	
+	function isSussPay(succ){
+		
+		var url='/shop/payinform';
+		var datainfo='success='+succ;
+		$.ajax(
+		        {
+		            url:url,
+		            dataType: "json",
+		            type: 'POST',
+		            data:datainfo,
+		            success:function(data){
+		            	if(data.Msg=="OK"){
+		            		window.location="/usr/trades/1";
+		            	}else{
+		            		
+		            	}
+		            },
+		            error: function () {
+		                alert("error");
+		            }
+		        }
+		    );
+	}
 	
 //function randomString(len) {
 //		　　len = len || 32;

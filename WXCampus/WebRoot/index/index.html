@@ -11,22 +11,23 @@
      <script src="/index/image_zhuanhuan/myfocus-2.0.4.min.js" type="text/javascript"></script>
     <script src="/index/image_zhuanhuan/mf-pattern/mF_YSlider.js" type="text/javascript"></script>
     <link href="/index/image_zhuanhuan/mf-pattern/mF_YSlider.css"  rel="stylesheet" type="text/css" />
-    <script type="text/javascript">
-        myFocus.set({
-            id:'picBox'
-        })
-
-    </script>
     <title>楼主店铺</title>
 </head>
 <body>
 <div class="main">
     <div class="top">
         <div class="top_left">
-        	<img src="/index/images_shop/logo.jpg" style="height:60px;margin-top:10px;margin-left:25px;">
+        	<img src="/index/images_shop/logo.jpg" style="height:70px;margin-top:15px;margin-left:25px;">
         </div>
-        <div class="top_center">
-            <p  style="margin-top: 5px" onclick="selectLocation()">${Area.college}-${Area.building}</p>
+        <div class="top_center"  onclick="selectLocation()">
+       		 <div  style="width:100%;height:50px;float:left;">
+        		  <p  style="margin-top: 10px">选择地址&gt;</p>
+        	</div>
+        	<div style="width:100%;height:50px;float:left;white-space: nowrap;overflow:hidden" id="scroll_div">
+				<marquee style="margin-top: 0px" behavior="scroll" contenteditable="false" onstart="this.firstChild.innerHTML+=this.firstChild.innerHTML;" scrollamount="3" width="100%" onmouseover="this.stop();" onmouseout="this.start();" disabled>
+					${Area.college}~${Area.building}
+				</marquee>
+        	</div>
         </div>
         <div class="top_right">
             <p><img src="/index/images_shop/gerenzhongxin.png" onclick="personInfo()">
@@ -34,32 +35,34 @@
         </div>
     </div>
     <div class="center">
-    	 <div class="ad" id="picBox" style="height:200px ">
-            <div class="pic" >
-                <ul>
-                <#list AdList as x>
-                    <li><img src=${x.img} /></li>
-                </#list>
-                </ul>
-            </div>
-        </div><!--ad结束-->
+		<MARQUEE  style="position:absolute;margin-top: 0px" behavior="scroll" contenteditable="true" onstart="this.firstChild.innerHTML+=this.firstChild.innerHTML;" scrollamount="3" width="100%"><SPAN unselectable="on"></SPAN></MARQUEE>
+		<DIV id="scrollobj" style="white-space:nowrap;overflow:hidden;width:100%;height:280px;margin-top:5px" onmouseover="aa()" onmouseout="b()" >
+		  <#list AdList as x>
+               <img src=${x.img} style="width: 100%;height:280px"/>
+          </#list>
+		</DIV>
+ 
     </div>
     <div class="floor">
         <div class="floor_left" id="floor_left">
-                <p style="margin-top: 5px">${Area.startTime?string("HH:mm:ss")}--${Area.endTime?string("HH:mm:ss")}</p>
+                <p style="margin-top: 10px">${Area.startTime?string("HH:mm")}--${Area.endTime?string("HH:mm")}</p>
+       			<p style="color:#000000">营业时间</p>
         </div>
         <div class="floor_center" id="floor_center">
-        <div id="scroll_begin"><p style="margin-top: 5px">${Manager.say}</p></div>
-        <div id="scroll_end"></div>
-         <div>
-         <p>公告</p>
+		<div style="width:100%;height:40px;float:left;white-space: nowrap;overflow:hidden" id="scroll_div">
+			<marquee style="margin-top: 10px" behavior="scroll" contenteditable="false" onstart="this.firstChild.innerHTML+=this.firstChild.innerHTML;" scrollamount="3" width="100%" onmouseover="this.stop();" onmouseout="this.start();" disabled>
+				${Manager.say}	
+			</marquee>
+        </div>
+		<div  style="width:100%;height:40px;float:left;">
+         <p style="margin-top:15px;">公告</p>
          </div>
         </div>
         <div class="floor_right" id="floor_right">
                 <#if Area.state==true>
-                    <p style="margin-top: 20px"><span><img src="/index/images_shop/workong.png"></span><span style="margin-left: 10px">营业中</span></p>
+                    <p style="margin-top: 20px"><span><img src="/index/images_shop/workong.png"></span><span style="margin-left: 10px;margin-top:5px;">营业中</span></p>
                  <#else>
-                     <p style="margin-top: 20px"><span><img src="/index/images_shop/stop.png"></span><span style="margin-left: 10px">休息中</span></p>
+                     <p style="margin-top: 20px"><span><img src="/index/images_shop/stop.png"></span><span style="margin-left: 10px;margin-top:5px;">休息中</span></p>
                 </#if>
         </div>
     </div>
@@ -74,16 +77,16 @@
     </div>
 </div>
 <div  style="width:90px;height:90px;position: fixed;bottom: 100px;left: 80px;">
-<img src="/index/images_shop/car.png" onclick="gotoshop()" style="width: 80px;height: 80px;position: fixed;opacity: 0.5">
-<span id="totalNum" style="display:block;text-align:center;width:20px;height:20px;position: fixed;bottom: 170px;left: 130px;color:#ffffff;font-size:15px;border-radius:10px;background-color:red">${TotalNum}</span>
+<img src="/index/images_shop/car.png" onclick="gotoshop()" style="width: 100px;height: 100px;position: fixed;opacity: 0.5">
+<span id="totalNum" style="display:block;text-align:center;width:30px;height:30px;position: fixed;bottom: 165px;left: 135px;color:#ffffff;font-size:18px;border-radius:15px;background-color:red">${TotalNum}</span>
 </div>
 
 <script type="text/javascript">
-    function ScrollImgLeft(){
+    window.onload=function ScrollImgLeft(){
         var speed=50;
         var scroll_begin = document.getElementById("scroll_begin");
         var scroll_end = document.getElementById("scroll_end");
-        var scroll_div = document.getElementById("floor_center");
+        var scroll_div = document.getElementById("scroll_div");
         scroll_end.innerHTML=scroll_begin.innerHTML;
         function Marquee(){
             if(scroll_end.offsetWidth-scroll_div.scrollLeft<=0)
@@ -95,6 +98,24 @@
         scroll_div.onmouseover=function() {clearInterval(MyMar);}
         scroll_div.onmouseout=function() {MyMar=setInterval(Marquee,speed);}
     }
+</script>
+<script language="javascript" type="text/javascript">
+    <!--
+    function scroll(obj) {
+        var tmp = (obj.scrollLeft)++;
+        //当滚动条到达右边顶端时
+        if (obj.scrollLeft==tmp) obj.innerHTML += obj.innerHTML;
+        //当滚动条滚动了初始内容的宽度时滚动条回到最左端
+        if (obj.scrollLeft>=obj.firstChild.offsetWidth) obj.scrollLeft=0;
+    }
+    var a =	setInterval("scroll(document.getElementById('scrollobj'))",20);
+    function aa(){
+        clearInterval(a);
+    }
+    function b(){
+        a=setInterval("scroll(document.getElementById('scrollobj'))",10);
+    }
+    //-->
 </script>
 </body>
 </html>

@@ -14,7 +14,7 @@
 }
 .center{
     width: 100%;
-    height: 80px;
+    height: 120px;
    float: left;
     margin-top: 20px;
 }
@@ -26,7 +26,7 @@
 }
 .center_content{
     width: 80%;
-    height: 80px;
+    height: 120px;
     margin-left: auto;
     margin-right: auto;
     text-align:center;
@@ -46,7 +46,7 @@
     color: #ffffff;
 }
 .center_content p{
-    font-size: 22px;
+    font-size: 2.5em;
     color: #595959;
 }
 .floor{
@@ -57,19 +57,20 @@
 }
 .floor_top{
     width: 100%;
-    height: 60px;
+    height: 5em;
     float: left;
     margin-top: 25px;
 }
 .floor_center{
     width: 100%;
-    height: 260px;
+    height: 400px;
     float: left;
     margin-top: 30px;
+    margin-top:30px;
 }
 .floor_bottom{
     width: 100%;
-    height: 60px;
+    height: 80px;
     float: left;
     margin-top: 25px;
 }
@@ -79,6 +80,7 @@
     float: left;
     font-size: 20px;
     color: #595959;
+    margin-top:5px;
 }
 .input_class{
     width: 90%;
@@ -87,25 +89,29 @@
 }
 .textarea_input{
     width: 90%;
-    height: 260px;
+    height: 30em;
     float: left;
 }
 .bottom{
     width: 100%;
-    height: 60px;
+    height: 120px;
     float: left;
-    margin-top:20px;
+    margin-top:60px;
     text-align: center;
 }
 .bottom p{
     width: 100%;
-    height: 60px;
+    height: 120px;
     float: left;
 }
 .button_submit{
-    width: 20%;
-    height: 40px;
-    margin-top: 10px;
+    width: 60%;
+    height: 80px;
+    margin-top: 20px;
+    margin-left:auto;
+    margin-right:auto;
     background: url("../image_sign/top.png") no-repeat;
-    background-size: 100% 40px;
+    background-size: 100% 80px;
+    font-size:2em;
+    color:#ffffff;
 }

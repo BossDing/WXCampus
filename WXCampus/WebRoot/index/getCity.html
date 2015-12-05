@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta id="viewport" name="viewport" content="width=device-width; initial-scale=0.5; minimum-scale=0.5; maximum-scale=2.0;" />
+    <link rel=stylesheet href="/bootstrap/css/bootstrap.css">
+    <link rel=stylesheet href="css/select_college.css">
+    <script src="/jquery/jquery-2.1.4.min.js"></script>
+    <script src="/bootstrap/js/bootstrap.js"></script>
+    <script src="js/getCity.js"></script>
+    <title>选择城市</title>
+</head>
+<body>
+<div class="main">
+    <div class="top">
+        <div class="top_left">
+            <span class="span_image"><img onclick="backMainPage()" src="image_find/back.png"></span>
+        </div>
+        <div class="top_center">
+            <p style="margin-top: 15px">选择城市</p>
+        </div>
+        <div class="top_right">
+            <p><img src="image_college/refresh.png" onclick="refresh()"></p>
+        </div>
+    </div>
+    <div class="center">
+        <div class="input-group input_info">
+            <input type="text" class="form-control input_shuru" id="collegeInfo" placeholder="请输入校区名">
+            <span class="input-group-addon input_button" onclick="findcity()"><img src="image_find/find.png"></span>
+        </div>
+    </div>
+    <div class="floor">
+        <div class="floor_left" id="floor_left">
+            
+        </div>
+        <div class="floor_right" id="floor_right">
+            
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+window.onload=inialCity();
+</script>
+</body>
+</html>

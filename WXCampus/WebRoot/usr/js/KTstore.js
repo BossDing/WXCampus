@@ -53,11 +53,16 @@ function getSignInfo(){
         }
     );
 }
-function backSignInfo(){
+function backlatest_1(){
+	window.location='/usr/wtsindex';
+	
+}
+function backlatest_2(){
+	window.location='/usr/wantosell';
 	
 }
 function sendConfirm(){
-	var tel='tel='+document.getElementById("tel").value;
+	var tel='type=1&tel='+document.getElementById("tel").value;
 	var url='/usr/vcode';
     $.ajax(
         {
