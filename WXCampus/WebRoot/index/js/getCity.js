@@ -3,16 +3,16 @@
  */
 //搜索城市
 function findcity(){
-    var collegeList=document.getElementById("collegeInfo").value;
-    var dataInfo='q='+collegeList;
-    var url='/index/searchArea/';
+    var city=document.getElementById("cityInfo").value;
+    var dataInfo='q='+city;
+    var url='/index/searchCity/';
     $.ajax(
         {
             url:url,
             dataType: "json",
             type: 'POST',
             data:dataInfo,
-            success:backCollegeList,
+            success:backCityList,
             error: function () {
                 alert("error");
             }
@@ -22,11 +22,13 @@ function findcity(){
 //搜索成功，返回城市列表
 function backCityList(data){
     document.getElementById("floor_left").innerHTML="";
+    document.getElementById("floor_right").innerHTML="";
+    currentSelect="";
     var collegeList='';
-    for(var i=0;i<data.colleges.length;i++){
-       collegeList+='<div class="floor_left_content"  onclick=inialBuildings("'+data.colleges[i].college+'")>'+
-           '<p>'+data.colleges[i].college+'</p>'+
-           '</div>';
+    for(var i=0;i<data.cities.length;i++){
+    	collegeList+='<div id='+data.cities[i].city+' class="floor_left_content"  onclick=inialColleges("'+data.cities[i].city+'")>'+
+        '<p id='+data.cities[i].city+'_1>'+data.cities[i].city+'</p>'+
+        '</div>';
     }
     $("#floor_left").append(collegeList);
 }
@@ -95,14 +97,16 @@ function backCollList(data){
     document.getElementById("floor_right").innerHTML="";
     var buildList='';
     for(var i=0;i<data.colleges.length;i++){
-        buildList+='<div class="floor_right_content" onclick=tiaozhuan("'+collInfo+'","'+data.colleges[i].college+'")>'+
-            '<p>'+data.colleges[i].college+'</p>'+
+        buildList+='<div id='+data.colleges[i].college+'  class="floor_right_content" onclick=tiaozhuan("'+collInfo+'","'+data.colleges[i].college+'")>'+
+            '<p id='+data.colleges[i].college+'_1>'+data.colleges[i].college+'</p>'+
             '</div>';
     }
     $("#floor_right").append(buildList);
 }
 
 function tiaozhuan(city,college){
+	document.getElementById(college).style.backgroundColor="#FD033E";
+	document.getElementById(college+"_1").style.color="#ffffff";
 	window.location='/index/area?city='+city+'&college='+college;
 }
 

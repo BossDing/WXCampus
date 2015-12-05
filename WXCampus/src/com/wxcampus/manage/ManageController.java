@@ -241,7 +241,77 @@ public class ManageController extends Controller{
 			break;
 		}
 	
-	
+//		String startDate = getPara("sdate");
+//		String endDate = getPara("edate");
+//		 if(startDate==null || endDate==null)
+//		 {
+//			 startDate=Util.getDate();
+//			 endDate=Util.getDate();
+//		 }
+//		List<Record> toshow = new ArrayList<Record>();
+//		List<Items> items = Items.dao.find("select iid from items");
+//	    if(manager.getInt("ring")==2)
+//	    {
+//		for (int i = 0; i < items.size(); i++) {
+//			int iid = items.get(i).getInt("iid");
+//
+//			Record temp = Db
+//					.findFirst(
+//							"select sum(orderNum) as sum_orderNum,sum(price) as sum_price from trades where location=? and addedDate>=? and addedDate<=? and item=?",
+//							manager.getInt("location"), startDate, endDate, iid);
+//
+//			if (temp != null) {
+//				Record record = new Record();
+//				record.set("iname", Items.dao.findById(iid).getStr("iname"));
+//				record.set("num", temp.getInt("sum_orderNum"));
+//				record.set("money", temp.getBigDecimal("sum_price"));
+//				toshow.add(record);
+//			}
+//		}
+//	    }else if (manager.getInt("ring")==1) {
+//			Areas college=Areas.dao.findById(manager.getInt("location"));
+//			for (int i = 0; i < items.size(); i++) {
+//				int iid = items.get(i).getInt("iid");
+//
+//				Record temp = Db
+//						.findFirst(
+//								"select sum(orderNum) as sum_orderNum,sum(price) as sum_price from trades where addedDate>=? and addedDate<=? and item=? and location in (select aid from areas where city='"+college.getStr("city")+"' and college='"+college.getStr("college")+"' and building!='')",
+//								 startDate, endDate, iid);
+//
+//				if (temp != null) {
+//					Record record = new Record();
+//					record.set("iname", Items.dao.findById(iid).getStr("iname"));
+//					record.set("num", temp.getInt("sum_orderNum"));
+//					record.set("money", temp.getBigDecimal("sum_price"));
+//					toshow.add(record);
+//				}
+//			}
+//	    
+//		}else if (manager.getInt("ring")==0) {
+//			
+//			for (int i = 0; i < items.size(); i++) {
+//				int iid = items.get(i).getInt("iid");
+//
+//				Record temp = Db
+//						.findFirst(
+//								"select sum(orderNum) as sum_orderNum,sum(price) as sum_price from trades where addedDate>=? and addedDate<=? and item=?",
+//								 startDate, endDate, iid);
+//
+//				if (temp != null) {
+//					Record record = new Record();
+//					record.set("iname", Items.dao.findById(iid).getStr("iname"));
+//					record.set("num", temp.getInt("sum_orderNum"));
+//					record.set("money", temp.getBigDecimal("sum_price"));
+//					toshow.add(record);
+//				}
+//			}
+//		}
+//	    setAttr("dataList", toshow);
+//	    setAttr("sdate", startDate);
+//	    setAttr("edate", endDate);
+//	    render("datainfo.html");
+	    
+	    
 		 String month=getPara("month");
 		 if(month==null)
 			 month=Util.getMonth();
@@ -1228,7 +1298,7 @@ public class ManageController extends Controller{
 			 }
 			 setAttr("Advices", records);
 		 }else {
-			 List<Record> records=Db.paginate(page,10,"select a.content,a.addedDate,a.addedTime,b.city,b.college,b.building","from advices as a,areas as b where a.location=b.aid order by addedDate desc,addedTime desc").getList();
+			 List<Record> records=Db.paginate(page,10,"select a.type,a.content,a.addedDate,a.addedTime,b.city,b.college,b.building","from advices as a,areas as b where a.location=b.aid order by addedDate desc,addedTime desc").getList();
 			 setAttr("Advices", records);
 		}
 		 setAttr("page", page);

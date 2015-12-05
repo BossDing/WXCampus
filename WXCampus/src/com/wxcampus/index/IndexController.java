@@ -89,6 +89,12 @@ public class IndexController extends Controller {
 			setAttr("AdList", adList);   //广告图片信息
 			
 			Managers manager=Managers.dao.findFirst("select * from managers where location=?",areas.getInt("aid"));
+			if(manager==null)
+			{
+				manager=new Managers();
+				manager.set("say", "本店暂未开张,尚无商品");
+			}
+			
 			setAttr("Manager", manager); // 店长信息
 			
 			List<Items> category=Items.dao.find("select distinct category from items");
@@ -125,7 +131,7 @@ public class IndexController extends Controller {
 		render("index.html");
 	}
 	
-
+    @Clear
 	public void location()   //ajax
 	{
 		String city=getPara("city");
@@ -193,15 +199,22 @@ public class IndexController extends Controller {
 		setAttr("sign", sign3);
 		render("getLocation.html");
 	}
-
+	@Clear
+    public void getCity()
+    {
+    	render("getCity.html");
+    }
 	public void area()
 	{
 		if(getPara("latitude")==null || getPara("longitude")==null)
 		{
-			setAttr("locationFlag", 0);
-			render("area.html");
-			return;
-		}
+			if(getPara("city")!=null && getPara("college")!=null)
+			{
+				setAttr("college", getPara("college"));
+				setAttr("city", getPara("city"));
+				render("area.html");
+			}
+		}else {
 		double laititude=Double.parseDouble(getPara("latitude"));
 		double longitude=Double.parseDouble(getPara("longitude"));
 		String ak="73EEtGNvP9eWPfDazNkGywfD";
@@ -214,6 +227,8 @@ public class IndexController extends Controller {
 		{
 			JSONObject res=JSONObject.parseObject(json.getString("result"));
 			String college=res.getString("sematic_description");
+			JSONObject addressComponent=res.getJSONObject("addressComponent");
+			String city=addressComponent.getString("city").replace("市", "");
 			if(college.indexOf("校区")!=-1)
 			{
 				int index=college.indexOf("内");
@@ -223,8 +238,6 @@ public class IndexController extends Controller {
 				   college=college.substring(0,college.indexOf("校区")+2);
 				}
 			}else {
-				JSONObject addressComponent=res.getJSONObject("addressComponent");
-				String city=addressComponent.getString("city").replace("市", "");
 				JSONArray pois=res.getJSONArray("pois");
 				for(int i=0;i<pois.size();i++)
 				{
@@ -248,16 +261,23 @@ public class IndexController extends Controller {
 			Areas areaCollege=Areas.dao.findFirst("select * from areas where college=?",college);
 			if(areaCollege!=null)
 			{
-				setAttr("locationFlag", 1);
+				setAttr("city", city);
 				setAttr("college", college);
+				render("area.html");
 			}else
-				setAttr("locationFlag", 0);	
+			{
+				redirect("/index/getCity");
+			}
 			logger.error("Address:--------------"+res.getString("sematic_description"));
 			logger.error("College:--------------"+college);
 		}else {
 			logger.error("errorcode:--------------"+json.getIntValue("status"));
+			redirect("/index/getCity");
 		}
-		render("area.html");
+	}
+		
+
+		
 	}
 	public void getItems()  //ajax获取商品信息
 	{
@@ -278,7 +298,7 @@ public class IndexController extends Controller {
 	public void searchArea()  //ajax
 	{
 		String college=getPara("q");
-		List<Areas> areaList=Areas.dao.find("select distinct college from areas where college regexp ?",".*"+college+".*");
+		List<Areas> areaList=Areas.dao.find("select distinct college,city from areas where college regexp ?",".*"+college+".*");
 		if(areaList!=null)
 			{
 			  setAttr("colleges", areaList);
@@ -286,6 +306,18 @@ public class IndexController extends Controller {
 			}
 		else
 			renderHtml(Util.getJsonText("您要找的学校暂不存在"));
+	}
+	public void searchCity()  //ajax
+	{
+		String city=getPara("q");
+		List<Areas> areaList=Areas.dao.find("select distinct city from areas where city regexp ?",".*"+city+".*");
+		if(areaList!=null)
+			{
+			  setAttr("cities", areaList);
+			  renderJson();
+			}
+		else
+			renderHtml(Util.getJsonText("您要找的城市暂不存在"));
 	}
 	public void searchItems() //ajax
 	{

@@ -227,6 +227,7 @@ public class UserController extends Controller{
 		User user=getSessionAttr(GlobalVar.WXUSER);
 		int areaID=getSessionAttr("areaID");
 		Advices advice=getModel(Advices.class);
+		advice.set("type", Util.filterUserInputContent(advice.getStr("type")));
 		advice.set("content", Util.filterUserInputContent(advice.getStr("content")));
 		advice.set("location", areaID);
 		advice.set("uid", user.getInt("uid")).set("addedDate", Util.getDate()).set("addedTime", Util.getTime()).save();
@@ -261,12 +262,18 @@ public class UserController extends Controller{
 		{
 			String vCode=getPara("vcode");
 			if (!vCode.equals(getSessionAttr(form.getStr("tel")))) {
-				redirect("/404/error?Msg="+Util.getEncodeText("验证码输入错误")+"&backurl=/usr/registion");
+				keepModel(User.class);
+				setAttr("TelMsg", "验证码输入错误");
 				return;
+//				redirect("/404/error?Msg="+Util.getEncodeText("验证码输入错误")+"&backurl=/usr/registion");
+//				return;
 			}
 		}else {
-			redirect("/404/error?Msg="+Util.getEncodeText("验证码超时,请重新获取")+"&backurl=/usr/registion");
+			keepModel(User.class);
+			setAttr("TelMsg", "验证码超时,请重新获取");
 			return;
+//			redirect("/404/error?Msg="+Util.getEncodeText("验证码超时,请重新获取")+"&backurl=/usr/registion");
+//			return;
 		}
 		String openid=getSessionAttr(GlobalVar.OPENID);
 		form.set("openid", openid);  //openid未加
@@ -288,9 +295,12 @@ public class UserController extends Controller{
 	/**
 	 *  ajax请求手机验证码
 	 */
-	@Clear(UserInterceptor.class)
+	@Clear({UserInterceptor.class,OpenidInterceptor.class})
 	public void vcode()
 	{
+		int type=0;
+		if(getPara("type")!=null)
+		    type=getParaToInt("type");  // 0 注册  1申请店长
 		String verifyStartTime=null;
 		if(getSessionAttr(GlobalVar.VCODETIME)!=null)
 		verifyStartTime=getSessionAttr(GlobalVar.VCODETIME).toString();
@@ -318,6 +328,15 @@ public class UserController extends Controller{
 		String veryfiCode=""+(new Random().nextInt(900000)+100000);
 		if(getPara("tel")!=null && !getPara("tel").equals(""))
 		{
+			if(type==0)
+			{
+			User user=User.me.findFirst("select * from user where tel=?",getPara("tel"));
+			if(user!=null)
+			{
+				renderHtml(Util.getJsonText("当前手机号已被注册"));	
+				return;
+			}
+			}
 			if(SendMessageVcode.send(getPara("tel"), veryfiCode))
 				{
 				setSessionAttr(GlobalVar.VCODETIME, new Date().toString());

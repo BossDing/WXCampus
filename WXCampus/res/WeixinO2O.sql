@@ -228,6 +228,7 @@ DROP TABLE IF EXISTS `advices`;
 CREATE TABLE `advices` (
   `aid` int(10) NOT NULL AUTO_INCREMENT,
   `uid` int(10) NOT NULL,
+  `type` varchar(32) not null,
   `content` text not null,
   `location` int(10) not null,
   `addedDate` date NOT NULL,

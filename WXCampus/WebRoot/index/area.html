@@ -20,19 +20,19 @@
             <p style="margin-top: 15px">选择学校</p>
         </div>
         <div class="top_right">
-            <p><img src="image_college/refresh.png"></p>
+            <p><img onclick="refresh()" src="image_college/refresh.png"></p>
         </div>
     </div>
     <div class="center">
         <div class="input-group input_info">
-            <input type="text" class="form-control input_shuru" id="collegeInfo" placeholder="请输入校区名">
-            <span class="input-group-addon input_button" onclick="findcollege()"><img src="image_find/find.png"></span>
+            <input type="text" class="form-control input_shuru" id="cityInfo" placeholder="请输入城市">
+            <span class="input-group-addon input_button" onclick="findcity()"><img src="image_find/find.png"></span>
         </div>
     </div>
     <div class="floor">
         <div class="floor_left" id="floor_left">
-            <div class="floor_left_content"  style="background-color:#FD033E">
-           		<p style="color:#ffffff">${college}</p>
+            <div class="floor_left_content"  id="${college}" >
+           		<p id="${college}_1" >${college}</p>
            	</div>
         </div>
           <script type="text/javascript">

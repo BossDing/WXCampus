@@ -236,6 +236,29 @@ public class ShopController extends Controller{
 	}
 	
 	@Before(ShopInterceptor.class)
+	public void payinform()
+	{
+		if(getPara("success")==null)
+		{
+			return;
+		}
+		boolean isSuccess=getParaToBoolean("success");
+		if(isSuccess)
+		{
+			removeSessionAttr("Carts");
+			removeSessionAttr("itemList");
+			removeSessionAttr("totalMoney");
+			removeSessionAttr("ConfirmPayOnce");
+			renderHtml(Util.getJsonText("OK"));
+			return;
+		}else {
+			setSessionAttr("ConfirmPayOnce", false);
+			renderHtml(Util.getJsonText("FAIL"));
+			return;
+		}
+		
+	}
+	@Before(ShopInterceptor.class)
 	public void coupons() //ajax
 	{
 		User user=getSessionAttr(GlobalVar.WXUSER);
@@ -368,10 +391,7 @@ public class ShopController extends Controller{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		removeSessionAttr("Carts");
-		removeSessionAttr("itemList");
-		removeSessionAttr("totalMoney");
-		removeSessionAttr("ConfirmPayOnce");
+
 		String tempts=System.currentTimeMillis()/1000+"";
 		String tempRs=Util.getRandomString();
 		Document document3=DocumentHelper.createDocument();

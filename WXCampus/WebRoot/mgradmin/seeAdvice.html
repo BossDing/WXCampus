@@ -24,6 +24,7 @@
                     <caption style="text-align: center">投诉列表</caption>
                     <thead>
                     <tr>
+                       <th style="text-align: center">类型</th>
                         <th style="text-align: center">投诉内容</th>
                         <th style="text-align: center">地址</th>
                          <th style="text-align: center">日期</th>
@@ -32,6 +33,7 @@
                     <tbody>
                     <#list Advices as x>
                     <tr>
+                    <td>${x.type}</td>
                         <td>${x.content}</td>
                         <td>${x.city}${x.college}${x.building}</td>
                         <td>${x.addedDate}~${x.addedTime}</td>

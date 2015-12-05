@@ -22,10 +22,12 @@ function findcollege(){
 //搜索成功，返回校区列表
 function backCollegeList(data){
     document.getElementById("floor_left").innerHTML="";
+    document.getElementById("floor_right").innerHTML="";
+    currentSelect="";
     var collegeList='';
     for(var i=0;i<data.colleges.length;i++){
-       collegeList+='<div class="floor_left_content"  onclick=inialBuildings("'+data.colleges[i].college+'")>'+
-           '<p>'+data.colleges[i].college+'</p>'+
+       collegeList+='<div id='+data.colleges[i].college+' class="floor_left_content"  onclick=inialBuildings("'+data.colleges[i].city+'","'+data.colleges[i].college+'")>'+
+           '<p id='+data.colleges[i].college+'_1>'+data.colleges[i].college+'</p>'+
            '</div>';
     }
     $("#floor_left").append(collegeList);
@@ -66,7 +68,16 @@ var currentSelect="";
 var collInfo;
 var cityinfo;
 function inialBuildings(city,college){
-	
+	if(currentSelect==""){
+	}
+	else{
+		document.getElementById(currentSelect+"_1").style.color="#000000";
+		document.getElementById(currentSelect).style.backgroundColor="#EEEEEE";
+	}
+currentSelect=college;
+document.getElementById(college).style.backgroundColor="#FD033E";
+document.getElementById(college+"_1").style.color="#ffffff";
+
 collInfo=college;
 cityinfo=city;
  var url='/index/location';
@@ -89,14 +100,16 @@ function backBuilList(data){
     document.getElementById("floor_right").innerHTML="";
     var buildList='';
     for(var i=0;i<data.buildings.length;i++){
-        buildList+='<div class="floor_right_content" onclick=tiaozhuan("'+data.buildings[i].building+'")>'+
-            '<p>'+data.buildings[i].building+'</p>'+
+        buildList+='<div id='+data.buildings[i].building+' class="floor_right_content" onclick=tiaozhuan("'+data.buildings[i].building+'")>'+
+            '<p id='+data.buildings[i].building+'_1>'+data.buildings[i].building+'</p>'+
             '</div>';
     }
     $("#floor_right").append(buildList);
 }
 
 function tiaozhuan(build){
+	document.getElementById(build).style.backgroundColor="#FD033E";
+	document.getElementById(build+"_1").style.color="#ffffff";
 	window.location='/index?city='+cityinfo+'&college='+collInfo+'&building='+build;
 }
 
@@ -106,5 +119,5 @@ function backshang(){
 
 //刷新界面
 function refresh(){
-	window.location='/index/area';
+	window.location='/index/getCity';
 }
