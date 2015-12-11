@@ -234,63 +234,63 @@ public class UserController extends Controller{
 		this.renderHtml("<script>alert('提交成功');this.location.href='/usr';</script>");
 	}
 	
-	@Clear(UserInterceptor.class)
-	public void registion()  //registion.html
-	{
-		if(getSessionAttr(GlobalVar.WXUSER)!=null)
-			{redirect("/index");
-			return;
-			}
-		
-		render("registion.html");
-	}
-	
-	@Clear(UserInterceptor.class)
-	@Before(UserValidator.class)
-	public void register()
-	{
-		if(getSessionAttr(GlobalVar.WXUSER)!=null)
-			redirect("/index");
-		User form=getModel(User.class);
-		//form.set("tel", Long.parseLong(getPara("user.tel"))).set("password", getPara("password"));
-		if(form==null)
-		{
-			redirect("/404/error");
-			return;
-		}
-		if(getSessionAttr(form.getStr("tel"))!=null)
-		{
-			String vCode=getPara("vcode");
-			if (!vCode.equals(getSessionAttr(form.getStr("tel")))) {
-				keepModel(User.class);
-				setAttr("TelMsg", "验证码输入错误");
-				return;
-//				redirect("/404/error?Msg="+Util.getEncodeText("验证码输入错误")+"&backurl=/usr/registion");
-//				return;
-			}
-		}else {
-			keepModel(User.class);
-			setAttr("TelMsg", "验证码超时,请重新获取");
-			return;
-//			redirect("/404/error?Msg="+Util.getEncodeText("验证码超时,请重新获取")+"&backurl=/usr/registion");
+//	@Clear(UserInterceptor.class)
+//	public void registion()  //registion.html
+//	{
+//		if(getSessionAttr(GlobalVar.WXUSER)!=null)
+//			{redirect("/index");
 //			return;
-		}
-		String openid=getSessionAttr(GlobalVar.OPENID);
-		form.set("openid", openid);  //openid未加
-		form.set("password", Util.filterUserInputContent(form.getStr("password")));
-		form.set("registerDate", Util.getDate());
-		form.set("registerTime", Util.getTime());
-		if(getSessionAttr("areaID")==null)
-			form.set("location", 1);
-		else
-		    form.set("location", getSessionAttr("areaID"));
-		form.set("headicon", getSessionAttr("headicon"));
-		//form.set("headicon", "/imgs/aaa.png");
-		form.save();
-		form=User.me.findFirst("select * from user where tel=?",form.getStr("tel"));
-	    setSessionAttr(GlobalVar.WXUSER, form);
-		redirect("/index");	
-	}
+//			}
+//		
+//		render("registion.html");
+//	}
+	
+//	@Clear(UserInterceptor.class)
+//	@Before(UserValidator.class)
+//	public void register()
+//	{
+//		if(getSessionAttr(GlobalVar.WXUSER)!=null)
+//			redirect("/index");
+//		User form=getModel(User.class);
+//		//form.set("tel", Long.parseLong(getPara("user.tel"))).set("password", getPara("password"));
+//		if(form==null)
+//		{
+//			redirect("/404/error");
+//			return;
+//		}
+//		if(getSessionAttr(form.getStr("tel"))!=null)
+//		{
+//			String vCode=getPara("vcode");
+//			if (!vCode.equals(getSessionAttr(form.getStr("tel")))) {
+//				keepModel(User.class);
+//				setAttr("TelMsg", "验证码输入错误");
+//				return;
+////				redirect("/404/error?Msg="+Util.getEncodeText("验证码输入错误")+"&backurl=/usr/registion");
+////				return;
+//			}
+//		}else {
+//			keepModel(User.class);
+//			setAttr("TelMsg", "验证码超时,请重新获取");
+//			return;
+////			redirect("/404/error?Msg="+Util.getEncodeText("验证码超时,请重新获取")+"&backurl=/usr/registion");
+////			return;
+//		}
+//		String openid=getSessionAttr(GlobalVar.OPENID);
+//		form.set("openid", openid);  //openid未加
+//		form.set("password", Util.filterUserInputContent(form.getStr("password")));
+//		form.set("registerDate", Util.getDate());
+//		form.set("registerTime", Util.getTime());
+//		if(getSessionAttr("areaID")==null)
+//			form.set("location", 1);
+//		else
+//		    form.set("location", getSessionAttr("areaID"));
+//		form.set("headicon", getSessionAttr("headicon"));
+//		//form.set("headicon", "/imgs/aaa.png");
+//		form.save();
+//		form=User.me.findFirst("select * from user where tel=?",form.getStr("tel"));
+//	    setSessionAttr(GlobalVar.WXUSER, form);
+//		redirect("/index");	
+//	}
 	
 	/**
 	 *  ajax请求手机验证码

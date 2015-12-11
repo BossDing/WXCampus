@@ -32,6 +32,7 @@ import com.wxcampus.shop.ShopController;
 import com.wxcampus.user.Advices;
 import com.wxcampus.user.User;
 import com.wxcampus.user.UserController;
+import com.wxcampus.wxmsg.WXController;
 /**
  * API引导设置
  */
@@ -56,6 +57,7 @@ public class WXCampusConfig extends JFinalConfig{
 		me.add("/usr", UserController.class);			// ���������ʡ��ʱĬ�����һ������ֵ��ͬ���ڴ˼�Ϊ "/blog"
 	    me.add("/shop",ShopController.class);
 	    me.add("/mgradmin",ManageController.class);
+	    me.add("/wxmsg",WXController.class);
 	    me.add("/404",Handle404Controller.class);
 	}
 	

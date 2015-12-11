@@ -62,6 +62,11 @@ public class Util {
 		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM");
 		return sdf.format(new Date());
 	}
+	public static int getDay()
+	{
+		SimpleDateFormat sdf=new SimpleDateFormat("dd");
+		return Integer.parseInt(sdf.format(new Date()));
+	}
 	public static String getTime()
 	{
 		SimpleDateFormat sdf=new SimpleDateFormat("HH:mm:ss");

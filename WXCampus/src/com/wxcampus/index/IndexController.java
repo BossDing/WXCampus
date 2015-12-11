@@ -40,6 +40,7 @@ import com.jfinal.plugin.activerecord.Record;
 import com.wxcampus.common.GlobalVar;
 import com.wxcampus.common.NoUrlPara;
 import com.wxcampus.common.OpenidInterceptor;
+import com.wxcampus.items.Areasales;
 import com.wxcampus.items.Items;
 import com.wxcampus.items.Items_on_sale;
 import com.wxcampus.manage.Managers;
@@ -206,79 +207,77 @@ public class IndexController extends Controller {
     }
 	public void area()
 	{
-		if(getPara("latitude")==null || getPara("longitude")==null)
-		{
+//		if(getPara("latitude")==null || getPara("longitude")==null)
+//		{
 			if(getPara("city")!=null && getPara("college")!=null)
 			{
 				setAttr("college", getPara("college"));
 				setAttr("city", getPara("city"));
 				render("area.html");
 			}
-		}else {
-		double laititude=Double.parseDouble(getPara("latitude"));
-		double longitude=Double.parseDouble(getPara("longitude"));
-		String ak="73EEtGNvP9eWPfDazNkGywfD";
-		String url="http://api.map.baidu.com/geocoder/v2/";
-		url=url+"?output=json&ak="+ak+"&coordtype=wgs84ll&location="+laititude+","+longitude+"&pois=1";
-		logger.error(url);
-		String jsonStr=GeneralGet.getResponse(url);
-		JSONObject json=JSONObject.parseObject(jsonStr);
-		if(json.getIntValue("status")==0)
-		{
-			JSONObject res=JSONObject.parseObject(json.getString("result"));
-			String college=res.getString("sematic_description");
-			JSONObject addressComponent=res.getJSONObject("addressComponent");
-			String city=addressComponent.getString("city").replace("市", "");
-			if(college.indexOf("校区")!=-1)
-			{
-				int index=college.indexOf("内");
-				if(index!=-1)
-				   college=college.substring(0,index);
-				else {
-				   college=college.substring(0,college.indexOf("校区")+2);
-				}
-			}else {
-				JSONArray pois=res.getJSONArray("pois");
-				for(int i=0;i<pois.size();i++)
-				{
-					JSONObject temp=pois.getJSONObject(i);
-					if(temp.getString("addr").endsWith("校区"))
-					{
-						college=temp.getString("addr");
-						List<Areas> colleges=Areas.dao.find("select * from areas where city=?",city);
-						for(int k=0;k<colleges.size();k++)
-						{
-							if(college.contains(colleges.get(k).getStr("college")))
-							{
-								college=colleges.get(k).getStr("college");
-								break;
-							}
-						}
-						break;
-					}
-				}
-			}
-			Areas areaCollege=Areas.dao.findFirst("select * from areas where college=?",college);
-			if(areaCollege!=null)
-			{
-				setAttr("city", city);
-				setAttr("college", college);
-				render("area.html");
-			}else
-			{
-				redirect("/index/getCity");
-			}
-			logger.error("Address:--------------"+res.getString("sematic_description"));
-			logger.error("College:--------------"+college);
-		}else {
-			logger.error("errorcode:--------------"+json.getIntValue("status"));
-			redirect("/index/getCity");
-		}
-	}
+//		}else {
+//		double laititude=Double.parseDouble(getPara("latitude"));
+//		double longitude=Double.parseDouble(getPara("longitude"));
+//		String ak="73EEtGNvP9eWPfDazNkGywfD";
+//		String url="http://api.map.baidu.com/geocoder/v2/";
+//		url=url+"?output=json&ak="+ak+"&coordtype=wgs84ll&location="+laititude+","+longitude+"&pois=1";
+//		logger.error(url);
+//		String jsonStr=GeneralGet.getResponse(url);
+//		JSONObject json=JSONObject.parseObject(jsonStr);
+//		if(json.getIntValue("status")==0)
+//		{
+//			JSONObject res=JSONObject.parseObject(json.getString("result"));
+//			String college=res.getString("sematic_description");
+//			JSONObject addressComponent=res.getJSONObject("addressComponent");
+//			String city=addressComponent.getString("city").replace("市", "");
+//			if(college.indexOf("校区")!=-1)
+//			{
+//				int index=college.indexOf("内");
+//				if(index!=-1)
+//				   college=college.substring(0,index);
+//				else {
+//				   college=college.substring(0,college.indexOf("校区")+2);
+//				}
+//			}else {
+//				JSONArray pois=res.getJSONArray("pois");
+//				for(int i=0;i<pois.size();i++)
+//				{
+//					JSONObject temp=pois.getJSONObject(i);
+//					if(temp.getString("addr").endsWith("校区"))
+//					{
+//						college=temp.getString("addr");
+//						List<Areas> colleges=Areas.dao.find("select * from areas where city=?",city);
+//						for(int k=0;k<colleges.size();k++)
+//						{
+//							if(college.contains(colleges.get(k).getStr("college")))
+//							{
+//								college=colleges.get(k).getStr("college");
+//								break;
+//							}
+//						}
+//						break;
+//					}
+//				}
+//			}
+//			Areas areaCollege=Areas.dao.findFirst("select * from areas where college=?",college);
+//			if(areaCollege!=null)
+//			{
+//				setAttr("city", city);
+//				setAttr("college", college);
+//				render("area.html");
+//			}else
+//			{
+//				redirect("/index/getCity");
+//			}
+//			logger.error("Address:--------------"+res.getString("sematic_description"));
+//			logger.error("College:--------------"+college);
+//		}else {
+//			logger.error("errorcode:--------------"+json.getIntValue("status"));
+//			redirect("/index/getCity");
+//		}
+//	}
 		
-
-		
-	}
+}
 	public void getItems()  //ajax获取商品信息
 	{
 		int aid=getSessionAttr("areaID");
@@ -286,7 +285,14 @@ public class IndexController extends Controller {
 		List<Record> itemList;
 		if(category!=null)
 		{
-			 itemList=Db.find("select a.iid,a.iname,a.icon,b.restNum,b.price from items as a,items_on_sale as b where b.isonsale=true and a.iid=b.iid and b.location=? and a.category=?",aid,category);
+			// int day=Util.getDay();
+			String month=Util.getMonth();
+			itemList=Db.find("select a.iid,a.iname,a.icon,b.restNum,b.price from items as a,items_on_sale as b where b.isonsale=true and a.iid=b.iid and b.location=? and a.category=?",aid,category);
+			for(int i=0;i<itemList.size();i++)
+			{
+				Areasales as=Areasales.dao.findFirst("select * from areasales where item=? and location=? and month=?",itemList.get(i).getInt("item"),aid,month);
+				itemList.get(i).set("sales", as.getInt("num"));
+			} 
 		}else
 		{
 			 itemList=Db.find("select a.iid,a.iname,a.icon,a.category,b.restNum,b.price from items as a,items_on_sale as b where b.isonsale=true and a.iid=b.iid and b.location=?");
@@ -376,13 +382,28 @@ public class IndexController extends Controller {
 		JSONObject json=JSONObject.parseObject(jsonStr);
 		String openid=json.getString("openid");
 		setSessionAttr(GlobalVar.OPENID, openid);
-		if(User.me.findFirst("select uid from user where openid=?", openid)==null)
-		{
-		String accesstoken=json.getString("access_token");
-		JSONObject json2=JSONObject.parseObject(GeneralGet.getResponse("https://api.weixin.qq.com/sns/userinfo?access_token="+accesstoken+"&openid="+openid+"&lang=zh_CN"));
-		setSessionAttr("headicon", json2.getString("headimgurl"));
+		User user=User.me.findFirst("select uid from user where openid=?", openid);
+		if (user == null) {
+			user = new User();
+			user.set("tel", "").set("password", "").set("headicon", "");
+			user.set("openid", openid);
+			user.set("registerDate", Util.getDate()).set("registerTime",
+					Util.getTime());
+			user.save();
 		}
-		
+		if(user.getStr("headicon").equals(""))
+		{
+			String accesstoken = json.getString("access_token");
+			JSONObject json2 = JSONObject
+					.parseObject(GeneralGet
+							.getResponse("https://api.weixin.qq.com/sns/userinfo?access_token="
+									+ accesstoken
+									+ "&openid="
+									+ openid
+									+ "&lang=zh_CN"));
+			user.set("headicon",json2.getString("headimgurl"));
+		}
+		//setSessionAttr("headicon", json2.getString("headimgurl"));	
 		redirect("/index");
 	}
 }
