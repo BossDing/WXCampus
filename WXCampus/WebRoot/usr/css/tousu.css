@@ -89,7 +89,8 @@
 }
 .textarea_input{
     width: 90%;
-    height: 30em;
+    height: 16em;
+    font:25px arial;
     float: left;
 }
 .bottom{

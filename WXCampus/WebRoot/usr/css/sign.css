@@ -35,7 +35,7 @@
 }
 .input_name{
     width: 85%;
-    height: 6em;
+   font-size:2em
     float: left;
 }
 .span_name{
@@ -45,7 +45,7 @@
 }
 .input_password{
     width: 85%;
-    height: 6em;
+    font-size:2em;
     float: left;
 }
 .span_password{
@@ -55,7 +55,7 @@
 }
 .input_confirm{
     width: 50%;
-    height: 6em;
+  font-size:2em;
     float: left;
 }
 .span_confirm{

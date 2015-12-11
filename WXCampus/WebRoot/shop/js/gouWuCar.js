@@ -46,9 +46,15 @@ function backtoindex()
 	window.location="/index";
 }
 //增加数量
-function addNum(iid){
+function addNum(iid,restnum){
 	var num=parseInt(document.getElementById(iid).innerHTML);
-	num++;
+	if(num<restnum){
+		num++;
+		}
+		else{
+			alert("库存不足");
+			return;
+		}
 	document.getElementById(iid).innerHTML="";
 	document.getElementById(iid).innerHTML=num;
 	if(num>0){	
@@ -69,7 +75,7 @@ function reduceNum(iid){
 	document.getElementById(iid).innerHTML="";
 	document.getElementById(iid).innerHTML=num;
 	if(num<=0){
-		document.getElementById(iid+'_reduce').src='/index/image_find/reduce.png';
+		document.getElementById(iid+'_reduce').src='/index/images_shop/reduce_inl.png';
 		document.getElementById(iid+'_span').onclick='';
 //		var obj=document.getElementById(iid+'_span');
 //		obj.attachEvent("onclick", Foo); 

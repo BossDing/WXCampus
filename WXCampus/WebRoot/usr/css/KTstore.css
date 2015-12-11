@@ -125,7 +125,8 @@
 }
 .span_input{
     width: 70%;
-    height: 3em;
+    font: 1.25em arial;
+    height:2em;
     float: left;
 }
 .span_select{
@@ -135,7 +136,7 @@
 }
 .span_confirm{
     width: 30%;
-    height: 3em;
+     font-size:1.7em;
     float: left;
 }
 .button_send{
