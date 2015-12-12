@@ -97,6 +97,28 @@ public class ShopController extends Controller{
 		setAttr("area", area);
 		render("index.html");
 	}
+	public void getCarts()
+	{
+		HashMap<Integer, Integer> map=getSessionAttr("Carts");
+		if(map==null)
+		{
+			setSessionAttr("Carts",new HashMap<Integer, Integer>() );
+		}
+		List<Record> itemList=new ArrayList<Record>();
+		Set<Integer> items=map.keySet();
+		Iterator<Integer> iterator=items.iterator();
+		while(iterator.hasNext())
+		{
+			Record record=new Record();
+			int iid=iterator.next();
+			int num=map.get(iid);
+			record.set("iid", iid);
+			record.set("num", num);
+			itemList.add(record);
+		}
+		setAttr("itemList", itemList);
+		renderJson();
+	}
 	public void incart()
 	{
 		int iid=getParaToInt("iid");
@@ -110,7 +132,9 @@ public class ShopController extends Controller{
 		if(map.containsKey(iid))
 		{
 			if(type==0)
+			{
 			   map.put(iid, map.get(iid)+1);
+			}
 			else if(type==1)
 			{
 				if(map.get(iid)==1)

@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -37,6 +38,7 @@ import com.jfinal.core.Controller;
 import com.jfinal.kit.PropKit;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Record;
+import com.sun.org.apache.bcel.internal.generic.NEW;
 import com.wxcampus.common.GlobalVar;
 import com.wxcampus.common.NoUrlPara;
 import com.wxcampus.common.OpenidInterceptor;
@@ -81,7 +83,6 @@ public class IndexController extends Controller {
 		if(areas!=null)
 		{
 			//isService.updateShopState(areas);
-			
 			setAttr("Area", areas);  //地区信息
 			//removeSessionAttr("areaID");
 			setSessionAttr("areaID", areas.getInt("aid"));
@@ -283,6 +284,7 @@ public class IndexController extends Controller {
 		int aid=getSessionAttr("areaID");
 		String category=getPara("category");
 		List<Record> itemList;
+		Random random=new Random();
 		if(category!=null)
 		{
 			// int day=Util.getDay();
@@ -291,7 +293,11 @@ public class IndexController extends Controller {
 			for(int i=0;i<itemList.size();i++)
 			{
 				Areasales as=Areasales.dao.findFirst("select * from areasales where item=? and location=? and month=?",itemList.get(i).getInt("item"),aid,month);
-				itemList.get(i).set("sales", as.getInt("num"));
+				if(as!=null)
+				   itemList.get(i).set("sales", as.getInt("num"));
+				else {
+					itemList.get(i).set("sales",0);
+				}
 			} 
 		}else
 		{
@@ -380,6 +386,7 @@ public class IndexController extends Controller {
 		//请求openid        
 		String jsonStr=GeneralGet.getResponse("https://api.weixin.qq.com/sns/oauth2/access_token?appid="+GetOpenidInterceptor.APPID+"&secret="+GetOpenidInterceptor.APPSECRET+"&code="+code+"&grant_type=authorization_code");
 		JSONObject json=JSONObject.parseObject(jsonStr);
+		logger.error(jsonStr);
 		String openid=json.getString("openid");
 		setSessionAttr(GlobalVar.OPENID, openid);
 		User user=User.me.findFirst("select uid from user where openid=?", openid);
@@ -390,8 +397,11 @@ public class IndexController extends Controller {
 			user.set("registerDate", Util.getDate()).set("registerTime",
 					Util.getTime());
 			user.save();
+			//logger.error("enter");
 		}
-		if(user.getStr("headicon").equals(""))
+		//logger.error("headicon---------"+user.getStr("headicon"));
+		//user=User.me.findFirst("select uid from user where openid=?", openid);
+		if(user.getStr("headicon")==null || user.getStr("headicon").equals(""))
 		{
 			String accesstoken = json.getString("access_token");
 			JSONObject json2 = JSONObject
@@ -401,7 +411,7 @@ public class IndexController extends Controller {
 									+ "&openid="
 									+ openid
 									+ "&lang=zh_CN"));
-			user.set("headicon",json2.getString("headimgurl"));
+			user.set("headicon",json2.getString("headimgurl")).update();
 		}
 		//setSessionAttr("headicon", json2.getString("headimgurl"));	
 		redirect("/index");

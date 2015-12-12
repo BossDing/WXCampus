@@ -24,7 +24,9 @@ public class GetOpenidInterceptor implements Interceptor{
 			e.printStackTrace();
 		}
 		if(c.getSessionAttr(GlobalVar.OPENID)==null)
-		c.redirect("https://open.weixin.qq.com/connect/oauth2/authorize?appid="+APPID+"&redirect_uri="+Redirect_URL+"&response_type=code&scope=snsapi_userinfo&state=6666#wechat_redirect");    //index/authorize
+		{
+		   c.redirect("https://open.weixin.qq.com/connect/oauth2/authorize?appid="+APPID+"&redirect_uri="+Redirect_URL+"&response_type=code&scope=snsapi_userinfo&state=6666#wechat_redirect");    //index/authorize
+		}
 		else
 		arg0.invoke();
 	

@@ -89,6 +89,7 @@ public class UserController extends Controller{
 		}
 		//List<Trades> tradeList=Trades.dao.find("select * from trades where customer=?",user.getInt("uid"));
 		setAttr("tradeList", records);
+		setAttr("page", page);
 		render("trades.html");
 		
 		/******************************************/  //定时清楚状态2订单
