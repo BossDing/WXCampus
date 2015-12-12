@@ -26,10 +26,15 @@ public class LocationInterceptor implements Interceptor{
 		}else {
 			User user=c.getSessionAttr(GlobalVar.WXUSER);
 			if(user==null)
-				
 				{
-				arg0.getController().redirect("/index/getLocation");
+				arg0.getController().redirect("/index/getCity");
 				return;
+				}else {
+					if(user.getInt("location")==1)
+					{
+						arg0.getController().redirect("/index/getCity");
+						return;
+					}
 				}
 		}
 		arg0.invoke();

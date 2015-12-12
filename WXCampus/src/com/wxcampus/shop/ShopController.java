@@ -270,23 +270,26 @@ public class ShopController extends Controller{
 	@Before({ShopInterceptor.class,Tx.class})
 	public void pay()
 	{
+		String date=Util.getDate();
+		String time=Util.getTime();
+		String name=getPara("userName");
+		String room=getPara("userRoom");
+		String tel=getPara("userTel");
+		User user=getSessionAttr("sessionUser");
+		if(name==null || name.equals("") || room==null || room.equals("") || tel==null || tel.equals(""))
+		{
+			redirect("/404/error");
+			return;
+		}
+		user.set("name", name).set("room",room).set("tel", tel).update();
+		
 		if(getSessionAttr("ConfirmPayOnce")==null)
 			return;
 		boolean yn=getSessionAttr("ConfirmPayOnce");
 		if(yn)
 			return;
 		setSessionAttr("ConfirmPayOnce", true);
-		String date=Util.getDate();
-		String time=Util.getTime();
-		String name=getPara("userName");
-		String room=getPara("userRoom");
-		User user=getSessionAttr("sessionUser");
-		if(name==null || room==null)
-		{
-			redirect("/404/error");
-			return;
-		}
-		user.set("name", name).set("room",room).update();
+		
 		List<Record> itemList=getSessionAttr("itemList");
 		double totalMoney=getSessionAttr("totalMoney");
 		if(itemList==null || getSessionAttr("totalMoney")==null)
