@@ -7,6 +7,14 @@
     <script type="text/javascript" src="/jquery/jquery-2.1.4.min.js"></script>
     <script type="text/javascript" src="/bootstrap/js/bootstrap.js"></script>
     <title>数据统计</title>
+    <script>
+function findInfo(){
+	var startTime=document.getElementById("sDate").value;
+	var endTime=document.getElementById("eDate").value;
+	var dataInfo="sdate="+startTime+"&edate="+endTime;
+	window.location="/mgradmin/datainfo?"+dataInfo;
+	}
+</script>
 </head>
 <body>
 <div class="main">
@@ -21,7 +29,9 @@
         <div class="center">
             <div class="center_left">
             <p>
-                    <span><input type="date" id="upDate"></span>
+                    <span>起始日期</span><span><input value=${sdate} type="date" id="sDate"></span>
+                    <span>终止日期</span><span><input value=${edate} type="date" id="eDate"></span>
+                    <span><button onclick="findInfo()">查询</button></span>
                 </p>
             </div>
             <div class="center_right">

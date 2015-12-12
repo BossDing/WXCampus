@@ -138,3 +138,27 @@ function dealTrade(rid){
         }
     );
 }
+
+function applyCash(){
+	var url='/mgradmin/applyIncome';
+	
+    $.ajax(
+        {
+            url:url,
+            dataType: "json",
+            type: 'POST',
+            data:'',
+            success:function(json){
+            	if(json.Msg=="OK"){
+            		alert("申请成功");
+            	}
+            	else{
+            		alert(json.Msg);
+            	}
+            },
+            error: function () {
+                alert("error");
+            }
+        }
+    );
+}

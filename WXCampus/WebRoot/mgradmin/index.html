@@ -7,6 +7,7 @@
     <script type="text/javascript" src="/jquery/jquery-2.1.4.min.js"></script>
     <script type="text/javascript" src="/bootstrap/js/bootstrap.js"></script>
     <title>店长管理</title>
+
 </head>
 <body>
 <div class="main">
@@ -41,6 +42,15 @@
 				</#if>
             </div>
         </div>
+        <div class="center">
+        <#if ring!=0>
+        <div class="center_left">
+       		 <p><span style="width:100px;">销售额：</span><span style="width:140px;margin-left:5px;">${Sales}元</span>
+       		 <span style="width:100px;">收入：</span><span style="width:140px;margin-left:5px;">${Income}元</span>
+       		 <span  style="width:100px;margin-left:45px;"><button onclick="applyCash()">申请提现</button></span></p>
+        </div>
+        </#if>
+        </div>
         <div class="floor">
             <div class="floor_content">
                 <table class="table table-striped" id="list" style="text-align: center">
@@ -51,6 +61,7 @@
                         <th style="text-align: center">总价</th>
                         <th style="text-align: center">下单日期</th>
                         <th style="text-align: center">收获地址</th>
+                        <th style="text-align: center">联系电话</th>
                         <th style="text-align: center">显示详情</th>
                         <th style="text-align: center"></th>
                     </tr>
@@ -68,6 +79,7 @@
                         <td>${x.money}</td>
                         <td>${x.addedDate}&nbsp;${x.addedTime}</td>
                         <td>${x.room}</td>
+                         <td>${x.tel}</td>
                         <td>
                         <#list x.items as y>
                         ${y.iname}&nbsp;x${y.orderNum}</br>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <link href="/mgradmin/css/moban.css" rel="stylesheet" type="text/css">
+    <link href="/bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="/jquery/jquery-2.1.4.min.js"></script>
+    <script type="text/javascript" src="/bootstrap/js/bootstrap.js"></script>
+    <script type="text/javascript" src="/mgradmin/js/applyCashList.js"></script>
+    <title>查看申请提现</title>
+</head>
+<body>
+<div class="main">
+    <div class="main_info">
+		<#include "_layout0.html" />
+        <div class="center">
+            <div class="center_left">
+            </div>
+            <div class="center_right">
+            </div>
+        </div>
+        <div class="floor">
+            <div class="floor_content">
+                <table class="table table-striped" id="list" style="text-align: center">
+                    <caption style="text-align: center">申请列表</caption>
+                    <thead>
+                    <tr>
+                        <th style="text-align: center">编号</th>
+                         <th style="text-align: center">申请人</th>
+                        <th style="text-align: center">联系电话</th>
+                        <th style="text-align: center">销售额</th>
+                        <th style="text-align: center">收入</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <script>var i=1;</script>
+                    <#list aiList as x>
+                    <tr>
+                    	 <script>document.write('<td>'+i+'</td>');
+                  		  i++;
+                   		 </script>
+                        <td>${x.name}</td>
+                         <td><span>${x.tel}</span></td>
+                        <td>${x.sales}</td>
+                        <td>${x.income}</td>
+                        <#if x.state==0>
+                        <td><a style="cursor:pointer" onclick="dealApply('${x.aid}')">处理</a>
+                        </td>
+                        </#if>
+                    </tr>
+                    </#list>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

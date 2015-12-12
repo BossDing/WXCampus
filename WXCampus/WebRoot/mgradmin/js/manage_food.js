@@ -136,3 +136,31 @@ function sendsay(){
 	        }
 	    );
 }
+
+
+function changeWorkTime(){
+	var startTime=document.getElementById("startTime").value;
+	var endTime=document.getElementById("endTime").value;
+	var dataInfo='stime='+startTime+'&etime='+endTime;
+	var url='/mgradmin/setSellingTime'
+	$.ajax(
+	        {
+	            url:url,
+	            dataType: "json",
+	            type: 'POST',
+	            data:dataInfo,
+	            success:function(json){
+	            	if(json.Msg=="OK"){
+						alert("修改成功")
+	            		window.location.reload();
+	            	}
+	            	else{
+	            		alert(json.Msg);
+	            	}
+	            },
+	            error: function () {
+	                alert("error");
+	            }
+	        }
+	    );
+}

@@ -3,13 +3,29 @@
     height: 100%;
     float: left;
     position: absolute;
-    background-color: #FEE02A;
+    background-color: #ffffff;
 }
 .main_info{
+     width: 400px;
+    height: 400px;
+    float: right;
+    margin-top: 50px;
+    margin-right: 150px;
+    background-color: #FFFFFF;
+    border: solid 1px #A0B1C4;
+}
+.top{
+    width: 100%;
+    height: 70px;
+    float: left;
+    background-color: #EFF4FA;
+}
+.left{
     width: 400px;
     height: 400px;
-    margin: 100px auto;
-    background-color: #ffffff;
+    float: left;
+    margin-top: 50px;
+    margin-left: 150px;
 }
 .login_top{
      width: 100%;

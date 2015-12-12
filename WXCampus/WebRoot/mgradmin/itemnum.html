@@ -34,8 +34,11 @@
 					 <span><a style="cursor:pointer" onclick="sendsay()">修改</a></span>
            </#if>
             </p>
-            </div>
-            <div class="center_right">
+            <#if ring==2>
+            <p><span><input type="time" value=${stime!} id="startTime"></span><span>---</span><span><input value=${etime} id="endTime" type="time"></span>
+					 <span><button onclick="changeWorkTime()">修改</button></span>
+			</p>
+            </#if>
             </div>
         </div>
         <div class="floor">
