@@ -39,15 +39,15 @@ public class Ring2Service {
 		 List<Trades> ridList;
 		 String state=c.getPara("state");
 		 if(state==null)
-			 ridList=Trades.dao.paginate(page, 10, "select distinct rid,room,state,addedDate,addedTime", "from trades where seller=? and addedDate=? order by addedTime desc",manager.getInt("mid"),date).getList();
+			 ridList=Trades.dao.paginate(page, 10, "select distinct a.rid,a.room,a.state,a.addedDate,a.addedTime,b.tel", "from trades as a,user as b where a.customer=b.uid and a.seller=? and a.addedDate=? order by a.addedTime desc",manager.getInt("mid"),date).getList();
 		 else {
 			if(state.equals("0"))
-			{ ridList=Trades.dao.paginate(page, 10, "select distinct rid,room,state,addedDate,addedTime", "from trades where state=? and seller=? and addedDate=? order by addedTime desc",Integer.parseInt(state),manager.getInt("mid"),date).getList();
+			{ ridList=Trades.dao.paginate(page, 10, "select distinct a.rid,a.room,a.state,a.addedDate,a.addedTime,b.tel", "from trades as a,user as b where a.customer=b.uid and a.state=? and a.seller=? and a.addedDate=? order by a.addedTime desc",Integer.parseInt(state),manager.getInt("mid"),date).getList();
 			  flag=1;
 			}
 			else if(state.equals("1"))
 			{
-		     ridList=Trades.dao.paginate(page, 10, "select distinct rid,room,state,addedDate,addedTime", "from trades where state=? and seller=? and addedDate=? order by addedTime desc",Integer.parseInt(state),manager.getInt("mid"),date).getList();
+		     ridList=Trades.dao.paginate(page, 10, "select distinct a.rid,a.room,a.state,a.addedDate,a.addedTime,b.tel", "from trades as a,user as b where a.customer=b.uid and a.state=? and a.seller=? and a.addedDate=? order by a.addedTime desc",Integer.parseInt(state),manager.getInt("mid"),date).getList();
              flag=2;
 			}
 			else {
@@ -74,6 +74,7 @@ public class Ring2Service {
 				temp.set("items", itemsRecords);
 				temp.set("money", money);
 				temp.set("room", ridList.get(i).get("room"));
+				temp.set("tel", ridList.get(i).get("tel"));
 				records.add(temp);
 			}
 		 c.setAttr("tradeList", records);
@@ -110,13 +111,19 @@ public class Ring2Service {
 	public void setSellingTime()
 	{
 		 String startTime=c.getPara("stime")+":00";
-		 String endTime=c.getPara("etime")+":00";	 
+		 String endTime=c.getPara("etime")+":00";
+		 if(startTime.compareTo(endTime)>=0)
+		 {
+			 c.renderHtml(Util.getJsonText("时间设置错误"));
+			 return;
+		 }
 		 Areas areas=Areas.dao.findFirst("select * from areas where aid=?",manager.getInt("location"));
 		 areas.set("startTime", Util.filterUserInputContent(startTime)).set("endTime", Util.filterUserInputContent(endTime)).update();
-		 IndexService iService=new IndexService();
-		 iService.updateShopState(areas);
-		 areas=Areas.dao.findById(areas.getInt("aid"));//需不需要更新对象待测试
-		 c.renderHtml(areas.getStr("state"));
+		 c.renderHtml(Util.getJsonText("OK"));
+//		 IndexService iService=new IndexService();
+//		 iService.updateShopState(areas);
+//		 areas=Areas.dao.findById(areas.getInt("aid"));//需不需要更新对象待测试
+//		 c.renderHtml(areas.getStr("state"));
 	}
 
 }

@@ -37,6 +37,7 @@ import com.wxcampus.index.Advertisement;
 import com.wxcampus.index.Areas;
 import com.wxcampus.index.IndexService;
 import com.wxcampus.items.Applyfor;
+import com.wxcampus.items.Applyincome;
 import com.wxcampus.items.Incomes;
 import com.wxcampus.items.Informs;
 import com.wxcampus.items.Ingoods;
@@ -227,6 +228,35 @@ public class ManageController extends Controller{
 		}		
 	 }
 	 /**
+	  *   申请提现
+	  */
+	 public void applyIncome()
+	 {
+		 Managers manager=getSessionAttr(GlobalVar.BEUSER);
+		 Applyincome api=Applyincome.dao.findFirst("select * from applyincome where tel=? order by addedDT desc",manager.getStr("tel"));
+		 if(api!=null && api.getInt("state")==0)
+		 {
+			 renderHtml(Util.getJsonText("您已提交过提现申请,请不要重复提交"));
+			 return;
+		 }
+		 Incomes income=Incomes.dao.findFirst("select * from incomes where mid=?",manager.getInt("mid"));
+		 if(income.getBigDecimal("sales").doubleValue()==0)
+		 {
+			 renderHtml(Util.getJsonText("您当前收入为0,无法提交"));
+			 return;
+		 }
+		 Applyincome ai=new Applyincome();
+		 ai.set("name", manager.getStr("name")).set("tel", manager.getStr("tel"));
+		 ai.set("cardNo", "").set("sales", income.getBigDecimal("sales"));
+		 if(manager.getInt("ring")==2)
+			 ai.set("income", new BigDecimal(income.getBigDecimal("sales").doubleValue()*0.2));
+		 else if(manager.getInt("ring")==1)
+			 ai.set("income", new BigDecimal(income.getBigDecimal("sales").doubleValue()*0.03));
+		 ai.set("state", 0).set("addedDT", new Timestamp(System.currentTimeMillis()));
+		 ai.save();
+		 renderHtml(Util.getJsonText("OK"));
+	 }
+	 /**
 	  *  数据统计
 	  */
 	 public void datainfo()
@@ -241,84 +271,87 @@ public class ManageController extends Controller{
 			break;
 		}
 	
-//		String startDate = getPara("sdate");
-//		String endDate = getPara("edate");
-//		 if(startDate==null || endDate==null)
-//		 {
-//			 startDate=Util.getDate();
-//			 endDate=Util.getDate();
-//		 }
-//		List<Record> toshow = new ArrayList<Record>();
-//		List<Items> items = Items.dao.find("select iid from items");
-//	    if(manager.getInt("ring")==2)
-//	    {
-//		for (int i = 0; i < items.size(); i++) {
-//			int iid = items.get(i).getInt("iid");
-//
-//			Record temp = Db
-//					.findFirst(
-//							"select sum(orderNum) as sum_orderNum,sum(price) as sum_price from trades where location=? and addedDate>=? and addedDate<=? and item=?",
-//							manager.getInt("location"), startDate, endDate, iid);
-//
-//			if (temp != null) {
-//				Record record = new Record();
-//				record.set("iname", Items.dao.findById(iid).getStr("iname"));
-//				record.set("num", temp.getInt("sum_orderNum"));
-//				record.set("money", temp.getBigDecimal("sum_price"));
-//				toshow.add(record);
-//			}
-//		}
-//	    }else if (manager.getInt("ring")==1) {
-//			Areas college=Areas.dao.findById(manager.getInt("location"));
-//			for (int i = 0; i < items.size(); i++) {
-//				int iid = items.get(i).getInt("iid");
-//
-//				Record temp = Db
-//						.findFirst(
-//								"select sum(orderNum) as sum_orderNum,sum(price) as sum_price from trades where addedDate>=? and addedDate<=? and item=? and location in (select aid from areas where city='"+college.getStr("city")+"' and college='"+college.getStr("college")+"' and building!='')",
-//								 startDate, endDate, iid);
-//
-//				if (temp != null) {
-//					Record record = new Record();
-//					record.set("iname", Items.dao.findById(iid).getStr("iname"));
-//					record.set("num", temp.getInt("sum_orderNum"));
-//					record.set("money", temp.getBigDecimal("sum_price"));
-//					toshow.add(record);
-//				}
-//			}
-//	    
-//		}else if (manager.getInt("ring")==0) {
-//			
-//			for (int i = 0; i < items.size(); i++) {
-//				int iid = items.get(i).getInt("iid");
-//
-//				Record temp = Db
-//						.findFirst(
-//								"select sum(orderNum) as sum_orderNum,sum(price) as sum_price from trades where addedDate>=? and addedDate<=? and item=?",
-//								 startDate, endDate, iid);
-//
-//				if (temp != null) {
-//					Record record = new Record();
-//					record.set("iname", Items.dao.findById(iid).getStr("iname"));
-//					record.set("num", temp.getInt("sum_orderNum"));
-//					record.set("money", temp.getBigDecimal("sum_price"));
-//					toshow.add(record);
-//				}
-//			}
-//		}
-//	    setAttr("dataList", toshow);
-//	    setAttr("sdate", startDate);
-//	    setAttr("edate", endDate);
-//	    render("datainfo.html");
+		String startDate = getPara("sdate");
+		String endDate = getPara("edate");
+		 if(startDate==null || endDate==null)
+		 {
+			 startDate=Util.getDate();
+			 endDate=Util.getDate();
+		 }
+		List<Record> toshow = new ArrayList<Record>();
+		List<Items> items = Items.dao.find("select iid from items");
+	    if(manager.getInt("ring")==2)
+	    {
+	    	
+		for (int i = 0; i < items.size(); i++) {
+			int iid = items.get(i).getInt("iid");
+
+			Record temp = Db
+					.findFirst(
+							"select sum(orderNum) as sum_orderNum,sum(price) as sum_price from trades where location=? and addedDate>=? and addedDate<=? and item=?",
+							manager.getInt("location"), startDate, endDate, iid);
+            
+			if (temp.getBigDecimal("sum_orderNum")!=null) {
+				//logger.error(Items.dao.findById(iid).getStr("iname")+"---"+temp.getInt("sum_orderNum")+"---"+temp.getBigDecimal("sum_price"));
+				Record record = new Record();
+				record.set("iname", Items.dao.findById(iid).getStr("iname"));
+				record.set("num", temp.getBigDecimal("sum_orderNum"));
+				record.set("money", temp.getBigDecimal("sum_price"));
+				toshow.add(record);
+			}
+		}
+	    }else if (manager.getInt("ring")==1) {
+			Areas college=Areas.dao.findById(manager.getInt("location"));
+			for (int i = 0; i < items.size(); i++) {
+				int iid = items.get(i).getInt("iid");
+
+				Record temp = Db
+						.findFirst(
+								"select sum(orderNum) as sum_orderNum,sum(price) as sum_price from trades where addedDate>=? and addedDate<=? and item=? and location in (select aid from areas where city='"+college.getStr("city")+"' and college='"+college.getStr("college")+"' and building!='')",
+								 startDate, endDate, iid);
+
+				if (temp.getBigDecimal("sum_orderNum")!=null) {
+					Record record = new Record();
+					record.set("iname", Items.dao.findById(iid).getStr("iname"));
+					record.set("num", temp.getBigDecimal("sum_orderNum"));
+					record.set("money", temp.getBigDecimal("sum_price"));
+					toshow.add(record);
+				}
+			}
+	    
+		}else if (manager.getInt("ring")==0) {
+			
+			for (int i = 0; i < items.size(); i++) {
+				int iid = items.get(i).getInt("iid");
+
+				Record temp = Db
+						.findFirst(
+								"select sum(orderNum) as sum_orderNum,sum(price) as sum_price from trades where addedDate>=? and addedDate<=? and item=?",
+								 startDate, endDate, iid);
+
+				if (temp.getBigDecimal("sum_orderNum")!=null) {
+					Record record = new Record();
+					record.set("iname", Items.dao.findById(iid).getStr("iname"));
+					record.set("num", temp.getBigDecimal("sum_orderNum"));
+					record.set("money", temp.getBigDecimal("sum_price"));
+					toshow.add(record);
+				}
+			}
+		}
+	   // logger.error("Size-----"+toshow.size());
+	    setAttr("dataList", toshow);
+	    setAttr("sdate", startDate);
+	    setAttr("edate", endDate);
+	    render("datainfo.html");
 	    
 	    
-		 String month=getPara("month");
-		 if(month==null)
-			 month=Util.getMonth();
-		 List<Record> records=Db.find("select a.iname,b.num,b.money from items as a,areasales as b where a.iid=b.item and b.location=? and b.month=?",manager.getInt("location"),month);
-		 setAttr("dataList", records);
-		 setAttr("date_info", month);
-		 render("datainfo.html");	
+//		 String month=getPara("month");
+//		 if(month==null)
+//			 month=Util.getMonth();
+//		 List<Record> records=Db.find("select a.iname,b.num,b.money from items as a,areasales as b where a.iid=b.item and b.location=? and b.month=?",manager.getInt("location"),month);
+//		 setAttr("dataList", records);
+//		 setAttr("date_info", month);
+//		 render("datainfo.html");	
 	 }
 	 /**
 	  *  修改店铺状态
@@ -413,6 +446,8 @@ public class ManageController extends Controller{
 		 Areas area=Areas.dao.findById(manager.getInt("location"));
 		 setAttr("startPrice",area.getBigDecimal("startPrice").doubleValue());
 		 setAttr("say", manager.getStr("say"));
+		 setAttr("stime", area.get("startTime").toString().substring(0, 5));
+		 setAttr("etime", area.get("endTime").toString().substring(0, 5));
 			break;
 		case 0:
 			setAttr("ring", 0);
@@ -996,6 +1031,29 @@ public class ManageController extends Controller{
 		 Managers manager=getSessionAttr(GlobalVar.BEUSER);
 		 Ring0Service ring0Service=new Ring0Service(this, manager);
 		 ring0Service.setManager();
+	 }
+	 /**
+	  *   查看提现申请
+	  */
+	 @Before(Ring0Interceptor.class)
+	 public void seeApplyIncomes()
+	 {
+		 List<Applyincome> aiList=Applyincome.dao.find("select * from applyincome order by addedDT desc");
+		 setAttr("aiList", aiList);
+		 render("applyCashList.html");
+	 }
+	 @Before(Ring0Interceptor.class)
+	 public void dealApplyIncomes()
+	 {
+		 if(getPara("aid")==null)
+			 return;
+		 int aid=getParaToInt("aid");
+		 Applyincome ai=Applyincome.dao.findById(aid);
+		 ai.set("state", 1).update();
+		 Managers manager=Managers.dao.findFirst("select * from managers where tel=?",ai.getStr("tel"));
+		 Incomes income=Incomes.dao.findFirst("select * from incomes where mid=?",manager.getInt("mid"));
+		 income.set("sales", 0).update();
+		 renderHtml(Util.getJsonText("OK"));
 	 }
 	 /**
 	  *  查看地区详情

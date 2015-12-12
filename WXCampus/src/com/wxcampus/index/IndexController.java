@@ -386,7 +386,7 @@ public class IndexController extends Controller {
 		//请求openid        
 		String jsonStr=GeneralGet.getResponse("https://api.weixin.qq.com/sns/oauth2/access_token?appid="+GetOpenidInterceptor.APPID+"&secret="+GetOpenidInterceptor.APPSECRET+"&code="+code+"&grant_type=authorization_code");
 		JSONObject json=JSONObject.parseObject(jsonStr);
-		logger.error(jsonStr);
+		//logger.error(jsonStr);
 		String openid=json.getString("openid");
 		setSessionAttr(GlobalVar.OPENID, openid);
 		User user=User.me.findFirst("select uid from user where openid=?", openid);
