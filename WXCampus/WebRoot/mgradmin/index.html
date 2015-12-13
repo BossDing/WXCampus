@@ -61,7 +61,9 @@
                         <th style="text-align: center">总价</th>
                         <th style="text-align: center">下单日期</th>
                         <th style="text-align: center">收获地址</th>
+                        <#if ring==2>
                         <th style="text-align: center">联系电话</th>
+                        </#if>
                         <th style="text-align: center">显示详情</th>
                         <th style="text-align: center"></th>
                     </tr>
@@ -79,16 +81,20 @@
                         <td>${x.money}</td>
                         <td>${x.addedDate}&nbsp;${x.addedTime}</td>
                         <td>${x.room}</td>
-                         <td>${x.tel}</td>
+                        <#if ring==2>
+                        <td>${x.tel}</td>
+                        </#if>
                         <td>
                         <#list x.items as y>
                         ${y.iname}&nbsp;x${y.orderNum}</br>
                         </#list>
                         </td>
+                        <#if ring==2>
                        <#if x.state==0>
                         <td><a style="cursor: pointer" onclick="dealTrade('${x.rid}')">处理订单</a></td>
                     	<#else>
                     	<td></td>
+                    	</#if>	
                     	</#if>	
                     </tr>
                     </#list>

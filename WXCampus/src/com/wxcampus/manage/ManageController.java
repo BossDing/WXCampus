@@ -232,6 +232,12 @@ public class ManageController extends Controller{
 	  */
 	 public void applyIncome()
 	 {
+		 String weekday=Util.getWeekday();
+		 if(!weekday.equals("Tue"))
+		 {
+			 renderHtml(Util.getJsonText("每周二才能申请提现哦"));
+			 return;
+		 }
 		 Managers manager=getSessionAttr(GlobalVar.BEUSER);
 		 Applyincome api=Applyincome.dao.findFirst("select * from applyincome where tel=? order by addedDT desc",manager.getStr("tel"));
 		 if(api!=null && api.getInt("state")==0)
@@ -280,6 +286,7 @@ public class ManageController extends Controller{
 		 }
 		List<Record> toshow = new ArrayList<Record>();
 		List<Items> items = Items.dao.find("select iid from items");
+		double totalsales=0;
 	    if(manager.getInt("ring")==2)
 	    {
 	    	
@@ -288,8 +295,8 @@ public class ManageController extends Controller{
 
 			Record temp = Db
 					.findFirst(
-							"select sum(orderNum) as sum_orderNum,sum(price) as sum_price from trades where location=? and addedDate>=? and addedDate<=? and item=?",
-							manager.getInt("location"), startDate, endDate, iid);
+							"select sum(orderNum) as sum_orderNum,sum(price) as sum_price from trades where location=? and addedDate>=? and addedDate<=? and item=? and state=?",
+							manager.getInt("location"), startDate, endDate, iid,1);
             
 			if (temp.getBigDecimal("sum_orderNum")!=null) {
 				//logger.error(Items.dao.findById(iid).getStr("iname")+"---"+temp.getInt("sum_orderNum")+"---"+temp.getBigDecimal("sum_price"));
@@ -297,6 +304,7 @@ public class ManageController extends Controller{
 				record.set("iname", Items.dao.findById(iid).getStr("iname"));
 				record.set("num", temp.getBigDecimal("sum_orderNum"));
 				record.set("money", temp.getBigDecimal("sum_price"));
+				totalsales+=temp.getBigDecimal("sum_price").doubleValue();
 				toshow.add(record);
 			}
 		}
@@ -307,14 +315,15 @@ public class ManageController extends Controller{
 
 				Record temp = Db
 						.findFirst(
-								"select sum(orderNum) as sum_orderNum,sum(price) as sum_price from trades where addedDate>=? and addedDate<=? and item=? and location in (select aid from areas where city='"+college.getStr("city")+"' and college='"+college.getStr("college")+"' and building!='')",
-								 startDate, endDate, iid);
+								"select sum(orderNum) as sum_orderNum,sum(price) as sum_price from trades where state=? and addedDate>=? and addedDate<=? and item=? and location in (select aid from areas where city='"+college.getStr("city")+"' and college='"+college.getStr("college")+"' and building!='')",
+								 1,startDate, endDate, iid);
 
 				if (temp.getBigDecimal("sum_orderNum")!=null) {
 					Record record = new Record();
 					record.set("iname", Items.dao.findById(iid).getStr("iname"));
 					record.set("num", temp.getBigDecimal("sum_orderNum"));
 					record.set("money", temp.getBigDecimal("sum_price"));
+					totalsales+=temp.getBigDecimal("sum_price").doubleValue();
 					toshow.add(record);
 				}
 			}
@@ -326,14 +335,15 @@ public class ManageController extends Controller{
 
 				Record temp = Db
 						.findFirst(
-								"select sum(orderNum) as sum_orderNum,sum(price) as sum_price from trades where addedDate>=? and addedDate<=? and item=?",
-								 startDate, endDate, iid);
+								"select sum(orderNum) as sum_orderNum,sum(price) as sum_price from trades where addedDate>=? and addedDate<=? and item=? and state=?",
+								 startDate, endDate, iid,1);
 
 				if (temp.getBigDecimal("sum_orderNum")!=null) {
 					Record record = new Record();
 					record.set("iname", Items.dao.findById(iid).getStr("iname"));
 					record.set("num", temp.getBigDecimal("sum_orderNum"));
 					record.set("money", temp.getBigDecimal("sum_price"));
+					totalsales+=temp.getBigDecimal("sum_price").doubleValue();
 					toshow.add(record);
 				}
 			}
@@ -342,6 +352,7 @@ public class ManageController extends Controller{
 	    setAttr("dataList", toshow);
 	    setAttr("sdate", startDate);
 	    setAttr("edate", endDate);
+	    setAttr("TotalSales", totalsales);
 	    render("datainfo.html");
 	    
 	    
@@ -1416,7 +1427,7 @@ public class ManageController extends Controller{
 		 List<Trades> ridList;
 		 String state=getPara("state");
 		 if(state==null)
-			 ridList=Trades.dao.paginate(page,15,"select distinct rid,state,location,room,addedDate,addedTime","from trades where addedDate=? order by addedDate desc,addedTime desc",date).getList();
+			 ridList=Trades.dao.paginate(page,15,"select distinct rid,state,location,room,addedDate,addedTime","from trades where addedDate=? and state!=2 order by addedDate desc,addedTime desc",date).getList();
 		 else {
 			if(state.equals("0"))
 				{ridList=Trades.dao.paginate(page,15,"select distinct rid,state,location,room,addedDate,addedTime","from trades where state=0 and addedDate=? order by addedDate desc,addedTime desc",date).getList();

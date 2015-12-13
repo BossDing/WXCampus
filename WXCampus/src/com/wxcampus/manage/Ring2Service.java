@@ -39,7 +39,7 @@ public class Ring2Service {
 		 List<Trades> ridList;
 		 String state=c.getPara("state");
 		 if(state==null)
-			 ridList=Trades.dao.paginate(page, 10, "select distinct a.rid,a.room,a.state,a.addedDate,a.addedTime,b.tel", "from trades as a,user as b where a.customer=b.uid and a.seller=? and a.addedDate=? order by a.addedTime desc",manager.getInt("mid"),date).getList();
+			 ridList=Trades.dao.paginate(page, 10, "select distinct a.rid,a.room,a.state,a.addedDate,a.addedTime,b.tel", "from trades as a,user as b where a.customer=b.uid and a.seller=? and a.addedDate=? and state!=2 order by a.addedTime desc",manager.getInt("mid"),date).getList();
 		 else {
 			if(state.equals("0"))
 			{ ridList=Trades.dao.paginate(page, 10, "select distinct a.rid,a.room,a.state,a.addedDate,a.addedTime,b.tel", "from trades as a,user as b where a.customer=b.uid and a.state=? and a.seller=? and a.addedDate=? order by a.addedTime desc",Integer.parseInt(state),manager.getInt("mid"),date).getList();

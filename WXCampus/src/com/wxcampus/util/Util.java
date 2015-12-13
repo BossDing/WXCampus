@@ -72,6 +72,11 @@ public class Util {
 		SimpleDateFormat sdf=new SimpleDateFormat("HH:mm:ss");
 		return sdf.format(new Date());
 	}
+	public static String getWeekday()
+	{
+		SimpleDateFormat sdf=new SimpleDateFormat("E");
+		return sdf.format(new Date());
+	}
 	public static String getTimeStamp()
 	{
 		SimpleDateFormat sdf=new SimpleDateFormat("yyyyMMddHHmmss");
