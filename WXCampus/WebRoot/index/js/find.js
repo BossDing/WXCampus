@@ -2,6 +2,26 @@
  * Created by ASUS on 2015/11/8.
  */
 //������ʳ
+
+function findFood_1(food){
+    var foodInfo=food;
+    var dataInfo='q='+foodInfo;
+    var url="/index/searchItems";
+    $.ajax(
+        {
+            url:url,
+            dataType: "json",
+            type: 'GET',
+            data:dataInfo,
+            success:backFoodList,
+            error: function () {
+                alert("error");
+            }
+        }
+    );
+}
+
+
 function findFood(){
     var foodInfo=document.getElementById("foodInfo").value;
     var dataInfo='q='+foodInfo;
@@ -31,11 +51,11 @@ function backFoodList(data){
         '</div>'+
         '<div class="food_info_center">'+
         '<p style="color: #843534;font-size: 2em;margin-left: 10px">'+data.itemList[i].iname+'</p>'+
-        '<p style="color: #843534;font-size: 2em;margin-left: 10px">销量：'+data.itemList[i].sales+'</p>'+
+        '<p style="color: #843534;font-size: 2em;margin-left: 10px">库存：'+data.itemList[i].restNum+'</p>'+
         '<p style="color: #843534;font-size: 2em;margin-left: 10px">'+data.itemList[i].price+'￥</p>'+
         '</div>'+
         '<div class="food_info_right" style="text-align: right">'+
-        '<p style="margin-top: 1em"><img src="/index/image_find/save.png" style="width:4em;height: 4em;margin-right: 1em " onclick=save("'+data.itemList[i].iid+'")></p>'+
+        '<p style="margin-top: 1em"><img src="/index/image_find/save.png" style="width:3.5em;height: 3.5em;margin-right: 1em " onclick=save("'+data.itemList[i].iid+'")></p>'+
         '<p style="margin-top: 3em"><span onclick=addNum("'+data.itemList[i].iid+'","'+data.itemList[i].restNum+'")><img  src="/index/image_find/add.png" style="width: 3.5em;height: 3.5em;float: right;margin-right: 1em"></span>'+
         ' <span id="'+data.itemList[i].iid+'" class="kuankuan">0</span>'+
         '<span id="'+data.itemList[i].iid+'_span"><img id="'+data.itemList[i].iid+'_reduce" src="/index/images_shop/reduce_inl.png" style="width: 3.5em;height: 3.5em;margin-right: 1em;float: right "></span></p>'+

@@ -14,6 +14,7 @@ import com.wxcampus.index.Advertisement;
 import com.wxcampus.index.Areas;
 import com.wxcampus.index.IndexController;
 import com.wxcampus.items.Applyfor;
+import com.wxcampus.items.Applyincome;
 import com.wxcampus.items.Areasales;
 import com.wxcampus.items.Coupons;
 import com.wxcampus.items.Coupons_use;
@@ -90,6 +91,7 @@ public class WXCampusConfig extends JFinalConfig{
 		arp.addMapping("ingoods", "iid",Ingoods.class);
 		arp.addMapping("areasales", "asid",Areasales.class);
 		arp.addMapping("applyfor", "aid",Applyfor.class);
+		arp.addMapping("applyincome", "aid",Applyincome.class);
 	}
 
 	

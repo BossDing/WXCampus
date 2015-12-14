@@ -269,6 +269,19 @@ CREATE TABLE `applyfor` (
   PRIMARY KEY (`aid`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS `applyincome`;
+CREATE TABLE `applyincome` (
+  `aid` int(10) NOT NULL AUTO_INCREMENT,
+  `name` varchar(127) NOT NULL,
+  `tel` varchar(127) not null,
+  `cardNo` varchar(127) not null,
+  `sales` decimal(10,2) not null,
+  `income` decimal(10,2) not null,
+  `state` int(1) not null,
+  `addedDT` timestamp NOT NULL,
+  PRIMARY KEY (`aid`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
 select * from user;
 
 select * from areas;

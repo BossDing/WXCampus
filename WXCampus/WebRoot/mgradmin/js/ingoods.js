@@ -66,6 +66,7 @@ function backInsertInfo(json){
                 '<p><button style="margin-top:15px" onclick="confirmTrade()">确定提交</button>'+
           '</div>'
         ;
+  document.getElementById("insertFood").innerHTML="";
 $("#insertFood").append(data);
 }
 

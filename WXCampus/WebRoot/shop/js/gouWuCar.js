@@ -129,7 +129,8 @@ function getPrice(limitPrice){
 		price+=parseFloat(document.getElementById(arr[i]+'_price').innerHTML)*
 		parseInt(document.getElementById(arr[i]).innerHTML);
 	}
-	document.getElementById("allPrice").innerHTML=price;
+	var all_Price=parseFloat((price).toFixed(2)); 
+	document.getElementById("allPrice").innerHTML=all_Price;
 }
 
 //确认订单
