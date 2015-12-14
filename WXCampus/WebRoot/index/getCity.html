@@ -38,8 +38,12 @@
         </div>
     </div>
 </div>
+
 <script type="text/javascript">
 window.onload=inialCity();
+<#if flag==1>
+setTimeout(function(){inialColleges('${city}');},1500);
+</#if>
 </script>
 </body>
 </html>

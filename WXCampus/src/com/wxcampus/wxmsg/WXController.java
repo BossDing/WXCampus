@@ -25,6 +25,7 @@ public class WXController extends Controller{
 		if(!valid())
 			return;
 		renderHtml("");
+		logger.error("enter");
 		InputStream inputStream=null;
 		Document document=null;
 		try {
@@ -101,10 +102,16 @@ public class WXController extends Controller{
 									}
 								}
 							}
-							Areas areaCollege=Areas.dao.findFirst("select * from areas where college=?",college);
+							Areas areaCollege=Areas.dao.findFirst("select * from areas where college=? and building=?",college,"");
+							//Areas areaCollege=null;
 							if(areaCollege!=null)
 							{
 								user.set("location", areaCollege.getInt("aid")).update();
+							}else
+							{
+								areaCollege=Areas.dao.findFirst("select * from areas where city=? and college=?",city,"");
+								if(areaCollege!=null)
+								   user.set("location", areaCollege.getInt("aid")).update();
 							}
 							logger.error("Address:--------------"+res.getString("sematic_description"));
 							logger.error("College:--------------"+college);

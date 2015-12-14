@@ -37,10 +37,17 @@ public class LocationInterceptor implements Interceptor{
 						return;
 					}else {
 						Areas area=Areas.dao.findById(user.getInt("location"));
-						if(area.getStr("building")==null || area.getStr("building").equals(""))
+						if(area.getStr("college")==null || area.getStr("college").equals(""))
 						{
-							arg0.getController().redirect("/index/area?city="+Util.getEncodeText(area.getStr("city"))+"&college="+Util.getEncodeText(area.getStr("college")));
+							arg0.getController().redirect("/index/getCity?city="+Util.getEncodeText(area.getStr("city")));
 							return;
+						}
+						else {
+							if(area.getStr("building")==null || area.getStr("building").equals(""))
+							{
+								arg0.getController().redirect("/index/area?city="+Util.getEncodeText(area.getStr("city"))+"&college="+Util.getEncodeText(area.getStr("college")));
+								return;
+							}
 						}
 					}
 				}

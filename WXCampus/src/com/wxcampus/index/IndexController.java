@@ -204,6 +204,14 @@ public class IndexController extends Controller {
 	@Clear
     public void getCity()
     {
+		if(getPara("city")!=null)
+		{
+		String city=getPara("city");
+		setAttr("city", city);
+		setAttr("flag", 1);
+		}else {
+			setAttr("flag", 0);
+		}
     	render("getCity.html");
     }
 	public void area()
