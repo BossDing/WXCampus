@@ -280,3 +280,13 @@ function openNewDiv_building(_id,city,college,building) {
         return false;
     }
 }
+
+
+function findCity(){
+	var findinfo=document.getElementById("findcity").value;
+	window.location="/mgradmin/searchArea?type=1&q="+findinfo;
+}
+function findCollege(city){
+	var findinfo=document.getElementById("findcollege").value;
+	window.location="/mgradmin/searchArea?type=2&city="+city+"&q="+findinfo;
+}

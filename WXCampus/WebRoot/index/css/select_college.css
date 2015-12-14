@@ -82,13 +82,17 @@
 }
 .floor_left{
     width: 40%;
-    min-height: 500px;
+    max-height: 1000px;
     float: left;
+    overflow-y:auto;
+    border:solid 1px #E7E8EB;
     background-color: #ffffff;
 }
 .floor_right{
     width: 60%;
-    min-height: 500px;
+    max-height: 1000px;
+     overflow-y:auto;
+    border:solid 1px #E7E8EB;
     float: left;
 }
 .floor_left_content{

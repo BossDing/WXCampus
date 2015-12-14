@@ -36,7 +36,10 @@
            	</div>
         </div>
           <script type="text/javascript">
-				 inialBuildings('${city}','${college}');	
+				 inialBuildings('${city}','${college}');
+		<#if flag==1>
+		findcollege_1('${college}');
+		</#if>	
         </script>
         <div class="floor_right" id="floor_right">
             

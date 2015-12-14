@@ -3,6 +3,11 @@
  */
 //搜索城市
 function findcity(){
+    var college=document.getElementById("cityInfo").value;
+   window.location="/index/searchCollege?q="+college;
+}
+//搜索城市
+function findcity_1(){
     var city=document.getElementById("cityInfo").value;
     var dataInfo='q='+city;
     var url='/index/searchCity/';

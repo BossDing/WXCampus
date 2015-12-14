@@ -7,8 +7,9 @@ function advice(){
 function mysave(){
 	window.location='/usr/mySave';
 }
+
 function backshop(){
-	window.location='/index';
+		window.location='/index?type=refresh';
 }
 function myTrades(){
 	window.location='/usr/trades/1';

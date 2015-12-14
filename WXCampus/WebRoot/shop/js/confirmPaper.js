@@ -5,6 +5,7 @@ function payFor(){
 	var username=document.getElementById("username").value;
 	var userroom=document.getElementById("userroom").value;
 	var usertel=document.getElementById("usertel").value;
+	var userInfo=document.getElementById("information").value;
 	if(username==""||username==null){
 		alert("请输入姓名");
 		return;
@@ -17,7 +18,7 @@ function payFor(){
 		alert("请输入手机号");
 		return;
 	}
-	var datainfo='userName='+username+'&userRoom='+userroom+'&userTel='+usertel;
+	var datainfo='userName='+username+'&userRoom='+userroom+'&userTel='+usertel+'&inform='+userInfo;
 	var url='/shop/pay';
 	$.ajax(
 	        {

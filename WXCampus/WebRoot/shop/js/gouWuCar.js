@@ -43,7 +43,7 @@ function backFoodList(){
 }
 function backtoindex()
 {
-	window.location="/index";
+	window.location="/index?type=refresh";
 }
 //增加数量
 function addNum(iid,restnum){
@@ -52,7 +52,9 @@ function addNum(iid,restnum){
 		num++;
 		}
 		else{
-			alert("库存不足");
+			alert("卖光啦");
+			document.getElementById(iid+'_add').src="/index/image_find/add_old.png";
+			document.getElementById(iid+'_addspan').onclick="";
 			return;
 		}
 	document.getElementById(iid).innerHTML="";
@@ -62,16 +64,22 @@ function addNum(iid,restnum){
 //		var obj=document.getElementById(iid+'_span');
 //		obj.onclick=reduceNum(iid);
 		document.getElementById(iid+'_span').onclick=function(){
-			reduceNum(iid);
+			reduceNum(iid,restnum);
 		};
 	}
 	getPrice();
 	sendajax(iid,"0");
 }
 //减少数量
-function reduceNum(iid){
+function reduceNum(iid,restNum){
 	var num=parseInt(document.getElementById(iid).innerHTML);
 	num--;
+	if(num<restNum){
+		document.getElementById(iid+'_add').src="/index/image_find/add.png";
+		document.getElementById(iid+'_addspan').onclick=function(){
+			addNum(iid,restNum);
+		};
+	}
 	document.getElementById(iid).innerHTML="";
 	document.getElementById(iid).innerHTML=num;
 	if(num<=0){

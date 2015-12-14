@@ -20,11 +20,15 @@
                  <span style="width: 100px;height: 34px;margin-left: 25px">添加城市:</span>
                 <span style="display: block;width: 160px"><input id="city" type="text"  style="width: 160px"></span>
                     <span><button onclick="submitCity()">提交</button></span>
+                <span style="display: block;width: 160px"><input id="findcity" placeholder="输入要搜索的城市" type="text"  style="width: 160px"></span>
+                    <span><button onclick="findCity()">搜索</button></span>
                 <#elseif type==2>
                  <span style="display: block;"><button style="width:80px"  onclick="backCity()">&lt;返回</button></span>
                  <span style="width: 100px;height: 34px;margin-left: 25px" >添加校区:</span>
                 <span style="display: block;width: 160px"><input id="college" type="text" style="width: 160px"></span>
                     <span><button onclick="submitCollege('${city}')">提交</button></span>
+                    <span style="display: block;width: 160px"><input id="findcollege"  placeholder="输入要搜索的学校" type="text"  style="width: 160px"></span>
+                    <span><button onclick="findCollege('${city}')">搜索</button></span>
                	<#elseif type==3>
                	 <span style="display: block;"><button style="width:80px"  onclick="backCollege('${city}')">&lt;返回</button></span>
                	 <span style="width: 100px;height: 34px;margin-left: 25px">添加楼栋:</span>

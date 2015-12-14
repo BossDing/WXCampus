@@ -49,6 +49,10 @@
        		 <span style="width:100px;">收入：</span><span style="width:140px;margin-left:5px;">${Income}元</span>
        		 <span  style="width:100px;margin-left:45px;"><button onclick="applyCash()">申请提现</button></span></p>
         </div>
+        <div>
+        	<p><span><input id="alipay" value="${alipayNo!}" style="margin-top:20px;margin-left:-50px;width:250px;height:35px;" type="text" placeholder="请输入你的支付宝账号"></span>
+        	<span><button onclick="submitAlipay()" style="height:35px">提交</button></span></p>
+        </div>
         </div>
          </#if>
         <div class="floor">
@@ -61,16 +65,21 @@
                         <th style="text-align: center">总价</th>
                         <th style="text-align: center">下单日期</th>
                         <th style="text-align: center">收获地址</th>
-                        <#if ring==2>
                         <th style="text-align: center">联系电话</th>
-                        </#if>
+                         <th style="text-align: center">姓名</th>
+                         <#if ring==0>
+                          <th style="text-align: center">送达日期</th>
+                          </#if>
+                          <#if ring==2>
+                          <th style="text-align: center">备注</th>
+                          </#if>
                         <th style="text-align: center">显示详情</th>
                         <th style="text-align: center"></th>
                     </tr>
                     </thead>
                     <tbody>
                     <#list tradeList as x>
-                    <tr>
+                     <tr>
                     <#if x.state==0>
                         <td>待送货</td>
                     <#elseif x.state==1>
@@ -81,9 +90,14 @@
                         <td>${x.money}</td>
                         <td>${x.addedDate}&nbsp;${x.addedTime}</td>
                         <td>${x.room}</td>
-                        <#if ring==2>
                         <td>${x.tel}</td>
-                        </#if>
+                        <td>${x.name}</td>
+                        <#if ring==0>
+                         <td>${x.finishTime}</td>
+                         </#if>
+                          <#if ring==2>
+                         <td>${x.inform!}</td>
+                         </#if>
                         <td>
                         <#list x.items as y>
                         ${y.iname}&nbsp;x${y.orderNum}</br>
@@ -169,4 +183,10 @@ var currdate='${date_info}';
     <#if ring==2>
     setInterval('showUnreadNews()',20000);
     </#if>
+</script>
+<script>
+function getMoreListInfo(){
+
+
+}
 </script>

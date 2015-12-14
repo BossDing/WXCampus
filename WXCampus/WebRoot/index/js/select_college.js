@@ -19,6 +19,22 @@ function findcollege(){
         }
     );
 }
+function findcollege_1(college){
+    var dataInfo='q='+college;
+    var url='/index/searchArea/';
+    $.ajax(
+        {
+            url:url,
+            dataType: "json",
+            type: 'POST',
+            data:dataInfo,
+            success:backCollegeList,
+            error: function () {
+                alert("error");
+            }
+        }
+    );
+}
 //搜索成功，返回校区列表
 function backCollegeList(data){
     document.getElementById("floor_left").innerHTML="";

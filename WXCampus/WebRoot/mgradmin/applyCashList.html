@@ -28,6 +28,7 @@
                         <th style="text-align: center">编号</th>
                          <th style="text-align: center">申请人</th>
                         <th style="text-align: center">联系电话</th>
+                        <th style="text-align: center">支付宝账号</th>
                         <th style="text-align: center">销售额</th>
                         <th style="text-align: center">收入</th>
                         <th></th>
@@ -42,6 +43,7 @@
                    		 </script>
                         <td>${x.name}</td>
                          <td><span>${x.tel}</span></td>
+                          <td>${x.cardNo!}</td>
                         <td>${x.sales}</td>
                         <td>${x.income}</td>
                         <#if x.state==0>

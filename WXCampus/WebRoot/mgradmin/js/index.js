@@ -162,3 +162,26 @@ function applyCash(){
         }
     );
 }
+
+function submitAlipay(){
+var url='/mgradmin/setAlipayCard';
+var datainfo=document.getElementById("alipay").value;	
+var data_1="alipayNo="+datainfo;
+    $.ajax(
+        {
+            url:url,
+            dataType: "json",
+            type: 'POST',
+            data:data_1,
+            success:function(json){
+            	if(json.Msg=="OK"){
+            		alert("设置成功");
+            		window.location.reload();
+            	}
+            },
+            error: function () {
+                alert("error");
+            }
+        }
+    );
+}

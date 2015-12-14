@@ -32,7 +32,7 @@ function backFoodList(data){
         '</div>'+
         '<div class="food_info_right" style="text-align: right">'+
         '<p style="margin-top: 1em"><img src="/usr/image_mysave/close.png" style="width:3em;height: 3em;margin-right: 1em " onclick=cancelsave("'+data.itemList[i].iid+'")></p>'+
-        '<p style="margin-top: 3em"><span onclick=addNum("'+data.itemList[i].iid+'","'+data.itemList[i].restNum+'")><img  src="/index/image_find/add.png" style="width: 3.5em;height: 3.5em;float: right;margin-right: 1em"></span>'+
+        '<p style="margin-top: 3em"><span id="'+data.itemList[i].iid+'_addspan" onclick=addNum("'+data.itemList[i].iid+'","'+data.itemList[i].restNum+'")><img id="'+data.itemList[i].iid+'_add"  src="/index/image_find/add.png" style="width: 3.5em;height: 3.5em;float: right;margin-right: 1em"></span>'+
         ' <span id="'+data.itemList[i].iid+'" class="kuankuan">0</span>'+
         '<span id="'+data.itemList[i].iid+'_span"><img id="'+data.itemList[i].iid+'_reduce" src="/index/images_shop/reduce_inl.png" style="width: 3.5em;height: 3.5em;margin-right: 1em;float: right "></span></p>'+
         '</div>'+
@@ -84,7 +84,9 @@ function addNum(iid,restnum){
 		num++;
 		}
 		else{
-			alert("库存不足");
+			alert("卖光啦");
+			document.getElementById(iid+'_add').src="/index/image_find/add_old.png";
+			document.getElementById(iid+'_addspan').onclick="";
 			return;
 		}
 	document.getElementById(iid).innerHTML="";
@@ -94,16 +96,22 @@ function addNum(iid,restnum){
 //		var obj=document.getElementById(iid+'_span');
 //		obj.onclick=reduceNum(iid);
 		document.getElementById(iid+'_span').onclick=function(){
-			reduceNum(iid);
+			reduceNum(iid,restnum);
 		};
 	}
 	sendajax(iid,"0");
 	document.getElementById("totalNum").innerHTML=parseInt(document.getElementById("totalNum").innerHTML)+1;
 }
 //减少数量
-function reduceNum(iid){
+function reduceNum(iid,restNum){
 	var num=parseInt(document.getElementById(iid).innerHTML);
 	num--;
+	if(num<restNum){
+		document.getElementById(iid+'_add').src="/index/image_find/add.png";
+		document.getElementById(iid+'_addspan').onclick=function(){
+			addNum(iid,restNum);
+		};
+	}
 	document.getElementById(iid).innerHTML="";
 	document.getElementById(iid).innerHTML=num;
 	if(num<=0){

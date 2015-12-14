@@ -22,11 +22,11 @@ function getFood(foodclass){
 }
 //�����ɹ���������Ʒ�б�
 var arr=[];
-var isFirst=true;
 function backFoodList(data){
+	var isFirst=map.get(category);
 	if(isFirst==true){
 		document.getElementById(category+"xiala").src="/index/images_shop/xiala.png";
-		isFirst=false;
+		map.put(category,false);
 		document.getElementById(category).innerHTML="";
 	    var foodList='';
 	    for(var i=0;i<data.itemList.length;i++){
@@ -42,7 +42,7 @@ function backFoodList(data){
 	            '</div>'+
 	            '<div class="food_info_right" style="text-align: right">'+
 	            '<p style="margin-top: 1em"><img src="/index/image_find/save.png" style="width:3.5em;height: 3.5em;margin-right: 1em " onclick=save("'+data.itemList[i].iid+'")></p>'+
-	            '<p style="margin-top: 3em"><span onclick=addNum("'+data.itemList[i].iid+'","'+data.itemList[i].restNum+'")><img  src="/index/image_find/add.png" style="width: 3.5em;height: 3.5em;float: right;margin-right: 1em"></span>'+
+	            '<p style="margin-top: 3em"><span id="'+data.itemList[i].iid+'_addspan"  onclick=addNum("'+data.itemList[i].iid+'","'+data.itemList[i].restNum+'")><img id="'+data.itemList[i].iid+'_add"  src="/index/image_find/add.png" style="width: 3.5em;height: 3.5em;float: right;margin-right: 1em"></span>'+
 	            ' <span id="'+data.itemList[i].iid+'" class="kuankuan">0</span>'+
 	            '<span id="'+data.itemList[i].iid+'_span"><img id="'+data.itemList[i].iid+'_reduce" src="/index/images_shop/reduce_inl.png" style="width: 3.5em;height: 3.5em;margin-right: 1em;float: right "></span></p>'+
 	            '</div>'+
@@ -55,7 +55,7 @@ function backFoodList(data){
 	}
 	else{
 		document.getElementById(category+"xiala").src="/index/images_shop/next_1.png";
-		isFirst=true;
+		map.put(category,true);
 		document.getElementById(category).innerHTML="";
 	}
 	
@@ -137,7 +137,9 @@ function addNum(iid,restnum){
 	num++;
 	}
 	else{
-		alert("库存不足");
+		alert("卖光啦");
+		document.getElementById(iid+'_add').src="/index/image_find/add_old.png";
+		document.getElementById(iid+'_addspan').onclick="";
 		return;
 	}
 	document.getElementById(iid).innerHTML="";
@@ -147,16 +149,22 @@ function addNum(iid,restnum){
 //		var obj=document.getElementById(iid+'_span');
 //		obj.onclick=reduceNum(iid);
 		document.getElementById(iid+'_span').onclick=function(){
-			reduceNum(iid);
+			reduceNum(iid,restnum);
 		};
 	}
 	sendajax(iid,"0");
 	document.getElementById("totalNum").innerHTML=parseInt(document.getElementById("totalNum").innerHTML)+1;
 }
 //减少数量
-function reduceNum(iid){
+function reduceNum(iid,restNum){
 	var num=parseInt(document.getElementById(iid).innerHTML);
 	num--;
+	if(num<restNum){
+		document.getElementById(iid+'_add').src="/index/image_find/add.png";
+		document.getElementById(iid+'_addspan').onclick=function(){
+			addNum(iid,restNum);
+		};
+	}
 	document.getElementById(iid).innerHTML="";
 	document.getElementById(iid).innerHTML=num;
 	if(num<=0){
@@ -207,4 +215,102 @@ function sendajax(iid,type){
 function personInfo(){
 	window.location='/usr';
 }
+
+
+
+function Map() {   
+    /** 存放键的数组(遍历用到) */  
+    this.keys = new Array();   
+    /** 存放数据 */  
+    this.data = new Object();   
+       
+    /**  
+     * 放入一个键值对  
+     * @param {String} key  
+     * @param {Object} value  
+     */  
+    this.put = function(key, value) {   
+        if(this.data[key] == null){   
+            this.keys.push(key);   
+        }   
+        this.data[key] = value;   
+    };   
+       
+    /**  
+     * 获取某键对应的值  
+     * @param {String} key  
+     * @return {Object} value  
+     */  
+    this.get = function(key) {   
+        return this.data[key];   
+    };   
+       
+    /**  
+     * 删除一个键值对  
+     * @param {String} key  
+     */  
+    this.remove = function(key) {   
+        this.keys.remove(key);   
+        this.data[key] = null;   
+    };   
+       
+    /**  
+     * 遍历Map,执行处理函数  
+     *   
+     * @param {Function} 回调函数 function(key,value,index){..}  
+     */  
+    this.each = function(fn){   
+        if(typeof fn != 'function'){   
+            return;   
+        }   
+        var len = this.keys.length;   
+        for(var i=0;i<len;i++){   
+            var k = this.keys[i];   
+            fn(k,this.data[k],i);   
+        }   
+    };   
+       
+    /**  
+     * 获取键值数组(类似Java的entrySet())  
+     * @return 键值对象{key,value}的数组  
+     */  
+    this.entrys = function() {   
+        var len = this.keys.length;   
+        var entrys = new Array(len);   
+        for (var i = 0; i < len; i++) {   
+            entrys[i] = {   
+                key : this.keys[i],   
+                value : this.data[i]   
+            };   
+        }   
+        return entrys;   
+    };   
+       
+    /**  
+     * 判断Map是否为空  
+     */  
+    this.isEmpty = function() {   
+        return this.keys.length == 0;   
+    };   
+       
+    /**  
+     * 获取键值对数量  
+     */  
+    this.size = function(){   
+        return this.keys.length;   
+    };   
+       
+    /**  
+     * 重写toString   
+     */  
+    this.toString = function(){   
+        var s = "{";   
+        for(var i=0;i<this.keys.length;i++,s+=','){   
+            var k = this.keys[i];   
+            s += k+"="+this.data[k];   
+        }   
+        s+="}";   
+        return s;   
+    };   
+}   
 

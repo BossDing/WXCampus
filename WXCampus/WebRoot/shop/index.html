@@ -28,7 +28,7 @@
              </div>  
              <div class="food_info_right" style="text-align: right">  
              <p style="margin-top: 1em"><img src="/index/image_find/save.png" onclick=save(${x.iid}) style="width:3.5em;height: 3.5em;margin-right: 1em "></p>  
-             <p style="margin-top: 3em"><span onclick=addNum(${x.iid},${x.restNum})><img src="/index/image_find/add.png" style="width: 3.5em;height: 3.5em;float: right;margin-right: 1em"></span>  
+             <p style="margin-top: 3em"><span id=${x.iid}_addspan onclick=addNum(${x.iid},${x.restNum})><img id=${x.iid}_add  src="/index/image_find/add.png" style="width: 3.5em;height: 3.5em;float: right;margin-right: 1em"></span>  
               <span id=${x.iid} class="kuankuan">${x.orderNum}</span>  
              <span id=${x.iid}_span onclick=reduceNum(${x.iid})><img src="/index/image_find/reduce.png" id=${x.iid}_reduce style="width: 3.5em;height: 3.5em;margin-right: 1em;float: right "></span></p>  
              </div>  
