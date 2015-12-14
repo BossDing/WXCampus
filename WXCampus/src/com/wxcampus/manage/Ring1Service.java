@@ -42,7 +42,7 @@ public class Ring1Service {
 		 for(int i=0;i<areaList.size();i++)
 		 {
 		 if(state==null)
-			 ridList.addAll(Trades.dao.paginate(page,10,"select distinct rid,location,state,room,addedDate,addedTime","from trades where location=? and addedDate=? order by addedTime desc",areaList.get(i).getInt("aid"),date).getList());
+			 ridList.addAll(Trades.dao.paginate(page,10,"select distinct rid,location,state,room,addedDate,addedTime","from trades where location=? and addedDate=? and state!=2 order by addedTime desc",areaList.get(i).getInt("aid"),date).getList());
 		 else {
 			if(state.equals("0"))
 				{ridList.addAll(Trades.dao.paginate(page,10,"select distinct rid,location,state,room,addedDate,addedTime","from trades where state=0 and location=? and addedDate=? order by addedTime desc",areaList.get(i).getInt("aid"),date).getList());
