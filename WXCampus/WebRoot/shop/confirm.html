@@ -35,8 +35,8 @@ wx.error(function(res){
         <p><span class="span_image"><img onclick="backGouwuche()" src="/usr/image_personInfo/back.png"></span><span class="span_person">确认订单</span></p>
     </div>
     <div class="first">
-        <p><span>收货人姓名</span><input id="username" value="${userName}" type="text" style="border: none;width:70%;margin-left: 20px"></p>
-        <p><span>寝室号</span><input id="userroom" value="${userRoom}" type="text" style="border: none;width:70%;margin-left: 20px"></p>
+        <p><span>收货人姓名:</span><input id="username" value="${userName}" type="text" style="border: none;width:70%;margin-left: 20px"></p>
+        <p><span>寝室号:</span><input id="userroom" value="${userRoom}" type="text" style="border: none;width:70%;margin-left: 20px"></p>
         <p><span>手机号:</span><input id="usertel" value="${userTel}" type="text" style="border: none;width:70%;margin-left: 20px"></p>
          <p><span>备注:</span><input id="information"  type="text" style="border: none;width:70%;margin-left: 20px"></p>
         <p ><span class="pay_for">支付方式</span><span class="pay_online">线上付款<img src="/shop/image_confirm/OK.png"></span></p>
@@ -68,7 +68,7 @@ wx.error(function(res){
     </div>
     <div class="bottom">
         <div class="bottom_left">
-            <p><span>实际付：&nbsp;&nbsp;&nbsp;&nbsp;<sqg style="color: #ff5200">${totalMoney}￥</sqg></span></p>
+            <p><span>实际付：&nbsp;&nbsp;&nbsp;&nbsp;<sqg style="color: #ff5200">￥   ${totalMoney}</sqg></span></p>
         </div>
         <div class="bottom_right" onclick="payFor()">
             <p>确认订单</p>

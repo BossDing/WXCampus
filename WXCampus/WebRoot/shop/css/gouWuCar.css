@@ -15,6 +15,7 @@
     width: 100%;
     height: auto;
     float: left;
+    margin-top:15px;
     background-color: #ffffff;
 }
 .top p{
@@ -28,8 +29,9 @@
     margin-left: 20px;
 }
 .span_image img{
-    width: 60px;
-    height: 60px;
+    width: 40px;
+    height: 40px;
+    margin-top:10px;
 }
 .span_person{
     display: block;

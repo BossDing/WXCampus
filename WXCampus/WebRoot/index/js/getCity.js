@@ -76,7 +76,7 @@ function inialColleges(data){
 	}
 	else{
 		document.getElementById(currentSelect+"_1").style.color="#000000";
-		document.getElementById(currentSelect).style.backgroundColor="#EEEEEE";
+		document.getElementById(currentSelect).style.backgroundColor="#F7F7F7";
 	}
 currentSelect=data;
 document.getElementById(data).style.backgroundColor="#FD033E";

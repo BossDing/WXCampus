@@ -134,7 +134,9 @@ function getPrice(limitPrice){
 	LimitPrice=limitPrice;
 	var price=0;
 	for(var i=0;i<arr.length;i++){
-		price+=parseFloat(document.getElementById(arr[i]+'_price').innerHTML)*
+		var data_price=document.getElementById(arr[i]+'_price').innerHTML;
+		data_price=data_price.substring(1);
+		price+=parseFloat(data_price)*
 		parseInt(document.getElementById(arr[i]).innerHTML);
 	}
 	var all_Price=parseFloat((price).toFixed(2)); 

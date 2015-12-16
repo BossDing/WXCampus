@@ -28,7 +28,7 @@ function backFoodList(data){
         '<div class="food_info_center">'+
         '<p style="color: #843534;font-size: 2em;margin-left: 10px">'+data.itemList[i].iname+'</p>'+
         '<p style="color: #843534;font-size: 2em;margin-left: 10px"></p>'+
-        '<p style="color: #843534;font-size: 2em;margin-left: 10px">'+data.itemList[i].price+'￥</p>'+
+        '<p style="color: #843534;font-size: 2em;margin-left: 10px">￥'+data.itemList[i].price+'</p>'+
         '</div>'+
         '<div class="food_info_right" style="text-align: right">'+
         '<p style="margin-top: 1em"><img src="/usr/image_mysave/close.png" style="width:3em;height: 3em;margin-right: 1em " onclick=cancelsave("'+data.itemList[i].iid+'")></p>'+
