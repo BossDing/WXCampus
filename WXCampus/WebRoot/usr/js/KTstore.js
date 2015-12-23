@@ -61,8 +61,18 @@ function backlatest_2(){
 	window.location='/usr/wantosell';
 	
 }
+
+document.getElementById("btn_send").onclick=function(){
+	if(document.getElementById("tel").value!=""){
+		 sendConfirm();
+		    time(this);
+	}
+	else{
+		alert("手机号不能为空！");
+	}
+};
+
 function sendConfirm(){
-	  
 	    
 	var tel='type=1&tel='+document.getElementById("tel").value;
 	var url='/usr/vcode';
@@ -74,19 +84,8 @@ function sendConfirm(){
             data:tel,
             success:function(json){
             	alert(json.Msg);
-            	 var step = 59;
-            	    $('#btn').val('重新发送60');
-            	    var _res = setInterval(function()
-            	    {
-            	        $("#btn").attr("disabled", true);//设置disabled属性
-            	        $('#btn').val('重新发送'+step);
-            	        step-=1;
-            	        if(step <= 0){
-            	            $("#btn").removeAttr("disabled"); //移除disabled属性
-            	            $('#btn').val('获取验证码');
-            	            clearInterval(_res);//清除setInterval
-            	        }
-            	  },1000);
+//            	var obj=document.getElementById("btn");
+//            	    time(obj);
             },
             error: function () {
                 alert("error");
@@ -96,5 +95,26 @@ function sendConfirm(){
    
 }
 
-
+var wait=60;
+function time(o) {
+    if (wait == 0) {
+    	 o.onclick=function(){
+    		 sendConfirm();
+ 		};
+ 		  o.style.backgroundColor="#FD033E";
+        o.innerHTML="";
+        o.innerHTML="发送验证码";
+        wait = 60;
+    } else {
+        o.onclick="";
+        o.style.backgroundColor="#AAAAAB";
+        o.innerHTML="";
+        o.innerHTML="重新发送(" + wait + ")";
+        wait--;
+        setTimeout(function() {
+                time(o);
+            },
+        1000);
+    }
+}
 

@@ -7,7 +7,6 @@
     <link rel=stylesheet href="/usr/css/KTstore.css">
     <script src="/jquery/jquery-2.1.4.min.js"></script>
     <script src="/bootstrap/js/bootstrap.js"></script>
-    <script src="/usr/js/KTstore.js"></script>
     <title>申请开店</title>
 </head>
 <body>
@@ -41,7 +40,7 @@
 	         <p><span class="span_name">楼栋</span><input value="${(applyfor.building)!}" type="text" class="span_input" name="applyfor.building"></p>   
 	         <p><span class="span_name">姓名</span><input value="${(applyfor.name)!}" type="text" class="span_input" name="applyfor.name"></p>      
 	         <p><span class="span_name">手机</span><input id="tel" value="${(applyfor.tel)!}" type="text" class="span_input" name="applyfor.tel"></p>    
-	         <p><span class="span_name" >验证码</span><input type="text" class="span_confirm" name="vcode"><a onclick="sendConfirm()" id="btn" class="button_send">发送验证码</a></p>    
+	         <p><span class="span_name" >验证码</span><input type="text" class="span_confirm" name="vcode"><a id="btn_send" class="button_send">发送验证码</a></p>    
          </div> 
           	<div class="bottom_1">
         		<button  type="submit" style="font-size:28px;padding-top:14px;height:80px;width:200px;">下一步</button>
@@ -49,5 +48,6 @@
          </form>
     </div>
 </div>
+<script src="/usr/js/KTstore.js"></script>
 </body>
 </html>
