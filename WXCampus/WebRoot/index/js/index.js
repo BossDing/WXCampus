@@ -38,7 +38,7 @@ function backFoodList(data){
 	            '<div class="food_info_center">'+
 	            '<p style="color: #843534;font-size: 2em;margin-left: 10px">'+data.itemList[i].iname+'</p>'+
 	            '<p style="color: #843534;font-size: 2em;margin-left: 10px">销量：'+data.itemList[i].sales+'</p>'+
-	            '<p style="color: #843534;font-size: 2em;margin-left: 10px">'+data.itemList[i].price+'￥</p>'+
+	            '<p style="color: #843534;font-size: 2em;margin-left: 10px">￥'+data.itemList[i].price+'</p>'+
 	            '</div>'+
 	            '<div class="food_info_right" style="text-align: right">'+
 	            '<p style="margin-top: 1em"><img src="/index/image_find/save.png" style="width:3.5em;height: 3.5em;margin-right: 1em " onclick=save("'+data.itemList[i].iid+'")></p>'+

@@ -131,7 +131,7 @@
     margin-right: 30px;
 }
 .span_next img{
-  width: 50px;
+  width: 30px;
     height: 50px;
     margin-top: 15px;
 }
@@ -167,14 +167,13 @@
     float: left;
 }
 .kuankuan{
-    width: 4em;
+    width: 2.5em;
     height: 3.5em;
     margin-right: 1em ;
     display:block;
     float:right;
-    background: url('../image_find/kuan.png') no-repeat;
-    background-size: 4em 2.5em;
+    font-size:2.2em;
+    color:green;
     text-align: center;
-    padding-top:0.7em;
 }
 

@@ -57,8 +57,9 @@
     margin-left: 20px;
 }
 .span_image img{
-    width: 60px;
-    height: 60px;
+    width: 40px;
+    height: 40px;
+    margin-top:10px;
 }
 .span_person{
     display: block;
@@ -73,6 +74,13 @@
     margin-top: 3em;
     background: url("/usr/image_KTstore/top.png") no-repeat;
     background-size: 15em 5em;
+}
+.bottom button{
+    width: 15em;
+    height: 5em;
+    color:#ffffff;
+    background: url("/usr/image_KTstore/top.png") no-repeat;
+    background-size: 200px 80px;
 }
 .center_left{
     width: 33.33%;
@@ -142,12 +150,13 @@
 .button_send{
 	display:block;
     width: 35%;
-    height: 3em;
+    height: 2.6em;
     float: left;
+    color:#ffffff;
     text-align:center;
     padding-top:10px;
     margin-left: 15px;
-    background: url("/usr/image_KTstore/top.png") no-repeat;
+    background-color:#FD033E;
     background-size: 100% 3em;
 }
 .simpleInfo{

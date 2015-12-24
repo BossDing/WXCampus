@@ -88,7 +88,7 @@ function inialBuildings(city,college){
 	}
 	else{
 		document.getElementById(currentSelect+"_1").style.color="#000000";
-		document.getElementById(currentSelect).style.backgroundColor="#EEEEEE";
+		document.getElementById(currentSelect).style.backgroundColor="#F7F7F7";
 	}
 currentSelect=college;
 document.getElementById(college).style.backgroundColor="#FD033E";
