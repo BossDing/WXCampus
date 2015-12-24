@@ -210,7 +210,7 @@ function openNewDiv_college(_id,city,college,aid) {
     '<br>'+
     '<div class="input-group">'+
     '<span class="input-group-addon">性别</span>'+
-    '<select id="sex"  style="width:200px;height:50px;float:left;" name="mamagers.sex"><option value="1" >男</option><option value="0" >女</option></select>'+
+    '<select id="sex"  style="width:200px;height:50px;float:left;" name="managers.sex"><option value="1" >男</option><option value="0" >女</option></select>'+
     '</div>'+
     '<br>'+
     '<input type="hidden" value='+city+' name="city">'+
@@ -298,7 +298,7 @@ function openNewDiv_building(_id,city,college,building,aid) {
     '<br>'+
     '<div class="input-group">'+
     '<span class="input-group-addon">性别</span>'+
-    '<select id="sex"  style="width:200px;height:50px;float:left;" name="mamagers.sex"><option value="1" >男</option><option value="0" >女</option></select>'+
+    '<select id="sex"  style="width:200px;height:50px;float:left;" name="managers.sex"><option value="1" >男</option><option value="0" >女</option></select>'+
     '</div>'+
     '<br>'+
     '<input type="hidden" value='+city+' name="city">'+
@@ -345,13 +345,22 @@ function disPersonInfo(aid){
             type: 'POST',
             data:dataInfo,
             success:function(json){
+            	if(json.manager.name!="")
+            		{
             	document.getElementById("name").value=json.manager.name;
             	document.getElementById("tel").value=json.manager.tel;
             	document.getElementById("idcard").value=json.manager.idcard;
             	document.getElementById("major").value=json.manager.major;
             	document.getElementById("grade").value=json.manager.grade;
             	document.getElementById("stuid").value=json.manager.stuid;
-            	document.getElementById("sex").value=json.manager.sex;
+            	if(json.manager.sex)
+            		{
+            		document.getElementById("sex").options[0].selected=true;
+            		}else
+            		document.getElementById("sex").options[1].selected=true;
+            	
+            	
+            		}
             },
             error: function () {
                 alert("error");

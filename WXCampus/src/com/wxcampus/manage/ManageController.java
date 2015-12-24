@@ -1093,6 +1093,22 @@ public class ManageController extends Controller{
 		 ring0Service.setManager();
 	 }
 	 /**
+	  *    查看店长信息
+	  */
+	 @Before(Ring0Interceptor.class)
+	 public void seeManagerInfo()    
+	 {
+		 int aid=getParaToInt("aid");
+		 Managers manager=Managers.dao.findFirst("select * from managers where location=?",aid);
+		 if(manager==null)
+		 {
+			 manager=new Managers();
+			 manager.set("name", "");
+		 }
+		 setAttr("manager", manager);
+		 renderJson();
+	 }
+	 /**
 	  *   查看提现申请
 	  */
 	 @Before(Ring0Interceptor.class)
@@ -1103,13 +1119,16 @@ public class ManageController extends Controller{
 		 for(int i=0;i<aiList.size();i++)
 		 {
 			 Applyincome ai=aiList.get(i);
-			 Managers manager=Managers.dao.findFirst("select * from managers where tel=?",ai.getStr("tel"));
-			 Incomes income=Incomes.dao.findFirst("select * from incomes where mid=?",manager.getInt("mid"));
-			 ai.set("sales", income.getBigDecimal("sales"));
-			 if(manager.getInt("ring")==2)
-				 ai.set("income", new BigDecimal(income.getBigDecimal("sales").doubleValue()*0.2));
-			 else if(manager.getInt("ring")==1)
-				 ai.set("income", new BigDecimal(income.getBigDecimal("sales").doubleValue()*0.03));
+			 if(ai.getInt("state")==0)
+			 {
+				 Managers manager=Managers.dao.findFirst("select * from managers where tel=?",ai.getStr("tel"));
+				 Incomes income=Incomes.dao.findFirst("select * from incomes where mid=?",manager.getInt("mid"));
+				 ai.set("sales", income.getBigDecimal("sales"));
+				 if(manager.getInt("ring")==2)
+					 ai.set("income", new BigDecimal(income.getBigDecimal("sales").doubleValue()*0.2));
+				 else if(manager.getInt("ring")==1)
+					 ai.set("income", new BigDecimal(income.getBigDecimal("sales").doubleValue()*0.03));
+			 }
 		 }
 		 setAttr("aiList", aiList);
 		 render("applyCashList.html");
@@ -1389,6 +1408,7 @@ public class ManageController extends Controller{
 			 return;
 		 }
 	 }
+	 
 	 /**
 	  *   查看申请当店长
 	  */
@@ -1403,9 +1423,19 @@ public class ManageController extends Controller{
 		 setAttr("afList", afList);
 		 setAttr("page", page);
 		 render("seeApplyfor.html");
-		 ApplyforThread aft=new ApplyforThread(afList);
-		 Thread t=new Thread(aft);
-		 t.start();
+//		 ApplyforThread aft=new ApplyforThread(afList);
+//		 Thread t=new Thread(aft);
+//		 t.start();
+	 }
+	 /**
+	  *  处理店长审核
+	  */
+	 @Before(Ring0Interceptor.class)
+	 public void dealApplyfor()
+	 {
+		int aid=getParaToInt("aid");
+		Applyfor.dao.findById(aid).set("state", 1).update();
+		renderHtml(Util.getJsonText("OK"));
 	 }
 	 /**
 	  *  查看投诉建议
