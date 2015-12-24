@@ -139,7 +139,7 @@ public class WXController extends Controller{
 				break;
 			}
 		}
-		renderHtml("");
+		
 	}
 	private boolean valid()
 	{

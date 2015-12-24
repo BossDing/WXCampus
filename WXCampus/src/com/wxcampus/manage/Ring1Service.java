@@ -42,14 +42,14 @@ public class Ring1Service {
 		 for(int i=0;i<areaList.size();i++)
 		 {
 		 if(state==null)
-			 ridList.addAll(Trades.dao.paginate(page,10,"select distinct rid,location,state,room,addedDate,addedTime","from trades where location=? and addedDate=? and state!=2 order by addedTime desc",areaList.get(i).getInt("aid"),date).getList());
+			 ridList.addAll(Trades.dao.paginate(page,10,"select distinct a.rid,a.location,a.state,a.room,a.addedDate,a.addedTime,b.tel,b.name","from trades as a,user as b where a.customer=b.uid and a.location=? and a.addedDate=? and a.state!=2 order by a.addedTime desc",areaList.get(i).getInt("aid"),date).getList());
 		 else {
 			if(state.equals("0"))
-				{ridList.addAll(Trades.dao.paginate(page,10,"select distinct rid,location,state,room,addedDate,addedTime","from trades where state=0 and location=? and addedDate=? order by addedTime desc",areaList.get(i).getInt("aid"),date).getList());
+				{ridList.addAll(Trades.dao.paginate(page,10,"select distinct a.rid,a.location,a.state,a.room,a.addedDate,a.addedTime,b.tel,b.name","from trades as a,user as b where a.customer=b.uid and a.state=0 and a.location=? and a.addedDate=? order by a.addedTime desc",areaList.get(i).getInt("aid"),date).getList());
 				flag=1;
 				}
 				else if(state.equals("1"))
-				{ridList.addAll(Trades.dao.paginate(page,10,"select distinct rid,location,state,room,addedDate,addedTime","from trades where state=1 and location=? and addedDate=? order by addedTime desc",areaList.get(i).getInt("aid"),date).getList());
+				{ridList.addAll(Trades.dao.paginate(page,10,"select distinct a.rid,a.location,a.state,a.room,a.addedDate,a.addedTime,b.tel,b.name","from trades as a,user as b where a.customer=b.uid and a.state=1 and a.location=? and a.addedDate=? order by a.addedTime desc",areaList.get(i).getInt("aid"),date).getList());
 			     flag=2;
 				}
 				else {
@@ -78,6 +78,8 @@ public class Ring1Service {
 				temp.set("money", money);
 				Areas t=Areas.dao.findById(ridList.get(i).getInt("location"));
 				temp.set("room", t.getStr("building")+ridList.get(i).get("room"));
+				temp.set("tel", ridList.get(i).get("tel"));
+				temp.set("name", ridList.get(i).get("name"));
 				temp.set("items", itemsRecords);
 				records.add(temp);
 			}

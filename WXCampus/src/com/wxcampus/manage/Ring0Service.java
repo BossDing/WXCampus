@@ -162,11 +162,21 @@ public class Ring0Service {
 			oldManager.set("name",Util.filterUserInputContent(manager.getStr("name")));
 			oldManager.set("tel",Util.filterUserInputContent(manager.getStr("tel")));
 			oldManager.set("password",manager.getStr("tel").substring(5)).set("say", "");
+			oldManager.set("idcard",Util.filterUserInputContent(manager.getStr("idcard")));
+			oldManager.set("grade",Util.filterUserInputContent(manager.getStr("grade")));
+			oldManager.set("major",Util.filterUserInputContent(manager.getStr("major")));
+			oldManager.set("stuid",Util.filterUserInputContent(manager.getStr("stuid")));
+			oldManager.set("sex",manager.getBoolean("sex"));
 			oldManager.set("addedDate", Util.getDate()).set("addedTime", Util.getTime());
 			oldManager.update();
 		}else {
 			manager.set("name",Util.filterUserInputContent(manager.getStr("name")));
 			manager.set("tel",Util.filterUserInputContent(manager.getStr("tel")));
+			manager.set("idcard",Util.filterUserInputContent(manager.getStr("idcard")));
+			manager.set("grade",Util.filterUserInputContent(manager.getStr("grade")));
+			manager.set("major",Util.filterUserInputContent(manager.getStr("major")));
+			manager.set("stuid",Util.filterUserInputContent(manager.getStr("stuid")));
+			manager.set("sex",manager.getBoolean("sex"));
 			manager.set("location", area.getInt("aid"));
 			manager.set("password", manager.getStr("tel").substring(5));
 			manager.set("addedDate", Util.getDate()).set("addedTime", Util.getTime());
@@ -188,11 +198,21 @@ public class Ring0Service {
 			oldManager.set("name",Util.filterUserInputContent(manager.getStr("name")));
 			oldManager.set("tel",Util.filterUserInputContent(manager.getStr("tel")));
 			oldManager.set("password",manager.getStr("tel").substring(5)).set("say", "");
+			oldManager.set("idcard",Util.filterUserInputContent(manager.getStr("idcard")));
+			oldManager.set("grade",Util.filterUserInputContent(manager.getStr("grade")));
+			oldManager.set("major",Util.filterUserInputContent(manager.getStr("major")));
+			oldManager.set("stuid",Util.filterUserInputContent(manager.getStr("stuid")));
+			oldManager.set("sex",manager.getBoolean("sex"));
 			oldManager.set("addedDate", Util.getDate()).set("addedTime", Util.getTime());
 			oldManager.update();
 		}else {
 			manager.set("name",Util.filterUserInputContent(manager.getStr("name")));
 			manager.set("tel",Util.filterUserInputContent(manager.getStr("tel")));
+			manager.set("idcard",Util.filterUserInputContent(manager.getStr("idcard")));
+			manager.set("grade",Util.filterUserInputContent(manager.getStr("grade")));
+			manager.set("major",Util.filterUserInputContent(manager.getStr("major")));
+			manager.set("stuid",Util.filterUserInputContent(manager.getStr("stuid")));
+			manager.set("sex",manager.getBoolean("sex"));
 			manager.set("location", area.getInt("aid"));
 			manager.set("password", manager.getStr("tel").substring(5));
 			manager.set("addedDate", Util.getDate()).set("addedTime", Util.getTime());

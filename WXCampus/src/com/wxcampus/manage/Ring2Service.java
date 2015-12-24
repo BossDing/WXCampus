@@ -8,6 +8,7 @@ import com.jfinal.core.Controller;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Record;
 import com.jfinal.render.Render;
+import com.sun.jmx.snmp.Timestamp;
 import com.wxcampus.index.Areas;
 import com.wxcampus.index.IndexService;
 import com.wxcampus.items.Areasales;
@@ -39,15 +40,15 @@ public class Ring2Service {
 		 List<Trades> ridList;
 		 String state=c.getPara("state");
 		 if(state==null)
-			 ridList=Trades.dao.paginate(page, 10, "select distinct a.rid,a.room,a.state,a.addedDate,a.addedTime,b.tel", "from trades as a,user as b where a.customer=b.uid and a.seller=? and a.addedDate=? and state!=2 order by a.addedTime desc",manager.getInt("mid"),date).getList();
+			 ridList=Trades.dao.paginate(page, 10, "select distinct a.rid,a.room,a.state,a.addedDate,a.addedTime,a.inform,b.tel,b.name", "from trades as a,user as b where a.customer=b.uid and a.seller=? and a.addedDate=? and state!=2 order by a.addedTime desc",manager.getInt("mid"),date).getList();
 		 else {
 			if(state.equals("0"))
-			{ ridList=Trades.dao.paginate(page, 10, "select distinct a.rid,a.room,a.state,a.addedDate,a.addedTime,b.tel", "from trades as a,user as b where a.customer=b.uid and a.state=? and a.seller=? and a.addedDate=? order by a.addedTime desc",Integer.parseInt(state),manager.getInt("mid"),date).getList();
+			{ ridList=Trades.dao.paginate(page, 10, "select distinct a.rid,a.room,a.state,a.addedDate,a.addedTime,a.inform,b.tel,b.name", "from trades as a,user as b where a.customer=b.uid and a.state=? and a.seller=? and a.addedDate=? order by a.addedTime desc",Integer.parseInt(state),manager.getInt("mid"),date).getList();
 			  flag=1;
 			}
 			else if(state.equals("1"))
 			{
-		     ridList=Trades.dao.paginate(page, 10, "select distinct a.rid,a.room,a.state,a.addedDate,a.addedTime,b.tel", "from trades as a,user as b where a.customer=b.uid and a.state=? and a.seller=? and a.addedDate=? order by a.addedTime desc",Integer.parseInt(state),manager.getInt("mid"),date).getList();
+		     ridList=Trades.dao.paginate(page, 10, "select distinct a.rid,a.room,a.state,a.addedDate,a.addedTime,a.inform,b.tel,b.name", "from trades as a,user as b where a.customer=b.uid and a.state=? and a.seller=? and a.addedDate=? order by a.addedTime desc",Integer.parseInt(state),manager.getInt("mid"),date).getList();
              flag=2;
 			}
 			else {
@@ -75,6 +76,8 @@ public class Ring2Service {
 				temp.set("money", money);
 				temp.set("room", ridList.get(i).get("room"));
 				temp.set("tel", ridList.get(i).get("tel"));
+				temp.set("name", ridList.get(i).get("name"));
+				temp.set("inform", ridList.get(i).get("inform"));
 				records.add(temp);
 			}
 		 c.setAttr("tradeList", records);
@@ -99,7 +102,7 @@ public class Ring2Service {
 			}
 			for(int i=0;i<trades.size();i++)
 			{
-				trades.get(i).set("state", 1).update();
+				trades.get(i).set("state", 1).set("finishedTimeStamp", new Timestamp(System.currentTimeMillis())).update();
 			}
 		}else {
 			c.redirect("/404/error");

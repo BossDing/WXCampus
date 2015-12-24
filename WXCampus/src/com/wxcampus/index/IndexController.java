@@ -155,11 +155,11 @@ public class IndexController extends Controller {
 				setAttr("buildings", recordList);
 				renderJson();
 			}else {
-				setAttr("colleges", Areas.dao.find("select distinct college from areas where city=? and college<>? order by college",city,""));
+				setAttr("colleges", Areas.dao.find("select distinct college from areas where city=? and college<>? order by convert(college using gbk)",city,""));
 				renderJson();;
 			}
 		}else {
-			setAttr("cities", Areas.dao.find("select distinct city from areas order by city"));
+			setAttr("cities", Areas.dao.find("select distinct city from areas order by convert(city using gbk)"));
 			renderJson();
 		}
 	}
@@ -222,6 +222,7 @@ public class IndexController extends Controller {
 			{
 				setAttr("college", getPara("college"));
 				setAttr("city", getPara("city"));
+				setAttr("flag", 0);
 				render("area.html");
 			}
 //		}else {
@@ -304,7 +305,7 @@ public class IndexController extends Controller {
 				if(as!=null)
 				   itemList.get(i).set("sales", as.getInt("num"));
 				else {
-					itemList.get(i).set("sales",0);
+					itemList.get(i).set("sales",3);
 				}
 			} 
 		}else
@@ -326,6 +327,14 @@ public class IndexController extends Controller {
 			}
 		else
 			renderHtml(Util.getJsonText("您要找的学校暂不存在"));
+	}
+	public void searchCollege()
+	{
+		String college=getPara("q");
+		setAttr("flag", 1);
+		setAttr("city", "");
+		setAttr("college", college);
+		render("area.html");
 	}
 	public void searchCity()  //ajax
 	{

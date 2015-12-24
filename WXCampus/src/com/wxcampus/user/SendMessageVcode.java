@@ -11,7 +11,7 @@ public class SendMessageVcode {
 	public static boolean send(String tel,String vcode)
 	{
 		String url="http://apis.baidu.com/kingtto_media/106sms/106sms?";
-		String para="mobile="+tel+"&content=【验证码】：您的验证码是"+vcode+"，5分钟内有效。";
+		String para="mobile="+tel+"&content=【橘子皮】：您的验证码是"+vcode+"，5分钟内有效。";
         String result=getResponse(url+para);
 	//	String result="Success";
         if(result.contains("Success"))
@@ -25,7 +25,7 @@ public class SendMessageVcode {
 		   HttpClient hc=new DefaultHttpClient();
 			HttpGet hGet=new HttpGet(url);
 			hGet.addHeader("Content-Type","application/json;charset=utf-8");
-			hGet.addHeader("apikey", "a780c4726558b15f9d0bf5a0c992b3a8");
+			hGet.addHeader("apikey", "12287bb65605c0497a66fc21f70c2a6a");
 	   	HttpResponse hResponse;
 	    try
 	  		{

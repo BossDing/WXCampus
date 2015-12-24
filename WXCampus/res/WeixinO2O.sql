@@ -109,9 +109,16 @@ CREATE TABLE `managers` (
   `name` varchar(255) not null,
   `password` varchar(255) not null,
   `location` int(10) not null,
+  `alipayNo` varchar(32) default null,
   `shopname` varchar(255) default "",
   `shopimg` varchar(255) default "",
   `say` varchar(255) default "",
+  `idcard` varchar(32) default "",
+  `grade` varchar(16) default "",
+  `major` varchar(16) default "",
+  `stuid` varchar(32) default "",
+  `sex` tinyint(1) default 1,
+  `totalsales` decimal(10,2) default 0,
   `addedDate` date NOT NULL,
   `addedTime` time NOT NULL,
   PRIMARY KEY (`mid`),
@@ -177,6 +184,7 @@ CREATE TABLE `trades` (
   `price` decimal(10,2) not null,
   `orderNum` int(5) not null,
   `room` varchar(127) not null,
+  `inform` varchar(127) default null,
   `state` int(1) not null,
   `addedDate` date not null,
   `addedTime` time not null,
@@ -287,6 +295,14 @@ select * from user;
 select * from areas;
 
 select * from managers;
+
+alter table managers add idcard varchar(32) default "";
+alter table managers add grade varchar(16) default "";
+alter table managers add major varchar(16) default "";
+alter table managers add stuid varchar(32) default "";
+alter table managers add sex tinyint(1) default 0;
+alter table managers add totalsales decimal(10,2) default 0;
+
 
 INSERT INTO `wxcampus`.`managers` (`mid`, `ring`, `tel`, `name`, `password`, `location`, `say`, `addedDate`, `addedTime`) VALUES ('1', '1', '123', '测试', '123456', '1', '店长说', '2015-11-11', '00:00:00');
 

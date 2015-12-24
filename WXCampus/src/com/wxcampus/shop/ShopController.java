@@ -205,8 +205,12 @@ public class ShopController extends Controller{
 			setAttr("itemList", itemList);
 		}
 		setSessionAttr("itemList", itemList);
-		setAttr("totalMoney", totalMoney);
 		setSessionAttr("totalMoney", totalMoney);
+		if(totalMoney>=15)
+		{
+			totalMoney-=2;
+		}
+		setAttr("totalMoney", totalMoney);
 		List<Promotion> proList=Promotion.dao.find("select * from promotion where isshow=true order by addedDT desc");
 		setAttr("proList", proList);
 		User user=getSessionAttr("sessionUser");
@@ -299,6 +303,7 @@ public class ShopController extends Controller{
 		String name=getPara("userName");
 		String room=getPara("userRoom");
 		String tel=getPara("userTel");
+		String inform=getPara("inform");
 		User user=getSessionAttr("sessionUser");
 		if(name==null || name.equals("") || room==null || room.equals("") || tel==null || tel.equals(""))
 		{
@@ -361,6 +366,7 @@ public class ShopController extends Controller{
 		  trades.set("location", areaID);
 		  trades.set("addedDate", date);
 		  trades.set("addedTime", time);
+		  trades.set("inform", inform);
 		  trades.set("item", itemList.get(i).getInt("iid"));
 		  trades.set("price", itemList.get(i).getBigDecimal("price"));
 		  trades.set("orderNum", itemList.get(i).getInt("orderNum"));

@@ -7,6 +7,8 @@ import java.io.FileOutputStream;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -30,9 +32,12 @@ import com.jfinal.plugin.activerecord.tx.TxConfig;
 import com.jfinal.upload.UploadFile;
 import com.mchange.v2.c3p0.impl.NewPooledConnection;
 import com.sun.org.apache.bcel.internal.generic.NEW;
+import com.wxcampus.common.City;
+import com.wxcampus.common.College;
 import com.wxcampus.common.GlobalVar;
 import com.wxcampus.common.NoUrlPara;
 import com.wxcampus.common.OpenidInterceptor;
+import com.wxcampus.common.Province;
 import com.wxcampus.index.Advertisement;
 import com.wxcampus.index.Areas;
 import com.wxcampus.index.IndexService;
@@ -70,11 +75,13 @@ public class ManageController extends Controller{
 	         ring2Service.trades();
 	         setAttr("ring", 2);
 	         setAttr("state", Areas.dao.findById(manager.getInt("location")).getBoolean("state"));
+		     setAttr("alipayNo", manager.getStr("alipayNo"));
 		 }else if(manager.getInt("ring")==1)
 		 {
 			 Ring1Service ring1Service=new Ring1Service(this,manager);
 	         ring1Service.trades();
 	         setAttr("ring", 1);
+	         setAttr("alipayNo", manager.getStr("alipayNo"));
 		 }else if(manager.getInt("ring")==0)
 		 {
 			 tradesALL();
@@ -228,6 +235,16 @@ public class ManageController extends Controller{
 		}		
 	 }
 	 /**
+	  *  店长设置支付宝帐号
+	  */
+	 public void setAlipayCard()
+	 {
+		 String alipayNo=getPara("alipayNo");
+		 Managers manager=getSessionAttr(GlobalVar.BEUSER);
+		 manager.set("alipayNo", alipayNo).update();
+		 renderHtml(Util.getJsonText("OK"));
+	 }
+	 /**
 	  *   申请提现
 	  */
 	 public void applyIncome()
@@ -239,6 +256,11 @@ public class ManageController extends Controller{
 			 return;
 		 }
 		 Managers manager=getSessionAttr(GlobalVar.BEUSER);
+		 if(manager.getStr("alipayNo")==null)
+		 {
+			 renderHtml(Util.getJsonText("尚未设置提现支付宝帐号，请先设置"));
+			 return;
+		 }
 		 Applyincome api=Applyincome.dao.findFirst("select * from applyincome where tel=? order by addedDT desc",manager.getStr("tel"));
 		 if(api!=null && api.getInt("state")==0)
 		 {
@@ -253,11 +275,7 @@ public class ManageController extends Controller{
 		 }
 		 Applyincome ai=new Applyincome();
 		 ai.set("name", manager.getStr("name")).set("tel", manager.getStr("tel"));
-		 ai.set("cardNo", "").set("sales", income.getBigDecimal("sales"));
-		 if(manager.getInt("ring")==2)
-			 ai.set("income", new BigDecimal(income.getBigDecimal("sales").doubleValue()*0.2));
-		 else if(manager.getInt("ring")==1)
-			 ai.set("income", new BigDecimal(income.getBigDecimal("sales").doubleValue()*0.03));
+		 ai.set("cardNo", manager.getStr("alipayNo"));
 		 ai.set("state", 0).set("addedDT", new Timestamp(System.currentTimeMillis()));
 		 ai.save();
 		 renderHtml(Util.getJsonText("OK"));
@@ -868,7 +886,7 @@ public class ManageController extends Controller{
 		 {
 			 if(login.getInt("ring")==0)
 			 {
-		 List<Areas> areasList=Areas.dao.find("select distinct city,aid from areas where city!=? and college=? order by city asc","","");
+		 List<Areas> areasList=Areas.dao.find("select distinct city,aid from areas where city!=? and college=? order by convert(city using gbk) asc","","");
 		 setAttr("areaList", areasList);   //aid,city,college,building
 		 setAttr("type", 1);  //1 城市  2校区 3楼栋
 		 render("areas.html");
@@ -925,7 +943,41 @@ public class ManageController extends Controller{
 //			 render("spearea.html");
 		 }
 	 }
-	 
+	 /**
+	  *  搜索地区
+	  */
+	 public void searchArea()
+	 {
+		 int type=getParaToInt("type");
+		 String q=getPara("q");
+		 if(q!=null)
+		 {
+			 List<Record> areaList=null;
+			 if(type==1)
+			 {
+				 areaList=Db.find("select * from areas where city=? and college=?",q,"");
+				 setAttr("type", 1);  //1 城市  2校区 3楼栋
+			 }else if(type==2)
+			 {
+				 String city=getPara("city");
+				 areaList=Db.find("select * from areas where city=? and college regexp ? and building=?",city,".*"+q+".*","");
+				 for(int i=0;i<areaList.size();i++)
+            	 {
+            		 Managers manager=Managers.dao.findFirst("select name,tel from managers where location=?",areaList.get(i).getInt("aid"));
+            		 if(manager==null)
+            		 {
+            			 areaList.get(i).set("name", "").set("tel", "");
+            		 }else {
+            			 areaList.get(i).set("name", manager.getStr("name")).set("tel", manager.getStr("tel"));
+					}
+            	 }
+				 setAttr("type", 2);  //1 城市  2校区 3楼栋
+				 setAttr("city", city);
+			 }
+			 setAttr("areaList", areaList);   //aid,city,college,building
+			 render("areas.html");
+		 }
+	 }
 	 //可不可以修改某地区商品存货数量的问题。
 	 /**
 	  *  ajax提交修改货物存量
@@ -1050,6 +1102,18 @@ public class ManageController extends Controller{
 	 public void seeApplyIncomes()
 	 {
 		 List<Applyincome> aiList=Applyincome.dao.find("select * from applyincome order by addedDT desc");
+		 
+		 for(int i=0;i<aiList.size();i++)
+		 {
+			 Applyincome ai=aiList.get(i);
+			 Managers manager=Managers.dao.findFirst("select * from managers where tel=?",ai.getStr("tel"));
+			 Incomes income=Incomes.dao.findFirst("select * from incomes where mid=?",manager.getInt("mid"));
+			 ai.set("sales", income.getBigDecimal("sales"));
+			 if(manager.getInt("ring")==2)
+				 ai.set("income", new BigDecimal(income.getBigDecimal("sales").doubleValue()*0.2));
+			 else if(manager.getInt("ring")==1)
+				 ai.set("income", new BigDecimal(income.getBigDecimal("sales").doubleValue()*0.03));
+		 }
 		 setAttr("aiList", aiList);
 		 render("applyCashList.html");
 	 }
@@ -1060,9 +1124,15 @@ public class ManageController extends Controller{
 			 return;
 		 int aid=getParaToInt("aid");
 		 Applyincome ai=Applyincome.dao.findById(aid);
-		 ai.set("state", 1).update();
 		 Managers manager=Managers.dao.findFirst("select * from managers where tel=?",ai.getStr("tel"));
 		 Incomes income=Incomes.dao.findFirst("select * from incomes where mid=?",manager.getInt("mid"));
+		 ai.set("sales", income.getBigDecimal("sales"));
+		 if(manager.getInt("ring")==2)
+			 ai.set("income", new BigDecimal(income.getBigDecimal("sales").doubleValue()*0.2));
+		 else if(manager.getInt("ring")==1)
+			 ai.set("income", new BigDecimal(income.getBigDecimal("sales").doubleValue()*0.03));
+		 ai.set("state", 1).update();
+		 manager.set("totalsales", new BigDecimal(manager.getBigDecimal("totalsales").doubleValue()+income.getBigDecimal("sales").doubleValue())).update();
 		 income.set("sales", 0).update();
 		 renderHtml(Util.getJsonText("OK"));
 	 }
@@ -1191,6 +1261,8 @@ public class ManageController extends Controller{
 		 else {
 			 setAttr("backurl", "/mgradmin/areas?city="+areas.getStr("city")+"&college="+areas.getStr("college"));
 		}
+		 Incomes income=Incomes.dao.findFirst("select * from incomes where mid=?",manager.getInt("mid"));
+		 setAttr("TotalSales", manager.getBigDecimal("totalsales").doubleValue()+income.getBigDecimal("sales").doubleValue());
 		 render("seeMoreInfo.html");
 	 }
 	 /**
@@ -1427,13 +1499,13 @@ public class ManageController extends Controller{
 		 List<Trades> ridList;
 		 String state=getPara("state");
 		 if(state==null)
-			 ridList=Trades.dao.paginate(page,15,"select distinct rid,state,location,room,addedDate,addedTime","from trades where addedDate=? and state!=2 order by addedDate desc,addedTime desc",date).getList();
+			 ridList=Trades.dao.paginate(page,15,"select distinct a.rid,a.state,a.location,a.room,a.addedDate,a.addedTime,a.finishedTimeStamp,b.tel,b.name","from trades as a,user as b where a.customer=b.uid and a.addedDate=? and a.state!=2 order by a.addedDate desc,a.addedTime desc",date).getList();
 		 else {
 			if(state.equals("0"))
-				{ridList=Trades.dao.paginate(page,15,"select distinct rid,state,location,room,addedDate,addedTime","from trades where state=0 and addedDate=? order by addedDate desc,addedTime desc",date).getList();
+				{ridList=Trades.dao.paginate(page,15,"select distinct a.rid,a.state,a.location,a.room,a.addedDate,a.addedTime,a.finishedTimeStamp,b.tel,b.name","from trades as a,user as b where a.customer=b.uid and a.state=0 and a.addedDate=? order by a.addedDate desc,a.addedTime desc",date).getList();
 			     flag=1;}
 				else if(state.equals("1"))
-				{ridList=Trades.dao.paginate(page,15,"select distinct rid,state,location,room,addedDate,addedTime","from trades where state=1  and addedDate=? order by addedDate desc,addedTime desc",date).getList();
+				{ridList=Trades.dao.paginate(page,15,"select distinct a.rid,a.state,a.location,a.room,a.addedDate,a.addedTime,a.finishedTimeStamp,b.tel,b.name","from trades as a,user as b where a.customer=b.uid and a.state=1  and a.addedDate=? order by a.addedDate desc,a.addedTime desc",date).getList();
 			     flag=2; }
 				else {
 				redirect("/mgradmin/error");
@@ -1459,6 +1531,23 @@ public class ManageController extends Controller{
 				temp.set("money", money);
 				Areas t=Areas.dao.findById(ridList.get(i).getInt("location"));
 				temp.set("room", t.getStr("college")+t.getStr("building")+ridList.get(i).getStr("room"));
+				temp.set("tel", ridList.get(i).getStr("tel"));
+				temp.set("name", ridList.get(i).getStr("name"));
+				String time=ridList.get(i).getStr("finishedTimeStamp").toString();
+				SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
+				//随便怎么转都可以的
+				Date tdate;
+				String dateString="";
+				try {
+					tdate = formatter.parse(time);
+					formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+					dateString = formatter.format(tdate);
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				 
+				temp.set("finishTime",dateString);
 				temp.set("items", itemsRecords);
 				records.add(temp);
 			}
@@ -1525,5 +1614,44 @@ public class ManageController extends Controller{
 			setAttr("backurl", backURL);
 			render("/404/error.html");
 	 }
+//	 @Clear
+//	 public void importData()
+//	 {
+//		 Province province=Province.dao.findFirst("select * from province_info where pr_province=?","黑龙江");
+//		 List<City> cities=City.dao.find("select * from city_info where ci_province=?",province.getInt("pr_id"));
+//		 for(int i=0;i<cities.size();i++)
+//		 {
+//			 String city=cities.get(i).getStr("ci_city").replace("市", "");
+//			 Areas areaCity=Areas.dao.findFirst("select * from areas where city=? and college=?",city,"");
+//			 if(areaCity==null)
+//			 {
+//				 new Areas().set("city", city).set("college", "").set("building", "").set("addedDate", Util.getDate()).set("addedTime",Util.getTime()).save();
+//			 }
+//			 List<College> colleges=College.dao.find("select * from shool_info where sh_city=?",cities.get(i).getInt("ci_id"));
+//			 for(int k=0;k<colleges.size();k++)
+//			 {
+//				 String college=colleges.get(k).getStr("sh_shool");
+//				 Areas areaCollege=Areas.dao.findFirst("select * from areas where city=? and college=? and building=?",city,college,"");
+//				 if(areaCollege==null)
+//				 {
+//					 new Areas().set("city", city).set("college", college).set("building", "").set("addedDate", Util.getDate()).set("addedTime",Util.getTime()).save();
+//				 }
+//			 }
+//		 }
+//		 renderHtml(Util.getJsonText("导入完毕"));
+//	 }
+//	 
+//	 @Clear
+//	 public void modData()
+//	 {
+//		 int n=415;
+//		 List<Areas> areas=Areas.dao.find("select * from areas where aid>=? and aid<=?",5,43);
+//		 for(int i=0;i<areas.size();i++)
+//		 {
+//			 new Areas().set("city", areas.get(i).getStr("city")).set("college", areas.get(i).getStr("college")).set("building", "").set("addedDate", Util.getDate()).set("addedTime",Util.getTime()).save();	 
+//			 areas.get(i).delete();
+//		 }
+//		 renderHtml(Util.getJsonText("校正完毕"+n));
+//	 }
 }
 
