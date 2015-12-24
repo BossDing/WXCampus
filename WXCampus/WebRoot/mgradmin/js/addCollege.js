@@ -303,7 +303,8 @@ function openNewDiv_building(_id,city,college,building,aid) {
     '<br>'+
     '<input type="hidden" value='+city+' name="city">'+
     '<input type="hidden" value='+college+' name="college">'+
-    '<input type="hidden" value="1" name="managers.ring">'+
+    '<input type="hidden" value='+building+' name="building">'+
+    '<input type="hidden" value="2" name="managers.ring">'+
     '<button type="submit" class="btn btn-default" style="width: 80px;height: 45px">提交</button>'+
     '<button type="reset" class="btn btn-default"  style="width: 80px;height: 45px;margin-left: 25px">重置</button>'+
     '<button  class="btn btn-default" id="close"  style="width: 80px;height: 45px;margin-left: 25px">关闭</button>'+

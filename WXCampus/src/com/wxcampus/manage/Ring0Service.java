@@ -1,5 +1,6 @@
 package com.wxcampus.manage;
 
+import java.lang.annotation.Retention;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -148,6 +149,12 @@ public class Ring0Service {
 	public void setManager()
 	{
 		Managers manager=c.getModel(Managers.class);  //ring tel name password  ---location---
+		if(manager.getStr("tel")==null || manager.getStr("tel").length()!=11)
+		{
+			String url="/mgradmin/areas?city="+Util.getEncodeText(c.getPara("city"))+"&college="+Util.getEncodeText(c.getPara("college"));
+			c.renderHtml("<script>alert('手机号必须为11位!');window.location='"+url+"';</script>");
+			return;
+		}
 		if(manager.getInt("ring")==1)
 		{
 			Areas area=Areas.dao.findFirst("select * from areas where city=? and college=? and building=?",c.getPara("city"),c.getPara("college"),"");
