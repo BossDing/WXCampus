@@ -42,16 +42,23 @@
 				</#if>
             </div>
         </div>
-        <#if ring!=0>
+         <#if ring!=0>
         <div class="center">
         <div class="center_left">
        		 <p><span style="width:100px;">销售额：</span><span style="width:140px;margin-left:5px;">${Sales}元</span>
+       		
        		 <span style="width:100px;">收入：</span><span style="width:140px;margin-left:5px;">${Income}元</span>
        		 <span  style="width:100px;margin-left:45px;"><button onclick="applyCash()">申请提现</button></span></p>
         </div>
         <div>
         	<p><span><input id="alipay" value="${alipayNo!}" style="margin-top:20px;margin-left:-50px;width:250px;height:35px;" type="text" placeholder="请输入你的支付宝账号"></span>
         	<span><button onclick="submitAlipay()" style="height:35px">提交</button></span></p>
+        </div>
+        </div>
+        <#else>
+         <div class="center">
+        <div class="center_left">
+       		 <p><span style="width:100px;">总销售额：</span><span style="width:140px;margin-left:5px;">${Sales}元</span>
         </div>
         </div>
          </#if>

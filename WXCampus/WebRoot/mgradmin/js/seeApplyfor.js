@@ -10,3 +10,24 @@ function nextPage(){
 	page++;
 	window.location='/mgradmin/seeApplyfor/'+page;
 }
+
+function dealApply(aid){
+	var url='/mgradmin/dealApplyfor';
+	var dataInfo='aid='+aid;
+    $.ajax(
+        {
+            url:url,
+            dataType: "json",
+            type: 'POST',
+            data:dataInfo,
+            success:function(json){
+            	if(json.Msg=="OK"){
+            		window.location.reload();
+            	}
+            },
+            error: function () {
+                alert("error");
+            }
+        }
+    );
+}

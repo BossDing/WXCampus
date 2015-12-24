@@ -18,6 +18,7 @@
                     <span style="width: 100px;height: 34px;margin-left: 15px" id="all_manage" onclick="seeTrades('${aid}')">查看订单</span>
                     <span style="width: 100px;height: 34px;margin-left: 15px" id="new_manage" onclick="seeKucun('${aid}')">查看库存</span>
                     <span style="width: 100px;height: 34px;margin-left: 15px" id="old_manage" onclick="seeDataInfo('${aid}')">数据统计</span>
+                	<span style="width:180px;height: 34px;margin-left: 15px;" >销售额：${TotalSales}</span>
                 	<#if type==3>
                 	<span><input type="date" id="upDate"></span>
                 	</#if>
@@ -33,7 +34,7 @@
 				        document.getElementById("rest").style.backgroundColor="#F6EB13";
     					}
 					</script>
-					</#if>
+			</#if>
             </div>
         </div>
         <div class="floor">

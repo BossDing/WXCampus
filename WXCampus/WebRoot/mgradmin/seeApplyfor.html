@@ -27,6 +27,7 @@
                         <th style="text-align: center">申请人</th>
                         <th style="text-align: center">电话</th>
                         <th style="text-align: center">地址</th>
+                         <th style="text-align: center">操作</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -36,13 +37,14 @@
                         <td style="color:red;">${x.name}</td>
                         <td style="color:red;">${x.tel}</td>
                         <td style="color:red;">${x.city}${x.college}${x.building}</td>
-                        
+                        <td style="color:red;"><a style="cursor: pointer" onclick="dealApply('${x.aid}')">处理</a></td>
                     </tr> 
                     <#else>
                     <tr>
                         <td>${x.name}</td>
                         <td>${x.tel}</td>
                         <td>${x.city}${x.college}${x.building}</td>
+                        <td>已处理</td>
                     </tr> 
                     </#if>
                     </#list>

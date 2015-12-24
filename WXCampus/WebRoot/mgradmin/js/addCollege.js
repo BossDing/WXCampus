@@ -160,7 +160,7 @@ function deleteBuilding(aid){
 var docEle = function() {
     return document.getElementById(arguments[0]) || false;
 }
-function openNewDiv_college(_id,city,college) {
+function openNewDiv_college(_id,city,college,aid) {
     var m = "mask";
     if (docEle(_id)) document.removeChild(docEle(_id));
     if (docEle(m)) document.removeChild(docEle(m));
@@ -170,22 +170,47 @@ function openNewDiv_college(_id,city,college) {
     newDiv.style.position = "absolute";
     newDiv.style.zIndex = "9999";
     newDiv.style.width = "420px";
-    newDiv.style.height = "270px";
+    newDiv.style.height = "570px";
     newDiv.style.top = "100px";
     newDiv.style.left = (parseInt(document.body.scrollWidth) - 300) / 2 + "px"; // 屏幕居中
     newDiv.style.background = "#EFEFEF";
     newDiv.style.border = "1px solid #860001";
     newDiv.style.padding = "5px";
-    var dataInfo='<div class="floor_content" style=" width: 400px;height: 250px;margin: 0px auto;text-align: center;">'+
+    var dataInfo='<div class="floor_content" style=" width: 400px;height: 550px;margin: 0px auto;text-align: center;">'+
     '<form class="bs-example bs-example-form" role="form" action="/mgradmin/setManager" method="post">'+
     '<div class="input-group">'+
     '<span class="input-group-addon">校区负责人姓名</span>'+
-    '<input name="managers.name" type="text" class="form-control" placeholder="请输入姓名" style="height: 50px">'+
+    '<input name="managers.name" id="name"  type="text" class="form-control" placeholder="请输入姓名" style="height: 50px">'+
     '</div>'+
     '<br>'+
     '<div class="input-group">'+
     '<span class="input-group-addon">电话</span>'+
-    '<input name="managers.tel" type="text" class="form-control" placeholder="请输入电话" style="height: 50px">'+
+    '<input name="managers.tel" id="tel" type="text" class="form-control" placeholder="请输入电话" style="height: 50px">'+
+    '</div>'+
+    '<br>'+
+    '<div class="input-group">'+
+    '<span class="input-group-addon">身份证号</span>'+
+    '<input name="managers.idcard" id="idcard"  type="text" class="form-control" placeholder="请输入身份证号" style="height: 50px">'+
+    '</div>'+
+    '<br>'+
+    '<div class="input-group">'+
+    '<span class="input-group-addon">专业</span>'+
+    '<input name="managers.major" id="major"  type="text" class="form-control" placeholder="请输入专业名称" style="height: 50px">'+
+    '</div>'+
+    '<br>'+
+    '<div class="input-group">'+
+    '<span class="input-group-addon">年级</span>'+
+    '<input name="managers.grade" id="grade"  type="text" class="form-control" placeholder="请输入年级" style="height: 50px">'+
+    '</div>'+
+    '<br>'+
+    '<div class="input-group">'+
+    '<span class="input-group-addon">学号</span>'+
+    '<input name="managers.stuid" id="stuid"  type="text" class="form-control" placeholder="请输入学号" style="height: 50px">'+
+    '</div>'+
+    '<br>'+
+    '<div class="input-group">'+
+    '<span class="input-group-addon">性别</span>'+
+    '<select id="sex"  style="width:200px;height:50px;float:left;" name="mamagers.sex"><option value="1" >男</option><option value="0" >女</option></select>'+
     '</div>'+
     '<br>'+
     '<input type="hidden" value='+city+' name="city">'+
@@ -218,9 +243,12 @@ function openNewDiv_college(_id,city,college) {
         document.body.removeChild(docEle(m));
         return false;
     }
+    
+    disPersonInfo(aid);
+    
 }
 
-function openNewDiv_building(_id,city,college,building) {
+function openNewDiv_building(_id,city,college,building,aid) {
     var m = "mask";
     if (docEle(_id)) document.removeChild(docEle(_id));
     if (docEle(m)) document.removeChild(docEle(m));
@@ -230,28 +258,52 @@ function openNewDiv_building(_id,city,college,building) {
     newDiv.style.position = "absolute";
     newDiv.style.zIndex = "9999";
     newDiv.style.width = "420px";
-    newDiv.style.height = "270px";
+    newDiv.style.height = "570px";
     newDiv.style.top = "100px";
     newDiv.style.left = (parseInt(document.body.scrollWidth) - 300) / 2 + "px"; // 屏幕居中
     newDiv.style.background = "#EFEFEF";
     newDiv.style.border = "1px solid #860001";
     newDiv.style.padding = "5px";
-    var dataInfo='<div class="floor_content" style=" width: 400px;height: 250px;margin: 0px auto;text-align: center;">'+
+    var dataInfo='<div class="floor_content" style=" width: 400px;height: 550px;margin: 0px auto;text-align: center;">'+
     '<form class="bs-example bs-example-form" role="form" action="/mgradmin/setManager" method="post">'+
     '<div class="input-group">'+
-    '<span class="input-group-addon">楼栋负责人姓名</span>'+
-    '<input name="managers.name" type="text" class="form-control" placeholder="请输入姓名" style="height: 50px">'+
+    '<span class="input-group-addon">校区负责人姓名</span>'+
+    '<input name="managers.name" id="name"  type="text" class="form-control" placeholder="请输入姓名" style="height: 50px">'+
     '</div>'+
     '<br>'+
     '<div class="input-group">'+
     '<span class="input-group-addon">电话</span>'+
-    '<input name="managers.tel" type="text" class="form-control" placeholder="请输入电话" style="height: 50px">'+
+    '<input name="managers.tel" id="tel" type="text" class="form-control" placeholder="请输入电话" style="height: 50px">'+
+    '</div>'+
+    '<br>'+
+    '<div class="input-group">'+
+    '<span class="input-group-addon">身份证号</span>'+
+    '<input name="managers.idcard" id="idcard"  type="text" class="form-control" placeholder="请输入身份证号" style="height: 50px">'+
+    '</div>'+
+    '<br>'+
+    '<div class="input-group">'+
+    '<span class="input-group-addon">专业</span>'+
+    '<input name="managers.major" id="major"  type="text" class="form-control" placeholder="请输入专业名称" style="height: 50px">'+
+    '</div>'+
+    '<br>'+
+    '<div class="input-group">'+
+    '<span class="input-group-addon">年级</span>'+
+    '<input name="managers.grade" id="grade"  type="text" class="form-control" placeholder="请输入年级" style="height: 50px">'+
+    '</div>'+
+    '<br>'+
+    '<div class="input-group">'+
+    '<span class="input-group-addon">学号</span>'+
+    '<input name="managers.stuid" id="stuid"  type="text" class="form-control" placeholder="请输入学号" style="height: 50px">'+
+    '</div>'+
+    '<br>'+
+    '<div class="input-group">'+
+    '<span class="input-group-addon">性别</span>'+
+    '<select id="sex"  style="width:200px;height:50px;float:left;" name="mamagers.sex"><option value="1" >男</option><option value="0" >女</option></select>'+
     '</div>'+
     '<br>'+
     '<input type="hidden" value='+city+' name="city">'+
     '<input type="hidden" value='+college+' name="college">'+
-    '<input type="hidden" value='+building+' name="building">'+
-    '<input type="hidden" value="2" name="managers.ring">'+
+    '<input type="hidden" value="1" name="managers.ring">'+
     '<button type="submit" class="btn btn-default" style="width: 80px;height: 45px">提交</button>'+
     '<button type="reset" class="btn btn-default"  style="width: 80px;height: 45px;margin-left: 25px">重置</button>'+
     '<button  class="btn btn-default" id="close"  style="width: 80px;height: 45px;margin-left: 25px">关闭</button>'+
@@ -279,7 +331,35 @@ function openNewDiv_building(_id,city,college,building) {
         document.body.removeChild(docEle(m));
         return false;
     }
+    
+  disPersonInfo(aid);
+
 }
+function disPersonInfo(aid){
+	var url='/mgradmin/seeManagerInfo';
+	var dataInfo='aid='+aid;
+    $.ajax(
+        {
+            url:url,
+            dataType: "json",
+            type: 'POST',
+            data:dataInfo,
+            success:function(json){
+            	document.getElementById("name").value=json.manager.name;
+            	document.getElementById("tel").value=json.manager.tel;
+            	document.getElementById("idcard").value=json.manager.idcard;
+            	document.getElementById("major").value=json.manager.major;
+            	document.getElementById("grade").value=json.manager.grade;
+            	document.getElementById("stuid").value=json.manager.stuid;
+            	document.getElementById("sex").value=json.manager.sex;
+            },
+            error: function () {
+                alert("error");
+            }
+        }
+    );
+}
+
 
 
 function findCity(){

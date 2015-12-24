@@ -80,7 +80,7 @@
                         <td>${x.college}</td>
                         <td>${x.name}</td>
                         <td>${x.tel}</td>
-                        <td><a style="cursor:pointer;" onclick="openNewDiv_college(1,'${city}','${x.college}')">设置负责人</a></td>
+                        <td><a style="cursor:pointer;" onclick="openNewDiv_college(1,'${city}','${x.college}','${x.aid}')">设置负责人</a></td>
                         <#if x.name=="">
                         <td>查看详情</td>
                         <#else>
@@ -109,7 +109,7 @@
                         <td>${x.building}</td>
                         <td>${x.name}</td>
                         <td>${x.tel}</td>
-                        <td><a style="cursor:pointer;" onclick="openNewDiv_building(1,'${city}','${college}','${x.building}')">设置负责人</a></td>
+                        <td><a style="cursor:pointer;" onclick="openNewDiv_building(1,'${city}','${college}','${x.building}','${x.aid}')">设置负责人</a></td>
                        <#if x.name=="">
                         <td>查看详情</td>
                         <#else>

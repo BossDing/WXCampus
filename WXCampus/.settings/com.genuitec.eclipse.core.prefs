@@ -1,3 +1,3 @@
 eclipse.preferences.version=1
 validator.Checked=/
-validator.Unchecked=
+validator.Unchecked=src/com/wxcampus/manage/ManageController.java
