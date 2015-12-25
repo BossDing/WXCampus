@@ -14,3 +14,4 @@ function backshop(){
 function myTrades(){
 	window.location='/usr/trades/1';
 }
+

@@ -26,6 +26,7 @@ function backFoodList(data){
 	var isFirst=map.get(category);
 	if(isFirst==true){
 		document.getElementById(category+"xiala").src="/index/images_shop/xiala.png";
+		document.getElementById(category+"xiala").style.height="30px";
 		map.put(category,false);
 		document.getElementById(category).innerHTML="";
 	    var foodList='';
@@ -51,10 +52,12 @@ function backFoodList(data){
 	    
 	    }
 	    $("#"+category).append(foodList);
+	    document.getElementById(category).style.backgroundColor="#f5f5f5";
 	    getFoodInfo();
 	}
 	else{
 		document.getElementById(category+"xiala").src="/index/images_shop/next_1.png";
+		document.getElementById(category+"xiala").style.height="55px";
 		map.put(category,true);
 		document.getElementById(category).innerHTML="";
 	}
