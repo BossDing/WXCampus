@@ -1,5 +1,6 @@
 package com.wxcampus.manage;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -8,7 +9,6 @@ import com.jfinal.core.Controller;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Record;
 import com.jfinal.render.Render;
-import com.sun.jmx.snmp.Timestamp;
 import com.wxcampus.index.Areas;
 import com.wxcampus.index.IndexService;
 import com.wxcampus.items.Areasales;

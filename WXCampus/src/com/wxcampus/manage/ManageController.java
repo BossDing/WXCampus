@@ -1180,7 +1180,7 @@ public class ManageController extends Controller{
 				 String state=getPara("state");
 				 for(int i=0;i<areaList.size();i++)
 				 {
-				 ridList.addAll(Trades.dao.paginate(page,10,"select distinct rid,location,state,room,addedDate,addedTime","from trades where location=? order by addedDate desc,addedTime desc",areaList.get(i).getInt("aid")).getList());
+				 ridList.addAll(Trades.dao.paginate(page,10,"select distinct rid,location,state,room,addedDate,addedTime","from trades where state!=2 and location=? order by addedDate desc,addedTime desc",areaList.get(i).getInt("aid")).getList());
 				}
                     List<Record> records=new ArrayList<Record>();
 					for(int i=0;i<ridList.size();i++)
@@ -1209,7 +1209,7 @@ public class ManageController extends Controller{
 			 }else if(manager.getInt("ring")==2)
 			 {
 					 List<Trades> ridList;
-					  ridList=Trades.dao.paginate(page, 10, "select distinct rid,room,state,addedDate,addedTime", "from trades where seller=? order by addedDate desc,addedTime desc",manager.getInt("mid")).getList();
+					  ridList=Trades.dao.paginate(page, 10, "select distinct rid,room,state,addedDate,addedTime", "from trades where state!=2 and seller=? order by addedDate desc,addedTime desc",manager.getInt("mid")).getList();
 						List<Record> records=new ArrayList<Record>();
 						for(int i=0;i<ridList.size();i++)
 						{
@@ -1265,7 +1265,13 @@ public class ManageController extends Controller{
 				 if(month==null)
 					 month=Util.getMonth();
 				 List<Record> records=Db.find("select a.iname,b.num,b.money from items as a,areasales as b where a.iid=b.item and b.location=? and b.month=?",manager.getInt("location"),month);
+				 double sum=0;
+				 for(int i=0;i<records.size();i++)
+				 {
+					 sum+=records.get(i).getBigDecimal("money").doubleValue();
+				 }
 				 setAttr("dataList", records);
+				 setAttr("MonthSales", sum);
 				 setAttr("date_info", month);
 				 setAttr("type", 3);
 		 }
@@ -1279,6 +1285,7 @@ public class ManageController extends Controller{
 		}
 		 Incomes income=Incomes.dao.findFirst("select * from incomes where mid=?",manager.getInt("mid"));
 		 setAttr("TotalSales", manager.getBigDecimal("totalsales").doubleValue()+income.getBigDecimal("sales").doubleValue());
+		 setAttr("CurrentSales", income.getBigDecimal("sales").doubleValue());
 		 render("seeMoreInfo.html");
 	 }
 	 /**
@@ -1560,21 +1567,21 @@ public class ManageController extends Controller{
 				temp.set("room", t.getStr("college")+t.getStr("building")+ridList.get(i).getStr("room"));
 				temp.set("tel", ridList.get(i).getStr("tel"));
 				temp.set("name", ridList.get(i).getStr("name"));
-				String time=ridList.get(i).getStr("finishedTimeStamp").toString();
-				SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
-				//随便怎么转都可以的
-				Date tdate;
-				String dateString="";
-				try {
-					tdate = formatter.parse(time);
-					formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-					dateString = formatter.format(tdate);
-				} catch (ParseException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				String time=ridList.get(i).get("finishedTimeStamp").toString();
+//				SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
+//				//随便怎么转都可以的
+//				Date tdate;
+//				String dateString="";
+//				try {
+//					tdate = formatter.parse(time);
+//					formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//					dateString = formatter.format(tdate);
+//				} catch (ParseException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
 				 
-				temp.set("finishTime",dateString);
+				temp.set("finishTime",time);
 				temp.set("items", itemsRecords);
 				records.add(temp);
 			}
