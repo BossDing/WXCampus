@@ -188,7 +188,7 @@ CREATE TABLE `trades` (
   `state` int(1) not null,
   `addedDate` date not null,
   `addedTime` time not null,
-  `finishedTimeStamp` varchar(32) default NULL,
+  `finishedTimeStamp` timestamp default NULL,
   PRIMARY KEY (`tid`),
    KEY `customer` (`customer`),
    KEY `seller` (`seller`),
