@@ -38,7 +38,7 @@
     text-align: center;
 }
 .top_center p{
-    font-size: 25px;
+    font-size: 28px;
     color: #ffffff;
 }
 .top_right{
@@ -117,7 +117,8 @@
     margin-top: 10px;
     padding-top: 10px;
     border-radius: 8px;
-    background-color: #757575
+    color:#ffffff;
+    background-color: #FD033E;
 }
 .bottom_top{
     width: 100%;
@@ -159,5 +160,6 @@
     float:right;
      font-size:2.2em;
     color:green;
+    padding-left:0.2em;
     text-align: center;
 }

@@ -149,6 +149,7 @@
     height:auto ;
     float: left;
     margin-top:8px;
+    border-bottom:solid 1px #CDCDCD;
     background-color: #ffffff;
 }
 .food_info_left{
@@ -174,6 +175,7 @@
     float:right;
     font-size:2.2em;
     color:green;
-    text-align: center;
+    padding-left:0.2em;
+    text-align:center;
 }
 
