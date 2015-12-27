@@ -1336,7 +1336,7 @@ public class ManageController extends Controller{
 		}
 		 render("speitem.html");
 	 }
-	 @Before(Ring0Interceptor.class)
+	 @Before({Ring0Interceptor.class,Tx.class})
 	 public void modifyItem()     //表单提交
 	 {
 		
@@ -1368,7 +1368,7 @@ public class ManageController extends Controller{
 			item.set("addedDate", Util.getDate()).set("addedTime", Util.getTime());
 			item.save();
 			Items_on_sale ios=new Items_on_sale();
-			ios.set("iid", item.getInt("iid"));   //能否获取到？
+			ios.set("iid", item.getInt("iid"));   
 			ios.set("minPrice",new BigDecimal(0)).set("maxPrice", new BigDecimal(0)).set("price", item.getBigDecimal("realPrice"));
 			ios.set("restNum", 0).set("location", 0).set("isonsale", true);
 			ios.set("addedDate", Util.getDate()).set("addedTime", Util.getTime());
@@ -1399,12 +1399,20 @@ public class ManageController extends Controller{
 				 item.set("icon", "/imgs/"+src);
 			 }	
 			 double cost=item.getBigDecimal("cost").doubleValue();
+			 double realPrice=item.getBigDecimal("realPrice").doubleValue();
 			 if(cost!=origin.getBigDecimal("cost").doubleValue())
 			 {
 				 List<Items_on_sale> iosList=Items_on_sale.dao.find("select * from items_on_sale where iid=?",item.getInt("iid"));
 				 for(int i=0;i<iosList.size();i++)
 				 {
 					 iosList.get(i).set("minPrice", new BigDecimal(cost*lowLimit)).set("maxPrice", new BigDecimal(cost*highLimit)).set("price", item.getBigDecimal("realPrice")).update();
+				 }
+			 }else if(realPrice!=origin.getBigDecimal("realPrice").doubleValue())
+			 {
+				 List<Items_on_sale> iosList=Items_on_sale.dao.find("select * from items_on_sale where iid=?",item.getInt("iid"));
+				 for(int i=0;i<iosList.size();i++)
+				 {
+					 iosList.get(i).set("price", item.getBigDecimal("realPrice")).update();
 				 }
 			 }
 			 item.set("iname", Util.filterUserInputContent(item.getStr("iname")));
